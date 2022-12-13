@@ -1,5 +1,6 @@
 package entity
 
+/** The enum Position represents the visual location of a ConnectionPoint on a Tile.*/
 enum class Position{
     TOP_LEFT,
     TOP_RIGHT,
