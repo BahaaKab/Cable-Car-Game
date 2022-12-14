@@ -20,5 +20,3 @@ class CableCar (
     history : History,
     currentState : State,
     players: MutableList<Player>)
-{
-}
