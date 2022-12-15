@@ -1,9 +1,6 @@
-package service
+package entity
 
-import entity.Color
-import entity.PlayerInfo
-import entity.PlayerType
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
@@ -20,8 +17,7 @@ class PlayerInfoTest {
      * First we assign some values for player1 and check if they have been assigned properly.
      */
     @Test
-    fun constructorTest() {
-        //player1.name = "TestName"
+    fun testConstructor() {
         player1.color = Color.YELLOW
         player1.playerType = PlayerType.HUMAN
         assertEquals("TestName", player1.name)
