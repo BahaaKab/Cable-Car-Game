@@ -15,13 +15,14 @@ data class Player(val playerType : PlayerType, val color : Color, val name : Str
     var handTile : GameTile? = null
     var currentTile : GameTile? = null
 
-    // Deep-Copy-Function
+    /**
+     * Function that returns a deep-copy of a [Player]
+     * @return deep-copy of [Player]
+     */
     fun deepCopy() : Player {
-        // Deep-Copy for stationTiles
         val stationTiles : List<StationTile> = this.stationTiles.map {
            return it.deepCopy()
         }
-        // Deep-Copy for Player
         return Player(playerType, color, name, stationTiles).also {
             it.score = score
             it.handTile = handTile.deepCopy()
