@@ -15,8 +15,8 @@ package entity
 class CableCar (
     val allowTileRotation : Boolean,
     var AISpeed : Int,
-    isHostPlayer : Boolean,
-    gameMode : GameMode,
-    history : History,
-    currentState : State,
-    players: MutableList<Player>)
+    val isHostPlayer : Boolean,
+    val gameMode : GameMode,
+    var history : History,
+    var currentState : State,
+    var players: MutableList<Player>)
