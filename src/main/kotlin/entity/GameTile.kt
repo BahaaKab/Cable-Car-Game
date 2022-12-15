@@ -2,7 +2,9 @@ package entity
 
 /**
  * A game tile
- * Implements [Tile] with eighth [Tile.connectors] and four [Tile.connections].
+ * Implements [Tile] with eighth [Tile.connectors] and eight directed [Tile.connections]. Although we think
+ * of a connection as an undirected edge, calculations can be simplified by saving a connection a <--> b as
+ * two directed edges a --> b and b --> a.
  *
  * @throws IllegalArgumentException If the wrong amount of connections or connectors is set.
  * @constructor Creates a game tile.
