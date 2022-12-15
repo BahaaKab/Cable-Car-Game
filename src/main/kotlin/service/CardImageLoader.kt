@@ -20,23 +20,24 @@ class CardImageLoader {
      * the order in which the suits are declared in [CardSuit], mappings via [row] and [column]
      * are required.
      */
-    private val image : BufferedImage = ImageIO.read(CardImageLoader::class.java.getResource(CARDS_FILE))
+    //private val image : BufferedImage = ImageIO.read(CardImageLoader::class.java.getResource(CARDS_FILE))
 
     /**
      * Provides the card image for the given [CardSuit] and [CardValue]
      */
-    fun frontImageFor(suit: CardSuit, value: CardValue) =
-        getImageByCoordinates(value.column, suit.row)
+    fun frontImageFor() {
+    }
+
 
     /**
      * Provides a blank (white) card
      */
-    val blankImage : BufferedImage get() = getImageByCoordinates(0, 4)
+    //val blankImage : BufferedImage get() = getImageByCoordinates(0, 4)
 
     /**
      * Provides the back side image of the card deck
      */
-    val backImage: BufferedImage get() = getImageByCoordinates(2, 4)
+    // backImage: BufferedImage get() = getImageByCoordinates(2, 4)
 
     /**
      * retrieves from the full raster image [image] the corresponding sub-image
@@ -46,13 +47,14 @@ class CardImageLoader {
      * @param y row in the raster image, starting at 0
      *
      */
-    private fun getImageByCoordinates (x: Int, y: Int) : BufferedImage =
+    private fun getImageByCoordinates (x: Int, y: Int){} /*: BufferedImage =
         image.getSubimage(
             x * IMG_WIDTH,
             y * IMG_HEIGHT,
             IMG_WIDTH,
             IMG_HEIGHT
         )
+        */
 
 }
 
@@ -61,7 +63,7 @@ class CardImageLoader {
  * as they are in [CardSuit], this extension property provides
  * a corresponding mapping to be used when addressing the row.
  *
- */
+
 private val CardSuit.row get() = when (this) {
     CardSuit.CLUBS -> 0
     CardSuit.DIAMONDS -> 1
@@ -90,3 +92,4 @@ private val CardValue.column get() = when (this) {
     CardValue.QUEEN -> 11
     CardValue.KING -> 12
 }
+ */
