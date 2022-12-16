@@ -1,6 +1,7 @@
 package service
 
 import entity.PlayerInfo
+@Suppress("UNUSED_PARAMETER","UNUSED")
 
 class NetworkService : AbstractRefreshingService() {
     var networkClient: CableCarNetworkClient? = null

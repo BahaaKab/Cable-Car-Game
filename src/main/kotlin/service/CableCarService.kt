@@ -1,8 +1,10 @@
 package service
 
+
 import entity.StationTile
 import entity.Tile
 import entity.Player
+@Suppress("UNUSED_PARAMETER","UNUSED")
 class CableCarService : AbstractRefreshingService() {
     private val rootService: RootService? = null
     fun calculatePoints() {}

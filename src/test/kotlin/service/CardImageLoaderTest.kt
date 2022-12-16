@@ -35,7 +35,7 @@ class CardImageLoaderTest {
      * Loads the image for every possible suit/value combination as well as
      * front and back side and checks whether the resulting [BufferedImage]
      * has the correct dimensions of 130x200 px.
-     */
+
     @Test
     fun testLoadAll() {
         val allImages = mutableListOf<BufferedImage>()
@@ -51,25 +51,25 @@ class CardImageLoaderTest {
             assertEquals(130, it.width)
             assertEquals(200, it.height)
         }
-    }
+    }*/
 
     /**
      * Loads the queen of hearts from the [imageLoader] and tests equality to [queenOfHearts]
-     */
+
     @Test
     fun testCardEquality() {
         val testImage = imageLoader.frontImageFor(CardSuit.HEARTS, CardValue.QUEEN)
         assertTrue (testImage sameAs queenOfHearts)
-    }
+    }*/
 
     /**
      * Loads the ace of spades from the [imageLoader] and tests inequality [queenOfHearts]
-     */
+
     @Test
     fun testCardUnequality() {
         val testImage = imageLoader.frontImageFor(CardSuit.SPADES, CardValue.ACE)
         assertFalse(testImage sameAs queenOfHearts)
-    }
+    }*/
 
 }
 
