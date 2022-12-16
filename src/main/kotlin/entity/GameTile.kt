@@ -12,8 +12,8 @@ package entity
  * @throws IllegalArgumentException If the wrong amount of connections or connectors is set.
  * @constructor Creates a game tile.
  */
-class GameTile(val id: Int, connectors: List<Int>, connections: List<Int>): Tile(
-    connectors, connections, false, false
+class GameTile(val id: Int, connections: List<Int>): Tile(
+    List(8) { it }, connections, false, false
 ) {
     init {
         require(connectors.size == 8)
@@ -25,5 +25,5 @@ class GameTile(val id: Int, connectors: List<Int>, connections: List<Int>): Tile
      */
     override fun updatePoints(points: Int) = points + 1
 
-    override fun deepCopy() = GameTile(id, connectors.toList(), connections.toList())
+    override fun deepCopy() = GameTile(id, connectors.toList())
 }
