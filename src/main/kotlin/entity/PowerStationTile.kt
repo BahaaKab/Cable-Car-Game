@@ -9,7 +9,7 @@ package entity
  */
 class PowerStationTile(connectors: List<Int>): Tile(connectors, listOf(), false, true) {
     init {
-        require(connectors.size == 2)
+        require(connectors.size == 4)
         require(connections.isEmpty())
     }
 
