@@ -4,6 +4,9 @@ import BOT_LEFT
 import BOT_RIGHT
 import kotlin.test.*
 
+/**
+ * Class that provides tests for [Player]
+ */
 class PlayerTest {
 
     // The Station Tiles we give to the players
@@ -30,6 +33,9 @@ class PlayerTest {
         currentTile = newCurrentTile
     }
 
+    /**
+     * Tests the constructor of [Player]
+     */
     @Test
     fun testConstructor() {
 
@@ -53,6 +59,9 @@ class PlayerTest {
         assertEquals(newCurrentTile, player1.currentTile)
     }
 
+    /**
+     * Tests the [Player.deepCopy] function
+     */
     @Test
     fun testDeepCopy() {
         val copiedPlayer = player2.deepCopy()
