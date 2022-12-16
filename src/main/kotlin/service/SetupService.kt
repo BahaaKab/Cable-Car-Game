@@ -3,17 +3,17 @@ package service
 import entity.PlayerInfo
 import entity.GameTile
 
-@Suppress("UNUSED_PARAMETER","UNUSED")
-class SetupService : AbstractRefreshingService() {
-    private val rootService: RootService? = null
-    fun startLocalGame(players: List<PlayerInfo?>?, tilesRotatable: Boolean, AISpeed: Int) {}
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
+class SetupService(private val rootService: RootService) : AbstractRefreshingService() {
+
+    fun startLocalGame(players: List<PlayerInfo?>?, tilesRotatable: Boolean, aISpeed: Int) {}
 
     fun startNetworkGame(
         isHostPlayer: Boolean,
         players: List<PlayerInfo?>?,
         tilesRotatable: Boolean,
         tileIDs: List<Int>?,
-        AISpeed: Int
+        aISpeed: Int
     ) {
     }
 

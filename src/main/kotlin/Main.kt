@@ -1,6 +1,6 @@
-import view.SopraApplication
+import view.CableCarApplication
 
 fun main() {
-    SopraApplication().show()
+    CableCarApplication().show()
     println("Application ended. Goodbye")
 }

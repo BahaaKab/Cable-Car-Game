@@ -1,7 +1,9 @@
 package service
 
-class AIService : AbstractRefreshingService() {
-    private val rootService: RootService? = null
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
+
+class AIService(private val rootService: RootService) : AbstractRefreshingService() {
+
     /*val turn: TurnMessage?
      */
 }
