@@ -16,7 +16,4 @@ data class PlayerInfo(
     val name: String,
     var playerType: PlayerType,
     var color: Color
-) {
-
-
-}
+)

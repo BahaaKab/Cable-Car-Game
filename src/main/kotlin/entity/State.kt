@@ -8,6 +8,7 @@ package entity
  * @property board is a two-dimensional array which represents the game-board
  * @property players: Is a list that contains every Player.
  */
-class State (var drawPile : MutableList<GameTile>, var activePlayer : Player, val board: Array<Array<Tile?>> = arrayOf(), val players: MutableList<Player>) {
-
-}
+class State (var drawPile : MutableList<GameTile>,
+             var activePlayer : Player,
+             val board: Array<Array<Tile?>> = arrayOf(),
+             val players: MutableList<Player>)
