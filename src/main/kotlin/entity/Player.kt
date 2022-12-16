@@ -21,12 +21,12 @@ data class Player(val playerType : PlayerType, val color : Color, val name : Str
      */
     fun deepCopy() : Player {
         val stationTiles : List<StationTile> = this.stationTiles.map {
-           return it.deepCopy()
+            it.deepCopy()
         }
         return Player(playerType, color, name, stationTiles).also {
             it.score = score
-            it.handTile = handTile.deepCopy()
-            it.currentTile = currentTile.deepCopy()
+            it.handTile = handTile?.deepCopy()
+            it.currentTile = currentTile?.deepCopy()
         }
     }
 }
