@@ -11,4 +11,4 @@ package entity
 class State (var drawPile : MutableList<GameTile>,
              var activePlayer : Player,
              val board: Array<Array<Tile?>> = arrayOf(),
-             val players: MutableList<Player>)
+             val players: List<Player>)
