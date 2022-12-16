@@ -10,7 +10,6 @@ package entity
  * @property gameMode: Are we playing in hotseat mode or online over the internet?
  * @property history: Saves other [State] objects
  * @property currentState: Is the [State] Object which is currently the active game
- * @property players: Is a list that contains every Player.
  */
 class CableCar (
     val allowTileRotation : Boolean,
@@ -18,5 +17,4 @@ class CableCar (
     val isHostPlayer : Boolean,
     val gameMode : GameMode,
     var history : History,
-    var currentState : State,
-    var players: MutableList<Player>)
+    var currentState : State)
