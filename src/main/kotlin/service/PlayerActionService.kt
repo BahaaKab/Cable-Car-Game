@@ -1,6 +1,6 @@
 package service
 
-@Suppress("UNUSED_PARAMETER","UNUSED")
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 class PlayerActionService(private val rootService: RootService) : AbstractRefreshingService() {
 

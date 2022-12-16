@@ -3,7 +3,7 @@ package service
 import entity.CableCar
 import view.Refreshable
 
-@Suppress("UNUSED_PARAMETER","UNUSED")
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 class RootService {
     var cableCar: CableCar? = null

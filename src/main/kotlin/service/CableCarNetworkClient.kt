@@ -1,6 +1,7 @@
 package service
 
 import tools.aqua.bgw.net.client.BoardGameClient
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 class CableCarNetworkClient : BoardGameClient("placeholder","placeholder","placeholder") {
     var networkService: NetworkService? = null

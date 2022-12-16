@@ -6,7 +6,7 @@ import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 
-@Suppress("UNUSED_PARAMETER","UNUSED")
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 class GameScene(private val rootService: RootService) : BoardGameScene(), Refreshable {
 

@@ -3,7 +3,7 @@ package view
 import tools.aqua.bgw.core.BoardGameApplication
 import service.RootService
 
-@Suppress("UNUSED_PARAMETER","UNUSED")
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 class CableCarApplication : BoardGameApplication("Cable Car") {
 

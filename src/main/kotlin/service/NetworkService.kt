@@ -1,7 +1,7 @@
 package service
 
 import entity.PlayerInfo
-@Suppress("UNUSED_PARAMETER","UNUSED")
+@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 class NetworkService(private val rootService: RootService) : AbstractRefreshingService() {
     var networkClient: CableCarNetworkClient? = null
