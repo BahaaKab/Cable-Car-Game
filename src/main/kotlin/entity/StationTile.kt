@@ -11,17 +11,17 @@ package entity
  * is found.
  * @constructor Creates a station tile.
  */
-class StationTile(connectors: List<Position>): Tile(connectors) {
-    override val isEmpty = false
-    override val isEndTile = true
-    val startPosition: Position
+class StationTile(connectors: List<Int>): Tile(connectors, listOf(), false, true) {
+    val startPosition: Int
 
     init {
         require(connectors.size == 2)
         require(connections.isEmpty())
         // If the connectors were set correctly, the start position is always the odd of the two (either 1, 3, 5 or 7)
         startPosition = requireNotNull(
-            connectors.find { it.value % 2 == 1 }
+            connectors.find { it % 2 == 1 }
         )
     }
+
+    override fun deepCopy() = StationTile(connectors.toList())
 }
