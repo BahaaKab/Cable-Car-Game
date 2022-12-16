@@ -2,8 +2,8 @@ package service
 
 @Suppress("UNUSED_PARAMETER","UNUSED")
 
-class PlayerActionService : AbstractRefreshingService() {
-    private val rootService: RootService? = null
+class PlayerActionService(private val rootService: RootService) : AbstractRefreshingService() {
+
     fun undo() {
     }
 

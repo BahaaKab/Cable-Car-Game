@@ -1,7 +1,7 @@
 package service
 
-class AIService : AbstractRefreshingService() {
-    private val rootService: RootService? = null
+class AIService(private val rootService: RootService) : AbstractRefreshingService() {
+
     /*val turn: TurnMessage?
      */
 }

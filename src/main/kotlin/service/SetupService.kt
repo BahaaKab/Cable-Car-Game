@@ -4,8 +4,8 @@ import entity.PlayerInfo
 import entity.GameTile
 
 @Suppress("UNUSED_PARAMETER","UNUSED")
-class SetupService : AbstractRefreshingService() {
-    private val rootService: RootService? = null
+class SetupService(private val rootService: RootService) : AbstractRefreshingService() {
+
     fun startLocalGame(players: List<PlayerInfo?>?, tilesRotatable: Boolean, AISpeed: Int) {}
 
     fun startNetworkGame(

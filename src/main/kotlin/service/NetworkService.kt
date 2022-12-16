@@ -3,9 +3,8 @@ package service
 import entity.PlayerInfo
 @Suppress("UNUSED_PARAMETER","UNUSED")
 
-class NetworkService : AbstractRefreshingService() {
+class NetworkService(private val rootService: RootService) : AbstractRefreshingService() {
     var networkClient: CableCarNetworkClient? = null
-    private val rootService: RootService? = null
     fun hostGame(secret: String?, player: PlayerInfo?, sessionID: String?) {
     }
 
