@@ -12,6 +12,8 @@ private const val IMG_WIDTH = 130
  * in a raster. The returned [BufferedImage] objects of [frontImageFor], [blankImage],
  * and [backImage] are 130x200 pixels.
  */
+@Suppress("UNUSED_PARAMETER","UNUSED")
+
 class CardImageLoader {
 
     /**

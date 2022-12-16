@@ -2,6 +2,8 @@ package service
 
 import entity.CableCar
 
+@Suppress("UNUSED_PARAMETER","UNUSED")
+
 class RootService {
     var cableCar: CableCar? = null
     var playerActionService: PlayerActionService? = null
