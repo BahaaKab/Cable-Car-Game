@@ -25,5 +25,5 @@ class GameTile(val id: Int, connections: List<Int>): Tile(
      */
     override fun updatePoints(points: Int) = points + 1
 
-    override fun deepCopy() = GameTile(id, connectors.toList())
+    override fun deepCopy() = GameTile(id, connections.toList())
 }
