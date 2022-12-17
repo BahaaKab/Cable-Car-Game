@@ -1,5 +1,7 @@
 package entity
 
+import org.junit.jupiter.api.assertThrows
+import kotlin.IllegalArgumentException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -63,5 +65,39 @@ class TileTest {
         assertEquals(gameTileID, gameTile.id)
         // Test for method that updates the points
         assertEquals(5, gameTile.updatePoints(4))
+    }
+
+    /**
+     * Tests an IllegalArgumentException for constructor of StationTile
+     */
+    @Test
+    fun testStationTileFail(){
+        val connectors : List<Int> = listOf(1)
+        assertThrows<IllegalArgumentException>{
+            StationTile(connectors)
+        }
+    }
+
+    /**
+     * Tests an IllegalArgumentException for constructor of PowerStationTile
+     */
+    @Test
+    fun testPowerStationTileFail(){
+        val connectors : List<Int> = listOf(0,1,2)
+        assertThrows<IllegalArgumentException>{
+            PowerStationTile(connectors)
+        }
+    }
+
+    /**
+     * Tests an IllegalArgumentException for constructor of PowerStationTile
+     */
+    @Test
+    fun testGameTileFail(){
+        val connections : List<Int> = listOf(1,0)
+        val gameTileId : Int = 42
+        assertThrows<IllegalArgumentException>{
+            GameTile(gameTileId, connections)
+        }
     }
 }
