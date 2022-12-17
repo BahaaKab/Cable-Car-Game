@@ -14,10 +14,10 @@ class TileTest {
     @Test
     fun testCornerTileConstructor() {
         val cornerTile : CornerTile = CornerTile()
-        assertEquals(cornerTile.isEndTile, false)
-        assertEquals(cornerTile.isEmpty, true)
-        assertEquals(cornerTile.connections.size, 0)
-        assertEquals(cornerTile.connectors.size, 0)
+        assertEquals(false, cornerTile.isEndTile)
+        assertEquals(true, cornerTile.isEmpty)
+        assertEquals(0, cornerTile.connections.size)
+        assertEquals(0, cornerTile.connectors.size)
     }
 
     /**
@@ -27,11 +27,11 @@ class TileTest {
     fun testStationTileConstructor() {
         val connectors : List<Int> = listOf(0,1)
         val stationTile : StationTile = StationTile(connectors)
-        assertEquals(stationTile.startPosition, 1)
-        assertEquals(stationTile.connectors, connectors)
-        assertEquals(stationTile.isEndTile, true)
-        assertEquals(stationTile.isEmpty, false)
-        assertEquals(stationTile.connections.size, 0)
+        assertEquals(1, stationTile.startPosition)
+        assertEquals(connectors, stationTile.connectors)
+        assertEquals(true, stationTile.isEndTile)
+        assertEquals(false, stationTile.isEmpty)
+        assertEquals(0, stationTile.connections.size)
     }
 
     /**
@@ -41,12 +41,12 @@ class TileTest {
     fun testPowerStationTileConstructor() {
         val connectors : List<Int> = listOf(2,3,5,4);
         val powerStationTile : PowerStationTile = PowerStationTile(connectors)
-        assertEquals(powerStationTile.isEndTile, true)
-        assertEquals(powerStationTile.isEmpty, false)
-        assertEquals(powerStationTile.connectors, connectors)
-        assertEquals(powerStationTile.connections.size, 0)
-        // Test for method that updates the points
-        assertEquals(powerStationTile.updatePoints(4), 8)
+        assertEquals(true, powerStationTile.isEndTile)
+        assertEquals(false, powerStationTile.isEmpty)
+        assertEquals(connectors, powerStationTile.connectors)
+        assertEquals(0, powerStationTile.connections.size)
+        // Test for methode that updates the points
+        assertEquals(8, powerStationTile.updatePoints(4))
     }
 
     /**
@@ -58,10 +58,10 @@ class TileTest {
         val connections : List<Int> = listOf(2,6,0,4,3,7,1,5)
         val gameTileID : Int = 42
         val gameTile : GameTile = GameTile(gameTileID, connections)
-        assertEquals(gameTile.connectors, connectors)
-        assertEquals(gameTile.connections, connections)
-        assertEquals(gameTile.id, gameTileID)
+        assertEquals(connectors, gameTile.connectors)
+        assertEquals(connections, gameTile.connections)
+        assertEquals(gameTileID, gameTile.id)
         // Test for method that updates the points
-        assertEquals(gameTile.updatePoints(4),5)
+        assertEquals(5, gameTile.updatePoints(4))
     }
 }
