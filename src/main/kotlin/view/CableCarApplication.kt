@@ -14,6 +14,7 @@ class CableCarApplication : BoardGameApplication("Cable Car") {
     private val lobbyScene = LobbyScene(rootService)
 
     init {
-        this.showGameScene(gameScene)
+        this.showMenuScene(chooseModeScene)
+        //this.showGameScene(gameScene)
     }
 }
