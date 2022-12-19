@@ -1,6 +1,7 @@
 package entity
 
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 /**
@@ -9,9 +10,9 @@ import kotlin.test.assertEquals
 class HistoryTest {
 
     /**
-     * @property history0 is used to test the History entity class.
+     * @property history is used to test the History entity class.
      */
-    var history0: History = History()
+    var history: History = History()
 
     /**
      * The [History] does not have a constructor
@@ -23,11 +24,12 @@ class HistoryTest {
 
     /**
      * By creating new state objects and pushing them to the stack
-     * just to check the size of the stack, we can test if the history
+     * just to check the size of the stack and if it contains the given state
+     * object, we can test if the history
      * works properly.
      */
     @Test
-    fun historyTest() {
+    fun testHistory() {
         //Create the first state
         val drawPile0: MutableList<GameTile> = mutableListOf()
         var activePlayer0: Player = Player(PlayerType.NETWORK, Color.YELLOW, "Laura", listOf())
@@ -49,22 +51,28 @@ class HistoryTest {
         //After we have successfully created different states
         //We can now test the history.
 
-        assertEquals(0,history0.redoStates.size)
-        history0.redoStates.add(state0)
-        assertEquals(1,history0.redoStates.size)
-        assertEquals(0,history0.undoStates.size)
-        history0.undoStates.add(state0)
-        assertEquals(1, history0.undoStates.size)
-        history0.redoStates.add(state1)
-        assertEquals(2,history0.redoStates.size)
-        history0.redoStates.add(state2)
-        assertEquals(3,history0.redoStates.size)
-        history0.clearRedos()
-        assertEquals(0,history0.redoStates.size)
-        history0.undoStates.add(state0)
-        assertEquals(1, history0.undoStates.size)
-        history0.clearRedos()
-        assertEquals(0,history0.redoStates.size)
+        assertEquals(0,history.redoStates.size)
+        history.redoStates.add(state0)
+        assertContains(history.redoStates, state0)
+        assertEquals(1,history.redoStates.size)
+        assertEquals(0,history.undoStates.size)
+        history.undoStates.add(state0)
+        assertContains(history.undoStates, state0)
+        assertEquals(1, history.undoStates.size)
+        history.redoStates.add(state1)
+        assertContains(history.redoStates, state1)
+
+        assertEquals(2,history.redoStates.size)
+        history.redoStates.add(state2)
+        assertContains(history.redoStates, state2)
+        assertEquals(3,history.redoStates.size)
+        history.clearRedos()
+        assertEquals(0,history.redoStates.size)
+        history.undoStates.add(state0)
+        assertContains(history.undoStates, state0)
+        assertEquals(1, history.undoStates.size)
+        history.clearRedos()
+        assertEquals(0,history.redoStates.size)
 
 
     }
