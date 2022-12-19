@@ -15,11 +15,13 @@ class HistoryTest {
     var history: History = History()
 
     /**
-     * The [History] does not have a constructor
+     * The [History] does not have a constructor.
+     * Therefore, we just check if the stacks in the history are empty
      */
     @Test
     fun testConstructor() {
-        //We cant test a constructor that is not existing
+        assertEquals(history.redoStates.size, 0)
+        assertEquals(history.undoStates.size, 0)
     }
 
     /**
