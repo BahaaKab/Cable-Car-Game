@@ -36,19 +36,19 @@ class HistoryTest {
         val drawPile0: MutableList<GameTile> = mutableListOf()
         var activePlayer0: Player = Player(PlayerType.NETWORK, Color.YELLOW, "Laura", listOf())
         val board0 : Array<Array<Tile?>> = arrayOf()
-        val state0: State = State(drawPile0, activePlayer0, board0)
+        val state0: State = State(drawPile0, activePlayer0, board0, listOf(activePlayer0))
 
         //Create a second state
         val drawPile1: MutableList<GameTile> = mutableListOf()
         var activePlayer1: Player = Player(PlayerType.NETWORK, Color.YELLOW, "Laura", listOf())
         val board1 : Array<Array<Tile?>> = arrayOf()
-        val state1: State = State(drawPile1, activePlayer1, board1)
+        val state1: State = State(drawPile1, activePlayer1, board1, listOf(activePlayer0, activePlayer1))
 
         //Create a third state
         val drawPile2: MutableList<GameTile> = mutableListOf()
         var activePlayer2: Player = Player(PlayerType.NETWORK, Color.YELLOW, "Laura", listOf())
         val board2 : Array<Array<Tile?>> = arrayOf()
-        val state2: State = State(drawPile2, activePlayer2, board2)
+        val state2: State = State(drawPile2, activePlayer2, board2, listOf(activePlayer0, activePlayer1, activePlayer2))
 
         //After we have successfully created different states
         //We can now test the history.
