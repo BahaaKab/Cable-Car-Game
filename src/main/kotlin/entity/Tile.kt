@@ -11,9 +11,11 @@ package entity
  *
  * @constructor Creates an abstract base tile.
  */
-abstract class Tile (val connectors: List<Position> = listOf(), val connections: List<Position> = listOf()) {
-    abstract val isEmpty: Boolean
-    abstract val isEndTile: Boolean
+open class Tile (
+    val connectors: List<Int>,
+    val connections: List<Int>,
+    val isEmpty: Boolean,
+    val isEndTile: Boolean) {
 
     /**
      * Update points based on the card rule.
@@ -23,4 +25,16 @@ abstract class Tile (val connectors: List<Position> = listOf(), val connections:
      * @return The points scored after applying the cards score rule
      */
     open fun updatePoints(points: Int) = points
+
+    /**
+     * Create a deep copy of a tile.
+     *
+     * @return The copied tile
+     */
+    open fun deepCopy() = Tile(
+        connectors.toList(),
+        connections.toList(),
+        isEmpty,
+        isEndTile
+    )
 }

@@ -7,10 +7,7 @@ package entity
  * @throws IllegalArgumentException If the connectors or connections exist.
  * @constructor Creates an empty corner tile.
  */
-class CornerTile : Tile() {
-    override val isEmpty = true
-    override val isEndTile = false
-
+class CornerTile : Tile(listOf(), listOf(), isEmpty = true, isEndTile = false) {
     init {
         require(connectors.isEmpty())
         require(connections.isEmpty())
