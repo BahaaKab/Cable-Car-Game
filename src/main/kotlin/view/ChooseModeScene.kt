@@ -8,6 +8,7 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import java.awt.Color
+import javafx.*
 
 @Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
@@ -37,7 +38,7 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         text = "Which type of Game would you like to play?",
         font = Font(size = 20, color = Color(14, 40, 130)),
         alignment = Alignment.CENTER
-    )
+    )//.apply { componentStyle = "-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,2,4 );" }
 
     private val localButton : Button = Button(
         posX = 860, posY = 580,
@@ -45,8 +46,8 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         text = "Local Game",
         font = Font(size = 23, color = Color.WHITE),
         alignment = Alignment.CENTER,
-        visual = ColorVisual(14, 40, 130)
-    )
+        visual = ColorVisual(249, 249, 250)
+    ).apply { componentStyle = "-fx-background-color: rgba(14,40,130,1);-fx-background-radius: 100" }
 
     private val networkButton : Button = Button(
         posX = 860, posY = 680,
@@ -54,10 +55,10 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         text = "Network Game",
         font = Font(size = 23, color = Color.WHITE),
         alignment = Alignment.CENTER,
-        visual = ColorVisual(14, 40, 130)
-    )
+        visual = ColorVisual(249, 249, 250)
+    ).apply { componentStyle = "-fx-background-color: rgba(14,40,130,1);-fx-background-radius: 100" }
 
-
+// Beispiel für Hintergrundfarbe: "-fx-background-color: rgba(150,40,173,1);
     init {
         opacity = 1.0
         background = ColorVisual(249, 249, 250)
