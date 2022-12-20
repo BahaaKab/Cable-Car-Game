@@ -33,12 +33,16 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
     )
 
     private val chooseModeLabel : Label = Label(
-        posX = 560, posY = 300,
-        width = 800, height = 250,
+        posX = 560, posY = 380,
+        width = 800, height = 140,
         text = "Which type of Game would you like to play?",
         font = Font(size = 20, color = Color(14, 40, 130)),
         alignment = Alignment.CENTER
-    )//.apply { componentStyle = "-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,2,4 );" }
+    ).apply { componentStyle = ("-fx-background-color: rgba(255,255,255,1);-fx-background-radius: 30;" +
+            "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);") }
+
+
+    //.apply { componentStyle = "-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,-2,4 );" }
 
     private val localButton : Button = Button(
         posX = 860, posY = 580,
