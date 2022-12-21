@@ -17,6 +17,7 @@ open class Tile (
     val isEmpty: Boolean,
     val isEndTile: Boolean) {
 
+    val OUTER_TILE_CONNECTIONS = arrayOf(5, 4, 7, 6, 1, 0, 3, 2)
     /**
      * Update points based on the card rule.
      *
