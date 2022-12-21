@@ -13,7 +13,8 @@ package entity
  */
 class StationTile(connectors: List<Int>): Tile(connectors, listOf(), false, true) {
     val startPosition: Int
-    var path : MutableList<Tile>? = null
+    var path : MutableList<Tile> = mutableListOf<Tile>()
+
     init {
         require(connectors.size == 2)
         require(connections.isEmpty())
