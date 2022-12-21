@@ -3,7 +3,6 @@ package service
 
 import entity.*
 
-@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 class CableCarService(private val rootService: RootService) : AbstractRefreshingService() {
 
     /**
@@ -16,9 +15,9 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
             var score : Int = 0
             // calculation for each path beginning from the StationTiles
             for(stationTile in player.stationTiles){
-                val path : List<Tile> = stationTile.path!!
+                val path : List<Tile> = stationTile.path
                 // check if the path goes to another StationTile or to a PowerStationTile
-                val pathIsClosed : Boolean = path[path.size-1].isEndTile
+                val pathIsClosed : Boolean = path.last().isEndTile
                 if(!pathIsClosed){
                     continue
                 }
@@ -40,12 +39,12 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         val playerList : List<Player> = currentState.players
         val currentActivePlayer : Player = currentState.activePlayer
 
-        if(currentActivePlayer.equals(playerList.last())){
+        if(currentActivePlayer == playerList.last()){
             currentState.activePlayer = playerList[0]
         }
         else{
-            for(i in (0..playerList.size-1)){
-                if(playerList[i].equals(currentActivePlayer)){
+            for(i in playerList.indices){
+                if(playerList[i] == currentActivePlayer){
                     currentState.activePlayer = playerList[i+1]
                 }
             }
@@ -68,7 +67,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         val playerList : List<Player> = currentState.players
         playerList.sortedByDescending { it.score }
         val winnerScore : Int = playerList[0].score
-        for(i in (0..playerList.size-1)){
+        for(i in playerList.indices){
             if(playerList[i].score == winnerScore){
                 winnerList.add(playerList[i])
             }
@@ -83,8 +82,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      * @param [posX] position x on the grid
      * @param [posY] position y on the grid
      */
-    fun updatePaths(tile: Tile?, posX: Int, posY: Int) {
-        requireNotNull(tile)
+    fun updatePaths(posX: Int, posY: Int) {
         val currentState : State = rootService.cableCar!!.currentState
         val playerList : List<Player> = rootService.cableCar!!.currentState.players
         val adjacentTiles : List<Tile?> = listOf(currentState.board[posX][posY-1],
@@ -98,9 +96,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
          */
         for(player in playerList){
             for(stationTiles in player.stationTiles){
-                if(stationTiles.path!![stationTiles.path!!.size - 1] in adjacentTiles){
-                    // To add is useless because in updatePath it gets added again
-                    stationTiles.path!!.add(tile)
+                if(stationTiles.path.last() in adjacentTiles){
                     updatePath(stationTiles)
                 }
             }
@@ -110,7 +106,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     /**
      * Private method which reconstructs the whole path for the player
      *
-     * @param [StationTile] where the path begins
+     * @param stationTile where the path begins
      */
     private fun updatePath(stationTile: StationTile) {
         val currentState : State = rootService.cableCar!!.currentState
@@ -122,35 +118,20 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
 
         while(true){
             // updating the positions of possible next [Tile]
-            if(connector == 0 || connector == 1){
-                posY -= 1
+            when(connector){
+                0,1 -> posY -= 1
+                2,3 -> posX += 1
+                4,5 -> posY += 1
+                6,7 -> posX -= 1
             }
-            if(connector == 2 || connector == 3){
-                posX += 1
-            }
-            if(connector == 4 || connector == 5){
-                posY += 1
-            }
-            if(connector == 6 || connector == 7){
-                posX -= 1
-            }
-            val nextTile = currentState.board[posX][posY]
-            if(nextTile == null){
+            val nextTile = currentState.board[posX][posY]  ?: return
+            stationTile.path.add(nextTile)
+            // Updating where the next starting connector is
+            if(nextTile is StationTile || nextTile is PowerStationTile){
                 return
             }
-            stationTile.path!!.add(nextTile)
-            // Updating where the next starting connector is
-            connector = when(connector){
-                0 -> 5
-                1 -> 4
-                2 -> 7
-                3 -> 6
-                4 -> 1
-                5 -> 0
-                6 -> 3
-                7 -> 2
-                else -> -1 // doesn't happen anyway
-            }
+            // the connector is firstly set on the beginning of the connection
+            connector = nextTile.OUTER_TILE_CONNECTIONS[connector]
             // Updating the next connector which directs to another possible [Tile]
             connector = nextTile.connections[connector]
         }
@@ -164,17 +145,24 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      */
     private fun getPosition(stationTile : StationTile) : Array<Int> {
         val gameBoard : Array<Array<Tile?>> = rootService.cableCar!!.currentState.board
-        var posX : Int = 0
-        var posY : Int = 0
 
-        for(y in (0..9)){
-            for(x in (0..9)){
-                if(gameBoard[x][y]!!.equals(stationTile)){
-                    posX = x
-                    posY = y
-                }
+        for(x in (1..8)){
+            if(gameBoard[x][0] == stationTile){
+                return arrayOf(x,0)
+            }
+            if(gameBoard[x][9] == stationTile){
+                return arrayOf(x,9)
             }
         }
-        return arrayOf(posX,posY)
+        for(y in (1..8)){
+            if(gameBoard[0][y] == stationTile){
+                return arrayOf(0,y)
+            }
+            if(gameBoard[9][y] == stationTile){
+                return arrayOf(9,y)
+            }
+        }
+        // This case will never happen because a searched [StationTile] will always be found
+        return arrayOf()
     }
 }
