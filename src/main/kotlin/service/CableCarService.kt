@@ -32,7 +32,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     }
 
     /**
-     * Method to calculate the next active [Player]
+     * Calculates the next active [Player]
      */
     fun nextTurn() {
         val currentState : State = rootService.cableCar!!.currentState
@@ -57,7 +57,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     }
 
     /**
-     * Method to calculate the winners of the game
+     * Calculates the winners of the current game
      *
      * @return List of the winners
      */
@@ -79,8 +79,8 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      * Method that selects each path that needs to get updated
      *
      * @param [Tile] (I think only posX and posY are needed)
-     * @param [posX] position x on the grid
-     * @param [posY] position y on the grid
+     * @param posX position x on the grid
+     * @param posY position y on the grid
      */
     fun updatePaths(posX: Int, posY: Int) {
         val currentState : State = rootService.cableCar!!.currentState
