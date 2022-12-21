@@ -2,10 +2,13 @@ package view
 
 import tools.aqua.bgw.core.BoardGameApplication
 import service.RootService
+import java.io.File
+import java.io.FileNotFoundException
 
 @Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 class CableCarApplication : BoardGameApplication("Cable Car") {
+
 
     private val rootService = RootService()
     private val gameScene = GameScene(rootService)
@@ -14,7 +17,10 @@ class CableCarApplication : BoardGameApplication("Cable Car") {
     private val lobbyScene = LobbyScene(rootService)
 
     init {
-        this.showMenuScene(chooseModeScene)
         //this.showGameScene(gameScene)
+        val uri = CableCarApplication::class.java.getResource("'Arial'")?.toURI()
+            ?: throw FileNotFoundException()
+        loadFont(File(uri))
+        this.showMenuScene(chooseModeScene)
     }
 }
