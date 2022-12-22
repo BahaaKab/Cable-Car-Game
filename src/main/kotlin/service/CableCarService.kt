@@ -127,7 +127,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
             val nextTile = currentState.board[posX][posY]  ?: return
             stationTile.path.add(nextTile)
             // Updating where the next starting connector is
-            if(nextTile is StationTile || nextTile is PowerStationTile){
+            if(nextTile.isEndTile){
                 return
             }
             // the connector is firstly set on the beginning of the connection
