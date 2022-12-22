@@ -105,6 +105,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 //With the following formular we can rotate the tile by 90° to the left
                 connectors[i] = (connectors[i] + 2) % 7
             }
+            onAllRefreshables { refreshAfterRotateTileLeft() }
         }
     }
 
@@ -122,9 +123,11 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 //With the following formular we can rotate the tile by 90° to the right
                 connectors[i] = (connectors[i] - 2) % 8
             }
+            onAllRefreshables { refreshAfterRotateTileRight() }
         }
     }
 
     fun setAISpeed(speed: Int) {
+
     }
 }
