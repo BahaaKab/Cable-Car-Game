@@ -91,7 +91,21 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
     }
 
+    /**
+     * Rotates the handtile of the current [Player] by 90° to the left handside.
+     * */
     fun rotateTileLeft() {
+        val activePlayer = rootService.cableCar!!.currentState.activePlayer
+        //Safety mesure to ensure that the current actually has a handtile.
+        if (activePlayer.handTile != null){
+            //We need to edit content in the connections list...
+            //Does this actually change something in on the entity layer?
+            val connectors = activePlayer.handTile!!.connections.toMutableList()
+            for (i in connectors.indices) {
+                //With the following formular we can rotate the tile by 90° to the left
+                connectors[i] = (connectors[i] + 2) % 7
+            }
+        }
     }
 
     fun rotateTileRight() {
