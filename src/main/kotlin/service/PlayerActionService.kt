@@ -102,7 +102,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             //Does this actually change something in on the entity layer?
             val connectors = activePlayer.handTile!!.connections
             //With the following formular we can rotate the tile by 90° to the left
-            connectors.map { (it + 2) % 7 }
+            connectors.map { (it + 2) % connectors.size }
             onAllRefreshables { refreshAfterRotateTileLeft() }
         }
     }
@@ -117,8 +117,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             //We need to edit content in the connections list...
             //Does this actually change something in on the entity layer?
             val connectors = activePlayer.handTile!!.connections
-            //With the following formular we can rotate the tile by 90° to the right
-            connectors.map { (it - 2) % 8 }
+                //With the following formular we can rotate the tile by 90° to the right
+            connectors.map { (it - 2) % connectors.size }
             onAllRefreshables { refreshAfterRotateTileRight() }
         }
     }
