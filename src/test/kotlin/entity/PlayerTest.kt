@@ -1,7 +1,5 @@
 package entity
 
-import BOT_LEFT
-import BOT_RIGHT
 import kotlin.test.*
 
 /**
