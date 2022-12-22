@@ -9,8 +9,10 @@ import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import java.awt.Color
 
-@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
+/** This class manages the first Scene of the application. A player can select which GameMode he wants to play.
+ *
+ * @param rootService gives the administration class for all classes in all layers.*/
 
 class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 1080), Refreshable {
 
