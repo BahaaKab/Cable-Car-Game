@@ -18,9 +18,6 @@ class CableCarApplication : BoardGameApplication("Cable Car") {
 
     init {
         //this.showGameScene(gameScene)
-        val uri = CableCarApplication::class.java.getResource("'Arial'")?.toURI()
-            ?: throw FileNotFoundException()
-        loadFont(File(uri))
         this.showMenuScene(chooseModeScene)
     }
 }
