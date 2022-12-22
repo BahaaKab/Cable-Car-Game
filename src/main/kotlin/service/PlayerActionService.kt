@@ -2,7 +2,7 @@ package service
 
 import entity.*
 
-@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
+@Suppress("UNUSED_PARAMETER", "UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
 
 class PlayerActionService(private val rootService: RootService) : AbstractRefreshingService() {
 
@@ -13,7 +13,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         //Create a local variable to refer to the History object
         val gameHistory = rootService.cableCar!!.history
         //get some undo-magic done
-        if(gameHistory.undoStates.isNotEmpty()) {
+        if (gameHistory.undoStates.isNotEmpty()) {
             val undo: State = gameHistory.undoStates.pop()
             gameHistory.redoStates.push(undo)
             rootService.cableCar!!.currentState = undo
@@ -43,17 +43,16 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * without having an alternative [GameTile]
      */
     fun drawTile() {
-        val currentPlayer : Player = rootService.cableCar!!.currentState.activePlayer
-        val currentState : State = rootService.cableCar!!.currentState
+        val currentPlayer: Player = rootService.cableCar!!.currentState.activePlayer
+        val currentState: State = rootService.cableCar!!.currentState
         // In this case the Player gets a handTile after placing a Tile
-        if(currentPlayer.handTile == null && currentState.drawPile.isNotEmpty()){
+        if (currentPlayer.handTile == null && currentState.drawPile.isNotEmpty()) {
             currentPlayer.handTile = currentState.drawPile.first()
             currentState.drawPile.removeFirst()
             onAllRefreshables { refreshAfterDrawTile() }
-        }
-        else{
+        } else {
             // The player has got a handTile but wants to have an alternative currentTile
-            if(currentPlayer.currentTile == null && currentState.drawPile.isNotEmpty()){
+            if (currentPlayer.currentTile == null && currentState.drawPile.isNotEmpty()) {
                 currentPlayer.currentTile = currentState.drawPile.first()
                 currentState.drawPile.removeFirst()
                 onAllRefreshables { refreshAfterDrawTile() }
@@ -69,21 +68,21 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * @param posY
      */
     fun placeTile(posX: Int, posY: Int) {
-        val currentPlayer : Player = rootService.cableCar!!.currentState.activePlayer
-        val currentState : State = rootService.cableCar!!.currentState
+        val currentPlayer: Player = rootService.cableCar!!.currentState.activePlayer
+        val currentState: State = rootService.cableCar!!.currentState
         // In this case the player has just one HandTile and hasn't drawn an alternative one
-        if(currentPlayer.currentTile == null){
+        if (currentPlayer.currentTile == null) {
             currentPlayer.currentTile = currentPlayer.handTile!!.deepCopy()
             currentPlayer.handTile = null
-            if(currentState.board[posX][posY] == null) {
+            if (currentState.board[posX][posY] == null) {
                 currentState.board[posX][posY] = currentPlayer.currentTile
             }
             drawTile()
             onAllRefreshables { refreshAfterPlaceTile() }
         }
         // In this case the player has one HandTile and has an alternative Tile as a currentTile
-        else{
-            if(currentState.board[posX][posX] == null){
+        else {
+            if (currentState.board[posX][posX] == null) {
                 currentState.board[posX][posY] = currentPlayer.currentTile
             }
             currentPlayer.currentTile = null
@@ -97,14 +96,13 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     fun rotateTileLeft() {
         val activePlayer = rootService.cableCar!!.currentState.activePlayer
         //Safety mesure to ensure that the current actually has a handtile.
-        if (activePlayer.handTile != null){
-            //We need to edit content in the connections list...
-            //Does this actually change something in on the entity layer?
-            val connectors = activePlayer.handTile!!.connections
-            //With the following formular we can rotate the tile by 90° to the left
-            connectors.map { (it + 2) % connectors.size }
-            onAllRefreshables { refreshAfterRotateTileLeft() }
-        }
+        val handTile = checkNotNull(activePlayer.handTile)
+        //We need to edit content in the connections list...
+        //Does this actually change something in on the entity layer?
+        val connections = handTile.connections
+        //With the following formular we can rotate the tile by 90° to the left
+        handTile.connections = connections.map { (it + 2) % connections.size }
+        onAllRefreshables { refreshAfterRotateTileLeft() }
     }
 
     /**
@@ -113,14 +111,13 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     fun rotateTileRight() {
         val activePlayer = rootService.cableCar!!.currentState.activePlayer
         //Safety mesure to ensure that the current actually has a handtile.
-        if (activePlayer.handTile != null){
-            //We need to edit content in the connections list...
-            //Does this actually change something in on the entity layer?
-            val connectors = activePlayer.handTile!!.connections
-                //With the following formular we can rotate the tile by 90° to the right
-            connectors.map { (it - 2) % connectors.size }
-            onAllRefreshables { refreshAfterRotateTileRight() }
-        }
+        val handTile = checkNotNull(activePlayer.handTile)
+        //We need to edit content in the connections list...
+        //Does this actually change something in on the entity layer?
+        val connections = handTile.connections
+        //With the following formular we can rotate the tile by 90° to the right
+        handTile.connections = connections.map { (it - 2) % connections.size }
+        onAllRefreshables { refreshAfterRotateTileRight() }
     }
 
     /**
