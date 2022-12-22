@@ -1,4 +1,4 @@
-package view
+package view.components
 
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.gamecomponentviews.TokenView
@@ -8,10 +8,13 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
+import view.DEFAULT_FONT_BOLD
+import view.DEFAULT_GREY_STRING
+import view.GameScene
 import java.awt.Color
 import javax.imageio.ImageIO
 
-class SomethingPane(posX: Int, posY: Int) :
+class OptionsPane(posX: Int, posY: Int) :
     Pane<ComponentView>(posX, posY, 0, 0) {
 
     private val undoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/undo.png")))

@@ -1,9 +1,12 @@
-package view
+package view.components
 
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
+import view.DEFAULT_BLUE
+import view.DEFAULT_BLUE_VISUAL
+import view.DEFAULT_FONT_BOLD
 import java.awt.Color
 
 class CableCarLogo(posX: Number = 0, posY: Number = 0) :

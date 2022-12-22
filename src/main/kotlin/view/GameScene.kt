@@ -4,12 +4,14 @@ import service.RootService
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
-import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
-import tools.aqua.bgw.visual.Visual
+import view.components.ActivePlayerPane
+import view.components.CableCarLogo
+import view.components.OtherPlayersPane
+import view.components.OptionsPane
 import java.awt.Color
 import javax.imageio.ImageIO
 
@@ -23,15 +25,13 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     private val logoPane = CableCarLogo(posX = 270, posY = 104)
 
-    private val somethingPane = SomethingPane(100, 256)
+    private val somethingPane = OptionsPane(100, 256)
 
     private val connectionStatusLabel = Label(
         posX = 50, posY= 950,
         width = 500, height = 80,
         text = "Connection successful. The game has started.",
-        font = Font(size = 20, color = Color(13, 111, 47), family = DEFAULT_FONT_BOLD),
-        alignment = Alignment.CENTER,
-        visual = Visual.EMPTY
+        font = Font(size = 20, color = Color(13, 111, 47), family = DEFAULT_FONT_BOLD)
     ).apply {
         componentStyle = "-fx-background-color: rgb(153, 192, 167);-fx-background-radius: 16px;" +
                 "-fx-border-radius: 16px;-fx-border-width: 5px;-fx-border-color: rgb(19, 99, 43)"
