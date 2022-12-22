@@ -78,7 +78,6 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     /**
      * Method that selects each path that needs to get updated
      *
-     * @param [Tile] (I think only posX and posY are needed)
      * @param posX position x on the grid
      * @param posY position y on the grid
      */
