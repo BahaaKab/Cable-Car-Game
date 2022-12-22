@@ -44,8 +44,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 font = Font(
                     size = 20,
                     color = Color(5, 24, 156),
-                    family = DEFAULT_FONT,
-                    fontWeight = Font.FontWeight.SEMI_BOLD
+                    family = DEFAULT_FONT_MEDIUM
                 ),
                 alignment = Alignment.CENTER_LEFT
             ),
@@ -57,8 +56,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 font = Font(
                     size = 20,
                     color = Color(5, 24, 156),
-                    family = DEFAULT_FONT,
-                    fontWeight = Font.FontWeight.SEMI_BOLD
+                    family = DEFAULT_FONT_MEDIUM
                 ),
                 alignment = Alignment.CENTER_LEFT
             ),
@@ -67,7 +65,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 posX = 0, posY = 116,
                 width = 170, height = 40,
                 text = "Rotate Left",
-                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT, fontWeight = Font.FontWeight.BOLD),
+                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
                 alignment = Alignment.CENTER_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
@@ -87,7 +85,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 posX = 185, posY = 116,
                 width = 183, height = 40,
                 text = "Rotate Right",
-                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT, fontWeight = Font.FontWeight.BOLD),
+                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
                 alignment = Alignment.CENTER_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
@@ -107,7 +105,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 posX = 112, posY = 176,
                 width = 152, height = 40,
                 text = "Draw Tile",
-                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT, fontWeight = Font.FontWeight.BOLD),
+                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
                 alignment = Alignment.CENTER_RIGHT,
                 visual = Visual.EMPTY
             ).apply {

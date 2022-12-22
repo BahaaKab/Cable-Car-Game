@@ -1,11 +1,11 @@
 package view
 
-import tools.aqua.bgw.core.BoardGameScene
 import service.RootService
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
+import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
@@ -29,7 +29,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         posX = 50, posY= 950,
         width = 500, height = 80,
         text = "Connection successful. The game has started.",
-        font = Font(size = 20, color = Color(13, 111, 47), family = DEFAULT_FONT, fontWeight = Font.FontWeight.BOLD),
+        font = Font(size = 20, color = Color(13, 111, 47), family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER,
         visual = Visual.EMPTY
     ).apply {

@@ -24,11 +24,11 @@ class SomethingPane(posX: Int, posY: Int) :
                 posX = 0, posY = 0,
                 width = 126, height = 40,
                 text = "Undo",
-                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT, fontWeight = Font.FontWeight.BOLD),
+                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
                 alignment = Alignment.BOTTOM_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb(233,233,236);-fx-background-radius: 20px"
+                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);-fx-background-radius: 20px"
             },
 
             TokenView(
@@ -41,11 +41,11 @@ class SomethingPane(posX: Int, posY: Int) :
                 posX = 135, posY = 0,
                 width = 126, height = 40,
                 text = "Redo",
-                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT, fontWeight = Font.FontWeight.BOLD),
+                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
                 alignment = Alignment.BOTTOM_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb(233,233,236);-fx-background-radius: 20px"
+                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);-fx-background-radius: 20px"
             },
 
             TokenView(
@@ -58,11 +58,11 @@ class SomethingPane(posX: Int, posY: Int) :
                 posX = 270, posY = 0,
                 width = 132, height = 40,
                 text = "Settings",
-                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT, fontWeight = Font.FontWeight.BOLD),
+                font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
                 alignment = Alignment.BOTTOM_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb(233,233,236);-fx-background-radius: 20px;"
+                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);-fx-background-radius: 20px;"
             },
 
             TokenView(

@@ -67,10 +67,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 47, posY = 116,
                 width = 60, height = 12,
                 text = "Player 2",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -84,10 +81,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 177, posY = 116,
                 width = 60, height = 12,
                 text = "Player 3",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -101,10 +95,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 307, posY = 116,
                 width = 60, height = 12,
                 text = "Player 4",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -118,10 +109,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 437, posY = 116,
                 width = 60, height = 12,
                 text = "Player 5",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -135,10 +123,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 567, posY = 116,
                 width = 60, height = 12,
                 text = "Player 6",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -146,10 +131,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 47, posY = 137,
                 width = 60, height = 12,
                 text = "Score: 0",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -157,10 +139,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 177, posY = 137,
                 width = 60, height = 12,
                 text = "Score: 0",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -168,10 +147,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 307, posY = 137,
                 width = 60, height = 12,
                 text = "Score: 3",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -179,10 +155,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 437, posY = 137,
                 width = 60, height = 12,
                 text = "Score: 2",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             ),
 
@@ -190,10 +163,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 posX = 567, posY = 137,
                 width = 60, height = 12,
                 text = "Score: 0",
-                font = Font(
-                    size = 14, color = Color(5, 24, 156),
-                    family = DEFAULT_FONT, fontWeight = Font.FontWeight.SEMI_BOLD
-                ),
+                font = Font(size = 14, color = Color(5, 24, 156), family = DEFAULT_FONT_MEDIUM),
                 alignment = Alignment.CENTER_LEFT
             )
         )
