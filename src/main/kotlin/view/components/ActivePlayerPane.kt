@@ -1,5 +1,6 @@
 package view.components
 
+import service.TileImageLoader
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.gamecomponentviews.TokenView
@@ -8,36 +9,40 @@ import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
+import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
-import view.DEFAULT_FONT_BOLD
-import view.DEFAULT_FONT_MEDIUM
-import view.GameScene
+import view.*
 import java.awt.Color
 import javax.imageio.ImageIO
 
 class ActivePlayerPane(posX: Int, posY: Int) :
     Pane<ComponentView>(posX, posY, 0, 0) {
 
-    private val tile1Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile1.png")))
-    private val player1ColorVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/color1.png")))
+    private val tileImageLoader = TileImageLoader()
 
-    private val rotateLeftVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/rotateLeft.png")))
-    private val rotateRightVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/rotateRight.png")))
+    private val tileVisual = ImageVisual(tileImageLoader.frontImageFor(0))
+
+    private val rotateLeftVisual = ImageVisual(
+        ImageIO.read(GameScene::class.java.getResource("/rotateLeft.png"))
+    )
+    private val rotateRightVisual = ImageVisual(
+        ImageIO.read(GameScene::class.java.getResource("/rotateRight.png"))
+    )
     private val drawTileVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/drawTile.png")))
 
     private val activePlayerTile = CardView(
         posX = 390, posY = 0,
         width = 240, height = 240,
-        front = tile1Visual
+        front = tileVisual
     )
 
     init {
         addAll(
-            TokenView(
+            Label(
                 posX = 10, posY = 26,
                 width = 70, height = 10,
-                visual = player1ColorVisual
+                visual = ColorVisual(253,211,41)
             ),
 
             Label(
@@ -72,7 +77,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 alignment = Alignment.CENTER_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: 20px"
+                componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
                 onMouseClicked = {
                     activePlayerTile.rotation -= 90.0
                 }
@@ -92,7 +97,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 alignment = Alignment.CENTER_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: 20px"
+                componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
                 onMouseClicked = {
                     activePlayerTile.rotation += 90.0
                 }
@@ -112,7 +117,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
                 alignment = Alignment.CENTER_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: 20px"
+                componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             },
 
             TokenView(

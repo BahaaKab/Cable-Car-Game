@@ -8,6 +8,7 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
+import view.DEFAULT_BORDER_RADIUS
 import view.DEFAULT_FONT_BOLD
 import view.DEFAULT_GREY_STRING
 import view.GameScene
@@ -31,7 +32,8 @@ class OptionsPane(posX: Int, posY: Int) :
                 alignment = Alignment.BOTTOM_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);-fx-background-radius: 20px"
+                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
+                        "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             },
 
             TokenView(
@@ -48,7 +50,8 @@ class OptionsPane(posX: Int, posY: Int) :
                 alignment = Alignment.BOTTOM_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);-fx-background-radius: 20px"
+                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
+                        "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             },
 
             TokenView(
@@ -65,7 +68,8 @@ class OptionsPane(posX: Int, posY: Int) :
                 alignment = Alignment.BOTTOM_RIGHT,
                 visual = Visual.EMPTY
             ).apply {
-                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);-fx-background-radius: 20px;"
+                componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
+                        "-fx-background-radius: $DEFAULT_BORDER_RADIUS;"
             },
 
             TokenView(

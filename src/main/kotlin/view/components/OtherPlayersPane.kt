@@ -1,68 +1,63 @@
 package view.components
 
+import service.TileImageLoader
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.gamecomponentviews.CardView
-import tools.aqua.bgw.components.gamecomponentviews.TokenView
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
+import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import view.DEFAULT_FONT_MEDIUM
-import view.GameScene
 import java.awt.Color
-import javax.imageio.ImageIO
 
 class OtherPlayersPane(posX: Int, posY: Int) :
     Pane<ComponentView>(posX, posY, 0, 0) {
 
-    private val tile2Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile2.png")))
-    private val tile3Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile3.png")))
-    private val tile4Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile4.png")))
-    private val tile5Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile5.png")))
-    private val tile6Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile6.png")))
+    private val tileImageLoader = TileImageLoader()
 
-    private val player2ColorVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/color2.png")))
-    private val player3ColorVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/color3.png")))
-    private val player4ColorVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/color4.png")))
-    private val player5ColorVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/color5.png")))
-    private val player6ColorVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/color6.png")))
+    private val tile1Visual = ImageVisual(tileImageLoader.frontImageFor(21))
+    private val tile2Visual = ImageVisual(tileImageLoader.frontImageFor(10))
+    private val tile3Visual = ImageVisual(tileImageLoader.frontImageFor(59))
+    private val tile4Visual = ImageVisual(tileImageLoader.frontImageFor(34))
+    private val tile5Visual = ImageVisual(tileImageLoader.frontImageFor(49))
 
     init {
         addAll(
             CardView(
                 width = 100, height = 100,
-                front = tile2Visual
+                front = tile1Visual
             ),
 
             CardView(
                 posX = 130, posY = 0,
                 width = 100, height = 100,
-                front = tile3Visual
+                front = tile2Visual
             ),
 
             CardView(
                 posX = 260, posY = 0,
                 width = 100, height = 100,
-                front = tile4Visual
+                front = tile3Visual
             ),
 
             CardView(
                 posX = 390, posY = 0,
                 width = 100, height = 100,
-                front = tile5Visual
+                front = tile4Visual
             ),
 
             CardView(
                 posX = 520, posY = 0,
                 width = 100, height = 100,
-                front = tile6Visual
+                front = tile5Visual
             ),
 
-            TokenView(
+            Label(
                 posX = 0, posY = 122,
                 width = 30, height = 6,
-                visual = player2ColorVisual
+                visual = ColorVisual(17,139,206)
             ),
 
             Label(
@@ -73,10 +68,10 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 alignment = Alignment.CENTER_LEFT
             ),
 
-            TokenView(
+            Label(
                 posX = 130, posY = 122,
                 width = 30, height = 6,
-                visual = player3ColorVisual
+                visual = ColorVisual(213,41,39)
             ),
 
             Label(
@@ -87,10 +82,10 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 alignment = Alignment.CENTER_LEFT
             ),
 
-            TokenView(
+            Label(
                 posX = 260, posY = 122,
                 width = 30, height = 6,
-                visual = player4ColorVisual
+                visual = ColorVisual(12,111,47)
             ),
 
             Label(
@@ -101,10 +96,10 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 alignment = Alignment.CENTER_LEFT
             ),
 
-            TokenView(
+            Label(
                 posX = 390, posY = 122,
                 width = 30, height = 6,
-                visual = player5ColorVisual
+                visual = ColorVisual(142,13,78)
             ),
 
             Label(
@@ -115,10 +110,10 @@ class OtherPlayersPane(posX: Int, posY: Int) :
                 alignment = Alignment.CENTER_LEFT
             ),
 
-            TokenView(
+            Label(
                 posX = 520, posY = 122,
                 width = 30, height = 6,
-                visual = player6ColorVisual
+                visual = ColorVisual(0,0,0)
             ),
 
             Label(

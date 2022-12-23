@@ -12,26 +12,26 @@ import java.awt.Color
 class CableCarLogo(posX: Number = 0, posY: Number = 0) :
     Pane<Label>(posX = posX, posY = posY, width = 0, height = 0) {
 
-        init {
-            addAll(
-                Label(
-                    posX = 0, posY = 0,
-                    width = 238, height = 64,
-                    text = "CABLECAR",
-                    font = Font(size = 40, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
-                    alignment = Alignment.CENTER,
-                    visual = DEFAULT_BLUE_VISUAL
-                    ).apply {
-                        backgroundStyle = "-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.16) , 3,0,0,3 );"
-                    },
+    init {
+        addAll(
+            Label(
+                posX = 0, posY = 0,
+                width = 238, height = 64,
+                text = "CABLECAR",
+                font = Font(size = 40, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
+                alignment = Alignment.CENTER,
+                visual = DEFAULT_BLUE_VISUAL
+            ).apply {
+                backgroundStyle = "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 3,0,0,3);"
+            },
 
-                Label(
-                    posX = 0, posY= 65,
-                    width = 238, height = 24,
-                    text = "UNDERGROUND",
-                    font = Font(size = 27, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),
-                    alignment = Alignment.CENTER
-                )
+            Label(
+                posX = 0, posY= 65,
+                width = 238, height = 24,
+                text = "UNDERGROUND",
+                font = Font(size = 27, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),
+                alignment = Alignment.CENTER
             )
-        }
+        )
+    }
 }

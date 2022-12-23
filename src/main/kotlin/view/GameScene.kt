@@ -1,6 +1,7 @@
 package view
 
 import service.RootService
+import service.TileImageLoader
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
@@ -18,8 +19,10 @@ import javax.imageio.ImageIO
 @Suppress("UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
 
-    private val tile3Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile3.png")))
-    private val tile7Visual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/tile7.png")))
+    private val tileImageLoader = TileImageLoader()
+
+    private val tile1Visual = ImageVisual(tileImageLoader.frontImageFor(55))
+    private val tile2Visual = ImageVisual(tileImageLoader.frontImageFor(33))
 
     private val boardVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/board.png")))
 
@@ -53,13 +56,13 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         set(
             columnIndex = 4,
             rowIndex = 1,
-            component = CardView(width = 93, height = 93, front = tile7Visual)
+            component = CardView(width = 93, height = 93, front = tile1Visual)
         )
 
         set(
             columnIndex = 8,
             rowIndex = 8,
-            component = CardView(width = 93, height = 93,front = tile3Visual)
+            component = CardView(width = 93, height = 93,front = tile2Visual)
         )
     }
 
