@@ -74,7 +74,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         if (currentPlayer.currentTile == null) {
             currentPlayer.currentTile = currentPlayer.handTile!!.deepCopy()
             currentPlayer.handTile = null
-            if (currentState.board[posX][posY] == null) {
+            if (currentState.board[posX][posY] == null && isAdjacentToTiles(posX, posY)) {
                 currentState.board[posX][posY] = currentPlayer.currentTile
             }
             drawTile()
@@ -82,12 +82,36 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
         // In this case the player has one HandTile and has an alternative Tile as a currentTile
         else {
-            if (currentState.board[posX][posX] == null) {
+            if (currentState.board[posX][posX] == null && isAdjacentToTiles(posX, posY)) {
                 currentState.board[posX][posY] = currentPlayer.currentTile
             }
             currentPlayer.currentTile = null
             onAllRefreshables { refreshAfterPlaceTile() }
         }
+    }
+
+    /**
+     * Determines if a Tile can be placed at Position (posX,posY)
+     *
+     * @param posX
+     * @param posY
+     *
+     * @return Boolean
+     */
+    private fun isAdjacentToTiles(posX: Int, posY : Int) : Boolean{
+        val currentState : State = rootService.cableCar!!.currentState
+        val adj1 : Tile? = currentState.board[posX-1][posY]
+        val adj2 : Tile? = currentState.board[posX+1][posY]
+        val adj3 : Tile? = currentState.board[posX][posY-1]
+        val adj4 : Tile? = currentState.board[posX][posY+1]
+        val adjList : List<Tile?> = mutableListOf(adj1,adj2,adj3,adj4)
+        var bool : Boolean = true
+        for(i in adjList.indices){
+            if(!(adjList[i] is GameTile || adjList[i] is StationTile)){
+                bool = false
+            }
+        }
+        return bool
     }
 
     /**
