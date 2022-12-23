@@ -118,10 +118,10 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         while(true){
             // updating the positions of possible next [Tile]
             when(connector){
-                0,1 -> posY -= 1
-                2,3 -> posX += 1
-                4,5 -> posY += 1
-                6,7 -> posX -= 1
+                TOP_LEFT, TOP_RIGHT -> posY -= 1
+                RIGHT_TOP, RIGHT_BOT -> posX += 1
+                BOT_RIGHT, BOT_LEFT -> posY += 1
+                LEFT_TOP, LEFT_BOT -> posX -= 1
             }
             val nextTile = currentState.board[posX][posY]  ?: return
             stationTile.path.add(nextTile)
