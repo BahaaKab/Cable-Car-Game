@@ -1,6 +1,5 @@
 package view.components
 
-import service.TileImageLoader
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.Pane
@@ -9,19 +8,23 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
-import view.DEFAULT_FONT_MEDIUM
+import view.*
 import java.awt.Color
 
-class OtherPlayersPane(posX: Int, posY: Int) :
+/**
+ * The Pane which contains the other players' tiles, color, and score.
+ *
+ * @param posX Horizontal coordinate for this Pane. Default: 0.
+ * @param posY Vertical coordinate for this Pane. Default: 0.
+ */
+class OtherPlayersPane(posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX, posY, 0, 0) {
 
-    private val tileImageLoader = TileImageLoader()
-
-    private val tile1Visual = ImageVisual(tileImageLoader.frontImageFor(21))
-    private val tile2Visual = ImageVisual(tileImageLoader.frontImageFor(10))
-    private val tile3Visual = ImageVisual(tileImageLoader.frontImageFor(59))
-    private val tile4Visual = ImageVisual(tileImageLoader.frontImageFor(34))
-    private val tile5Visual = ImageVisual(tileImageLoader.frontImageFor(49))
+    private val tile1Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(21))
+    private val tile2Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(10))
+    private val tile3Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(59))
+    private val tile4Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(34))
+    private val tile5Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(49))
 
     init {
         addAll(
@@ -57,7 +60,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
             Label(
                 posX = 0, posY = 122,
                 width = 30, height = 6,
-                visual = ColorVisual(17,139,206)
+                visual = DEFAULT_BLUE_COLOR
             ),
 
             Label(
@@ -71,7 +74,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
             Label(
                 posX = 130, posY = 122,
                 width = 30, height = 6,
-                visual = ColorVisual(213,41,39)
+                visual = DEFAULT_RED_COLOR
             ),
 
             Label(
@@ -85,7 +88,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
             Label(
                 posX = 260, posY = 122,
                 width = 30, height = 6,
-                visual = ColorVisual(12,111,47)
+                visual = DEFAULT_GREEN_COLOR
             ),
 
             Label(
@@ -99,7 +102,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
             Label(
                 posX = 390, posY = 122,
                 width = 30, height = 6,
-                visual = ColorVisual(142,13,78)
+                visual = DEFAULT_PURPLE_COLOR
             ),
 
             Label(
@@ -113,7 +116,7 @@ class OtherPlayersPane(posX: Int, posY: Int) :
             Label(
                 posX = 520, posY = 122,
                 width = 30, height = 6,
-                visual = ColorVisual(0,0,0)
+                visual = ColorVisual.BLACK
             ),
 
             Label(

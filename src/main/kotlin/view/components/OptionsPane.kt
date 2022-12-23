@@ -15,7 +15,13 @@ import view.GameScene
 import java.awt.Color
 import javax.imageio.ImageIO
 
-class OptionsPane(posX: Int, posY: Int) :
+/**
+ * The Pane which contains buttons like undo, redo, and settings.
+ *
+ * @param posX Horizontal coordinate for this Pane. Default: 0.
+ * @param posY Vertical coordinate for this Pane. Default: 0.
+ */
+class OptionsPane(posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX, posY, 0, 0) {
 
     private val undoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/undo.png")))

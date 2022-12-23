@@ -9,6 +9,12 @@ import view.DEFAULT_BLUE_VISUAL
 import view.DEFAULT_FONT_BOLD
 import java.awt.Color
 
+/**
+ * The CableCar Underground Logo.
+ *
+ * @param posX Horizontal coordinate for this Pane. Default: 0.
+ * @param posY Vertical coordinate for this Pane. Default: 0.
+ */
 class CableCarLogo(posX: Number = 0, posY: Number = 0) :
     Pane<Label>(posX = posX, posY = posY, width = 0, height = 0) {
 

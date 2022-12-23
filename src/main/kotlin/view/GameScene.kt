@@ -1,7 +1,6 @@
 package view
 
 import service.RootService
-import service.TileImageLoader
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
@@ -16,13 +15,17 @@ import view.components.OptionsPane
 import java.awt.Color
 import javax.imageio.ImageIO
 
+
+/**
+ * This class manages the game scene of the application. Here a player can make a move.
+ *
+ * @param rootService Gives the administration class for all classes in all layers.
+ */
 @Suppress("UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
 
-    private val tileImageLoader = TileImageLoader()
-
-    private val tile1Visual = ImageVisual(tileImageLoader.frontImageFor(55))
-    private val tile2Visual = ImageVisual(tileImageLoader.frontImageFor(33))
+    private val tile1Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(55))
+    private val tile2Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(33))
 
     private val boardVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/board.png")))
 

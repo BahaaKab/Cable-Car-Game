@@ -1,6 +1,5 @@
 package view.components
 
-import service.TileImageLoader
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.gamecomponentviews.TokenView
@@ -9,19 +8,22 @@ import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.*
 import java.awt.Color
 import javax.imageio.ImageIO
 
-class ActivePlayerPane(posX: Int, posY: Int) :
+/**
+ * The pane which contains everything relevant for the [entity.State.activePlayer]
+ *
+ * @param posX Horizontal coordinate for this Pane. Default: 0.
+ * @param posY Vertical coordinate for this Pane. Default: 0.
+ */
+class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX, posY, 0, 0) {
 
-    private val tileImageLoader = TileImageLoader()
-
-    private val tileVisual = ImageVisual(tileImageLoader.frontImageFor(0))
+    private val tileVisual = ImageVisual(TILEIMAGELOADER.frontImageFor(0))
 
     private val rotateLeftVisual = ImageVisual(
         ImageIO.read(GameScene::class.java.getResource("/rotateLeft.png"))
@@ -42,7 +44,7 @@ class ActivePlayerPane(posX: Int, posY: Int) :
             Label(
                 posX = 10, posY = 26,
                 width = 70, height = 10,
-                visual = ColorVisual(253,211,41)
+                visual = DEFAULT_YELLOW_COLOR
             ),
 
             Label(
