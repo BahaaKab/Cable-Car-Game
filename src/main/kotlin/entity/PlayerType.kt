@@ -1,4 +1,5 @@
 package entity
+import PlayerType as NetPlayerType
 
 /**
  * Enum to distinguish between the for [PlayerType]s:
@@ -17,5 +18,10 @@ enum class PlayerType {
         AI_EASY -> "AI_easy"
         AI_HARD -> "AI_hard"
         HUMAN -> "human"
+    }
+
+    fun toNetworkPlayerType() = when(this) {
+        AI_EASY, AI_HARD -> NetPlayerType.AI
+        HUMAN -> NetPlayerType.HUMAN
     }
 }
