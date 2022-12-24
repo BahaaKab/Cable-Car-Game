@@ -12,7 +12,7 @@ package entity
  * @property isNetworkPlayer
  */
 data class Player(val playerType : PlayerType, val color : Color, val name : String,
-            val stationTiles : List<StationTile>, var isNetworkPlayer: Boolean = false) {
+            val stationTiles : List<StationTile>, val isNetworkPlayer: Boolean = false) {
 
     var score : Int = 0
     var handTile : GameTile? = null
