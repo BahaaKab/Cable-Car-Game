@@ -58,6 +58,25 @@ class PlayerTest {
     }
 
     /**
+     * Test the secondary constructor of [Player] using the [PlayerInfo] class.
+     */
+    @Test
+    fun testSecondaryConstructor() {
+        val playerInfo = PlayerInfo(
+            name = "player",
+            color = Color.BLACK,
+            playerType = PlayerType.AI_EASY,
+            isNetworkPlayer = false
+        )
+        val player = Player(playerInfo, stationTiles)
+        assertEquals("player", player.name)
+        assertEquals(Color.BLACK, player.color)
+        assertEquals(PlayerType.AI_EASY, player.playerType)
+        assertEquals(false, player.isNetworkPlayer)
+        assertEquals(stationTiles, player.stationTiles)
+    }
+
+    /**
      * Tests the [Player.deepCopy] function
      */
     @Test
