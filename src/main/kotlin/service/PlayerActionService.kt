@@ -89,7 +89,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             onAllRefreshables { refreshAfterPlaceTile() }
         }
     }
-
+    
     /**
      * Determines if a Tile can be placed at Position (posX,posY)
      *
@@ -105,10 +105,10 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val adj3 : Tile? = currentState.board[posX][posY-1]
         val adj4 : Tile? = currentState.board[posX][posY+1]
         val adjList : List<Tile?> = mutableListOf(adj1,adj2,adj3,adj4)
-        var bool : Boolean = true
+        var bool : Boolean = false
         for(i in adjList.indices){
-            if(!(adjList[i] is GameTile || adjList[i] is StationTile)){
-                bool = false
+            if(adjList[i] is GameTile || adjList[i] is StationTile){
+                bool = true
             }
         }
         return bool
