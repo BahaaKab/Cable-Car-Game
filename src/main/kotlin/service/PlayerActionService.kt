@@ -80,6 +80,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
                 currentState.board[posX][posY] = currentPlayer.currentTile
                 drawTile()
+                rootService.cableCarService.updatePaths(posX,posY)
+                rootService.cableCarService.calculatePoints()
                 onAllRefreshables { refreshAfterPlaceTile() }
             }
             /*
@@ -92,6 +94,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
                 currentState.board[posX][posY] = currentPlayer.currentTile
                 drawTile()
+                rootService.cableCarService.updatePaths(posX,posY)
+                rootService.cableCarService.calculatePoints()
                 onAllRefreshables { refreshAfterPlaceTile() }
             }
         }
@@ -103,6 +107,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
                 currentState.board[posX][posY] = currentPlayer.currentTile
                 currentPlayer.currentTile = null
+                rootService.cableCarService.updatePaths(posX,posY)
+                rootService.cableCarService.calculatePoints()
                 onAllRefreshables { refreshAfterPlaceTile() }
             }
             else if(currentState.board[posX][posY] == null && isAdjacentToTiles(posX,posY)
@@ -111,6 +117,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
                 currentState.board[posX][posY] = currentPlayer.currentTile
                 currentPlayer.currentTile = null
+                rootService.cableCarService.updatePaths(posX,posY)
+                rootService.cableCarService.calculatePoints()
                 onAllRefreshables { refreshAfterPlaceTile() }
             }
         }
