@@ -31,14 +31,18 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     fun redo() {
         //Create a local variable to refer to the History object
         val gameHistory = rootService.cableCar!!.history
+        var redo : State = rootService.cableCar!!.currentState
         //get some redo-magic done
         if (gameHistory.redoStates.isNotEmpty()) {
-            val redo: State = gameHistory.redoStates.pop()
-            gameHistory.undoStates.push(redo)
+            val players = rootService.cableCar!!.currentState.players
+            for (i in players.indices){
+                redo = gameHistory.redoStates.pop()
+                gameHistory.undoStates.push(redo)
+            }
+
             rootService.cableCar!!.currentState = redo
         }
-        //Move on to the next turn
-        rootService.cableCarService.nextTurn()
+        onAllRefreshables { refreshAfterRedo() }
     }
 
     /**
