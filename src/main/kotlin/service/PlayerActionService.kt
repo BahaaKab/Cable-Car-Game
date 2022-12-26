@@ -300,7 +300,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Changes the AISpeed in the [CableCar] class.
      * **/
     fun setAISpeed(speed: Int) {
-        val game = rootService.cableCar!!
-        game.AISpeed = speed
+        rootService.cableCar!!.AISpeed = speed
     }
 }
