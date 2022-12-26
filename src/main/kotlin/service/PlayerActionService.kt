@@ -22,8 +22,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             }
             rootService.cableCar!!.currentState = undo
         }
-        //Move on to the next turn
-        rootService.cableCarService.nextTurn()
+        onAllRefreshables { refreshAfterUndo() }
     }
 
     /**
