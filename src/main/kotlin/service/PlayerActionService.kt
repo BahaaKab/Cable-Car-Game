@@ -31,20 +31,22 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Redos the last undone game [State] and moves on to the nextTurn.
      * **/
     fun redo() {
-        //Create a local variable to refer to the History object
-        val gameHistory = rootService.cableCar!!.history
-        var redo : State = rootService.cableCar!!.currentState
-        //get some redo-magic done
-        if (gameHistory.redoStates.isNotEmpty()) {
-            val players = rootService.cableCar!!.currentState.players
-            for (i in players.indices){
-                redo = gameHistory.redoStates.pop()
-                gameHistory.undoStates.push(redo)
-            }
+        if(!rootService.cableCar!!.gameMode.equals(GameMode.NETWORK)) {
+            //Create a local variable to refer to the History object
+            val gameHistory = rootService.cableCar!!.history
+            var redo: State = rootService.cableCar!!.currentState
+            //get some redo-magic done
+            if (gameHistory.redoStates.isNotEmpty()) {
+                val players = rootService.cableCar!!.currentState.players
+                for (i in players.indices) {
+                    redo = gameHistory.redoStates.pop()
+                    gameHistory.undoStates.push(redo)
+                }
 
-            rootService.cableCar!!.currentState = redo
+                rootService.cableCar!!.currentState = redo
+            }
+            onAllRefreshables { refreshAfterRedo() }
         }
-        onAllRefreshables { refreshAfterRedo() }
     }
 
     /**
