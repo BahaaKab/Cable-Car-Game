@@ -12,10 +12,14 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     fun undo() {
         //Create a local variable to refer to the History object
         val gameHistory = rootService.cableCar!!.history
+        var undo: State = rootService.cableCar!!.currentState
         //get some undo-magic done
         if (gameHistory.undoStates.isNotEmpty()) {
-            val undo: State = gameHistory.undoStates.pop()
-            gameHistory.redoStates.push(undo)
+            val players = rootService.cableCar!!.currentState.players
+            for(i in players.indices){
+                undo = gameHistory.undoStates.pop()
+                gameHistory.redoStates.push(undo)
+            }
             rootService.cableCar!!.currentState = undo
         }
         //Move on to the next turn
