@@ -4,6 +4,9 @@ import entity.*
 
 @Suppress("UNUSED_PARAMETER", "UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
 
+/**
+ * This class is used to manage actions of the [Player]
+ * **/
 class PlayerActionService(private val rootService: RootService) : AbstractRefreshingService() {
 
     /**
