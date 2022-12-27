@@ -184,7 +184,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      */
     private fun onlyIllegalPositionsLeft(gameTile : GameTile) : Boolean{
         val currentState : State = rootService.cableCar!!.currentState
-        var bool : Boolean = true
         /*
          * First check if any Position in the mid is free. If a position p in the mid is free it always implies that
          * there has to be a legal position on the board even if the position p doesn't have any adjacent GameTile
@@ -192,45 +191,28 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         for(y in (2..7)){
             for(x in (2..7)){
                 if(currentState.board[x][y] == null){
-                    bool = false
-                    break
+                    return false
                 }
             }
-            if(!bool){
-                break
-            }
-        }
-        if(!bool){
-            return false
         }
         /*
          * If every position in the mid isn't free try out each position that is adjacent to a StationTile
          */
         for(y in (1..8)){
             if(currentState.board[1][y] == null && !positionIsIllegal(1,y,gameTile)){
-                bool = false
-                break
+                return false
             }
             if(currentState.board[8][y] == null && !positionIsIllegal(8,y,gameTile)){
-                bool = false
-                break
+                return false
             }
-        }
-        if(!bool){
-            return false
         }
         for(x in (1..9)){
             if(currentState.board[x][1] == null && !positionIsIllegal(x,1,gameTile)){
-                bool = false
-                break
+                return false
             }
             if(currentState.board[x][8] == null && !positionIsIllegal(x,8,gameTile)){
-                bool = false
-                break
+                return false
             }
-        }
-        if(!bool){
-            return false
         }
         return true
     }
