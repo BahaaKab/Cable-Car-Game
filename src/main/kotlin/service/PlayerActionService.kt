@@ -20,7 +20,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             //get some undo-magic done
             if (gameHistory.undoStates.isNotEmpty()) {
                 val players = rootService.cableCar!!.currentState.players
-                for (i in players.indices) {
+                repeat(players.size){
                     undo = gameHistory.undoStates.pop()
                     gameHistory.redoStates.push(undo)
                 }
@@ -41,7 +41,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             //get some redo-magic done
             if (gameHistory.redoStates.isNotEmpty()) {
                 val players = rootService.cableCar!!.currentState.players
-                for (i in players.indices) {
+                repeat(players.size) {
                     redo = gameHistory.redoStates.pop()
                     gameHistory.undoStates.push(redo)
                 }
