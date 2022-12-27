@@ -277,7 +277,10 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     fun rotateTileLeft() {
         val activePlayer = rootService.cableCar!!.currentState.activePlayer
         //Safety mesure to ensure that the current actually has a handtile.
-        val handTile = checkNotNull(activePlayer.handTile)
+        var handTile = checkNotNull(activePlayer.handTile)
+        if(activePlayer.currentTile != null){
+            handTile = activePlayer.currentTile!!
+        }
         //We need to edit content in the connections list...
         //Does this actually change something in on the entity layer?
         val connections = handTile.connections
@@ -292,7 +295,10 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     fun rotateTileRight() {
         val activePlayer = rootService.cableCar!!.currentState.activePlayer
         //Safety mesure to ensure that the current actually has a handtile.
-        val handTile = checkNotNull(activePlayer.handTile)
+        var handTile = checkNotNull(activePlayer.handTile)
+        if (activePlayer.currentTile != null){
+            handTile = activePlayer.currentTile!!
+        }
         //We need to edit content in the connections list...
         //Does this actually change something in on the entity layer?
         val connections = handTile.connections
