@@ -93,7 +93,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 drawTile()
                 rootService.cableCarService.updatePaths(posX,posY)
                 rootService.cableCarService.calculatePoints()
+                currentPlayer.currentTile = null
                 onAllRefreshables { refreshAfterPlaceTile() }
+                rootService.cableCarService.nextTurn()
             }
             /*
              * Checks if the position is illegal. In that case a GameTile couldn't be placed. But it's also checked that
@@ -107,7 +109,17 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 drawTile()
                 rootService.cableCarService.updatePaths(posX,posY)
                 rootService.cableCarService.calculatePoints()
+                currentPlayer.currentTile = null
                 onAllRefreshables { refreshAfterPlaceTile() }
+                rootService.cableCarService.nextTurn()
+            }
+            /*
+             * Otherwise the player can't place the tile at the chosen position. In this case the currentTile and
+             * the handTile get swapped. For example that the player can draw an alternative gameTile
+             */
+            else{
+                currentPlayer.handTile = currentPlayer.currentTile
+                currentPlayer.currentTile = null
             }
         }
         // In this case the player has one HandTile and has an alternative Tile as a currentTile
@@ -120,7 +132,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 currentPlayer.currentTile = null
                 rootService.cableCarService.updatePaths(posX,posY)
                 rootService.cableCarService.calculatePoints()
+                currentPlayer.currentTile = null
                 onAllRefreshables { refreshAfterPlaceTile() }
+                rootService.cableCarService.nextTurn()
             }
             else if(currentState.board[posX][posY] == null && isAdjacentToTiles(posX,posY)
                 && positionIsIllegal(posX,posY,currentPlayer.currentTile!!)
@@ -130,7 +144,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 currentPlayer.currentTile = null
                 rootService.cableCarService.updatePaths(posX,posY)
                 rootService.cableCarService.calculatePoints()
+                currentPlayer.currentTile = null
                 onAllRefreshables { refreshAfterPlaceTile() }
+                rootService.cableCarService.nextTurn()
             }
         }
     }
