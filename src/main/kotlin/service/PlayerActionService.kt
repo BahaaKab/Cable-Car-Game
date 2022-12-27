@@ -10,32 +10,43 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Undoes the last game [State] and moves on to the nextTurn.
      * **/
     fun undo() {
-        //Create a local variable to refer to the History object
-        val gameHistory = rootService.cableCar!!.history
-        //get some undo-magic done
-        if (gameHistory.undoStates.isNotEmpty()) {
-            val undo: State = gameHistory.undoStates.pop()
-            gameHistory.redoStates.push(undo)
-            rootService.cableCar!!.currentState = undo
+        if(!rootService.cableCar!!.gameMode.equals(GameMode.NETWORK)) {
+            //Create a local variable to refer to the History object
+            val gameHistory = rootService.cableCar!!.history
+            var undo: State = rootService.cableCar!!.currentState
+            //get some undo-magic done
+            if (gameHistory.undoStates.isNotEmpty()) {
+                val players = rootService.cableCar!!.currentState.players
+                for (i in players.indices) {
+                    undo = gameHistory.undoStates.pop()
+                    gameHistory.redoStates.push(undo)
+                }
+                rootService.cableCar!!.currentState = undo
+            }
+            onAllRefreshables { refreshAfterUndo() }
         }
-        //Move on to the next turn
-        rootService.cableCarService.nextTurn()
     }
 
     /**
      * Redos the last undone game [State] and moves on to the nextTurn.
      * **/
     fun redo() {
-        //Create a local variable to refer to the History object
-        val gameHistory = rootService.cableCar!!.history
-        //get some redo-magic done
-        if (gameHistory.redoStates.isNotEmpty()) {
-            val redo: State = gameHistory.redoStates.pop()
-            gameHistory.undoStates.push(redo)
-            rootService.cableCar!!.currentState = redo
+        if(!rootService.cableCar!!.gameMode.equals(GameMode.NETWORK)) {
+            //Create a local variable to refer to the History object
+            val gameHistory = rootService.cableCar!!.history
+            var redo: State = rootService.cableCar!!.currentState
+            //get some redo-magic done
+            if (gameHistory.redoStates.isNotEmpty()) {
+                val players = rootService.cableCar!!.currentState.players
+                for (i in players.indices) {
+                    redo = gameHistory.redoStates.pop()
+                    gameHistory.undoStates.push(redo)
+                }
+
+                rootService.cableCar!!.currentState = redo
+            }
+            onAllRefreshables { refreshAfterRedo() }
         }
-        //Move on to the next turn
-        rootService.cableCarService.nextTurn()
     }
 
     /**
@@ -275,7 +286,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Changes the AISpeed in the [CableCar] class.
      * **/
     fun setAISpeed(speed: Int) {
-        val game = rootService.cableCar!!
-        game.AISpeed = speed
+        rootService.cableCar!!.AISpeed = speed
     }
 }
