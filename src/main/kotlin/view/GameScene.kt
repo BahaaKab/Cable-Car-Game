@@ -19,9 +19,8 @@ import javax.imageio.ImageIO
 /**
  * This class manages the game scene of the application. Here a player can make a move.
  *
- * @param rootService Gives the administration class for all classes in all layers.
+ * @param rootService The administration class for the entity and service layer.
  */
-@Suppress("UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
 
     private val tile1Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(55))
