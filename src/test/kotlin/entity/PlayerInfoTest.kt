@@ -7,21 +7,19 @@ import kotlin.test.assertEquals
  * This class is used to test the Entity class [PlayerInfo]
  */
 class PlayerInfoTest {
-
-    /**
-     * @property player1 is used as property to test if the entitylayer is working properly for the PlayerInfo
-     */
-    var player1 : PlayerInfo = PlayerInfo("TestName",PlayerType.AI_HARD , Color.BLUE)
-
     /**
      * First we assign some values for player1 and check if they have been assigned properly.
      */
     @Test
     fun testConstructor() {
-        player1.color = Color.YELLOW
-        player1.playerType = PlayerType.HUMAN
-        assertEquals("TestName", player1.name)
-        assertEquals(Color.YELLOW, player1.color)
-        assertEquals(PlayerType.HUMAN, player1.playerType)
+        val playerInfo = PlayerInfo("TestName",PlayerType.AI_HARD , Color.BLUE, isNetworkPlayer = true)
+        assertEquals("TestName", playerInfo.name)
+        assertEquals(Color.BLUE, playerInfo.color)
+        assertEquals(PlayerType.AI_HARD, playerInfo.playerType)
+        assertEquals(true, playerInfo.isNetworkPlayer)
     }
+
+
+
+
 }

@@ -7,6 +7,9 @@ private const val CARDS_FILE = "/tiles.jpg"
 private const val IMG_WIDTH = 100
 private const val IMG_HEIGHT = 100
 
+
+@Suppress("UNUSED")
+
 /**
  * Provides access to the src/main/resources/tiles.jpg file that contains all tile images
  * in a raster. The returned [BufferedImage] objects of [frontImageFor] are 100x100 pixels.

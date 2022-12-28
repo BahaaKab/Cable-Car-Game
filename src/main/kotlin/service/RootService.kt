@@ -10,7 +10,7 @@ class RootService {
     var playerActionService = PlayerActionService(this)
     var cableCarService = CableCarService(this)
     var setupService = SetupService(this)
-    var ioService: IOService? = null
+    var ioService = IOService(this)
     private val aIService = AIService(this)
     var networkService = NetworkService(this)
 
