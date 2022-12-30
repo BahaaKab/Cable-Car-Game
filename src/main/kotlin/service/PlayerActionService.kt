@@ -13,7 +13,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Undoes the last game [State] and moves on to the nextTurn.
      * **/
     fun undo() {
-        if(!rootService.cableCar!!.gameMode.equals(GameMode.NETWORK)) {
+        if(rootService.cableCar!!.gameMode.equals(GameMode.NETWORK)) {
+            return
+        }
             //Create a local variable to refer to the History object
             val gameHistory = rootService.cableCar!!.history
             var undo: State = rootService.cableCar!!.currentState
@@ -27,14 +29,16 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 rootService.cableCar!!.currentState = undo
             }
             onAllRefreshables { refreshAfterUndo() }
-        }
+
     }
 
     /**
      * Redos the last undone game [State] and moves on to the nextTurn.
      * **/
     fun redo() {
-        if(!rootService.cableCar!!.gameMode.equals(GameMode.NETWORK)) {
+        if(rootService.cableCar!!.gameMode.equals(GameMode.NETWORK)) {
+            return
+        }
             //Create a local variable to refer to the History object
             val gameHistory = rootService.cableCar!!.history
             var redo: State = rootService.cableCar!!.currentState
@@ -49,7 +53,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 rootService.cableCar!!.currentState = redo
             }
             onAllRefreshables { refreshAfterRedo() }
-        }
+
     }
 
     /**
