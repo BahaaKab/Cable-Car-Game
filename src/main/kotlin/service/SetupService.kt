@@ -1,14 +1,30 @@
 package service
 
-import entity.PlayerInfo
-import entity.GameTile
-import entity.PlayerType
+import entity.*
 import kotlin.random.Random
 
 @Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 class SetupService(private val rootService: RootService) : AbstractRefreshingService() {
 
-    fun startLocalGame(players: List<PlayerInfo?>?, tilesRotatable: Boolean, aISpeed: Int) {}
+    /**
+     * Creates and starts a new local game in hotseat mode.
+     * **/
+    fun startLocalGame(players: List<Player>?, tilesRotatable: Boolean, aISpeed: Int) {
+        //Since our data types are inconsistent, I have to recast here
+        val drawPile = initializeDrawPile()!!.toMutableList()
+        //At the beginning the playing field is empty. It will later be filled with tiles
+        val board: Array<Array<Tile?>> = arrayOf()
+        val firstState = State(drawPile,
+            players!![0],
+            board,
+            players)
+        CableCar(tilesRotatable,
+            aISpeed,
+            false,
+            GameMode.HOTSEAT,
+            History(),
+            firstState)
+    }
 
     fun startNetworkGame(
         isHostPlayer: Boolean,
