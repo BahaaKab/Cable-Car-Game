@@ -3,7 +3,7 @@ package entity
 import PlayerInfo as NetPlayerInfo
 
 /**
- * This class contains the information of the Player objects.
+ * This class contains the information of the Playerobjects.
  *
  * @property name of the Player
  * @property playerType Whether the player is either an AI_EASY, AI_HARD or a HUMAN
