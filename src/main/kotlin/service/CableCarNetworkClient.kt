@@ -2,13 +2,18 @@ package service
 
 import GameInitMessage
 import TurnMessage
+import tools.aqua.bgw.core.BoardGameApplication
 import tools.aqua.bgw.net.client.BoardGameClient
 import tools.aqua.bgw.net.client.NetworkLogging
 import tools.aqua.bgw.net.common.annotations.GameActionReceiver
 import tools.aqua.bgw.net.common.notification.PlayerJoinedNotification
+import tools.aqua.bgw.net.common.notification.PlayerLeftNotification
 import tools.aqua.bgw.net.common.response.CreateGameResponse
-import tools.aqua.bgw.net.common.response.GameActionResponse
+import tools.aqua.bgw.net.common.response.CreateGameResponseStatus
 import tools.aqua.bgw.net.common.response.JoinGameResponse
+import tools.aqua.bgw.net.common.response.JoinGameResponseStatus
+import tools.aqua.bgw.net.common.response.GameActionResponse
+
 
 // Secret is "cable22"
 
@@ -30,7 +35,13 @@ class CableCarNetworkClient(
      *
      */
     override fun onCreateGameResponse(response: CreateGameResponse) {
-        // Open game lobby
+        when(response.status) {
+            CreateGameResponseStatus.SUCCESS -> return
+            CreateGameResponseStatus.ALREADY_ASSOCIATED_WITH_GAME -> return
+            CreateGameResponseStatus.SESSION_WITH_ID_ALREADY_EXISTS -> return
+            CreateGameResponseStatus.GAME_ID_DOES_NOT_EXIST -> return
+            CreateGameResponseStatus.SERVER_ERROR -> return
+        }
     }
 
     /**
@@ -38,6 +49,13 @@ class CableCarNetworkClient(
      */
     override fun onJoinGameResponse(response: JoinGameResponse) {
         // Wait for game to start
+        when(response.status) {
+            JoinGameResponseStatus.SUCCESS -> return
+            JoinGameResponseStatus.ALREADY_ASSOCIATED_WITH_GAME -> return
+            JoinGameResponseStatus.INVALID_SESSION_ID -> return
+            JoinGameResponseStatus.PLAYER_NAME_ALREADY_TAKEN -> return
+            JoinGameResponseStatus.SERVER_ERROR -> return
+        }
     }
 
     /**
@@ -45,6 +63,13 @@ class CableCarNetworkClient(
      */
     override fun onPlayerJoined(notification: PlayerJoinedNotification) {
         // Update game lobby
+    }
+
+    /**
+     *
+     */
+    override fun onPlayerLeft(notification: PlayerLeftNotification) {
+        // Stop the game and show a message to the player
     }
 
     /**

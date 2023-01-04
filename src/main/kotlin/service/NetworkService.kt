@@ -1,9 +1,11 @@
 package service
 
 import GameInitMessage
-import entity.PlayerInfo
 import TurnMessage
+import entity.PlayerInfo
 
+
+val SECRET = "cable22"
 
 /**
  *
@@ -19,7 +21,7 @@ class NetworkService(private val rootService: RootService) : AbstractRefreshingS
             this,
             playerName = player.name,
             host = "localhost", // TODO: pass from somewhere or is this fix?
-            secret = "cable22" // TODO: save as constant
+            secret = secret
         )
 
         networkClient = client
@@ -41,7 +43,7 @@ class NetworkService(private val rootService: RootService) : AbstractRefreshingS
             this,
             playerName = player.name,
             host = "localhost", // TODO: pass from somewhere or is this fix?
-            secret = "cable22" // TODO: save as constant
+            secret = secret
         )
 
         networkClient = client
