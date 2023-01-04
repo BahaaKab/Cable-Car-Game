@@ -86,7 +86,11 @@ class NetworkService(private val rootService: RootService) : AbstractRefreshingS
         // Else, if client is connected, send GameInitMessage
         with (checkNotNull(rootService.cableCar)) {
             val players = playerInfos.map { it.toNetworkPlayerInfo() }
-            val gameInitMessage = GameInitMessage(rotationAllowed = allowTileRotation, players = players)
+            val gameInitMessage = GameInitMessage(
+                rotationAllowed = allowTileRotation,
+                players = players,
+                tileSupply = currentState.drawPile.map { it.id }
+            )
             if (client.isOpen) { client.sendGameActionMessage(gameInitMessage) }
         }
     }
