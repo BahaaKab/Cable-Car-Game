@@ -6,8 +6,6 @@ import entity.GameTile
 
 class IOService {
     private val rootService: RootService? = null
-    fun readFromCSV() {
-    }
 
     fun getTilesFromCSV() : List<GameTile>{
         return emptyList()
