@@ -1,7 +1,5 @@
 package service
 
-import entity.*
-import view.Refreshable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -16,24 +14,21 @@ class RootServiceTest {
      * **/
     @Test
     fun testConstructor() {
-        val history = History()
-        val playerInfo = PlayerInfo("TestName",PlayerType.AI_HARD , Color.BLUE, isNetworkPlayer = true)
-        val stationTiles = listOf<StationTile>()
-        val activePlayer = Player(playerInfo, stationTiles)
-        val drawPile = mutableListOf<GameTile>()
-        val board = arrayOf(arrayOf<Tile?>())
-        val players = listOf<Player>()
-        val currentState = State(drawPile, activePlayer, board, players)
-        var cableCar = CableCar(false, 1, false, GameMode.HOTSEAT, history, currentState)
         val rootService = RootService()
-        var playerActionService = PlayerActionService(rootService)
-        var cableCarService = CableCarService(rootService)
-        var setupService = SetupService(rootService)
-        var ioService = IOService(rootService)
+        val playerActionService = PlayerActionService(rootService)
+        val cableCarService = CableCarService(rootService)
+        val setupService = SetupService(rootService)
+        val ioService = IOService(rootService)
         val aiService = AIService(rootService)
-        var networkService = NetworkService(rootService)
+        val networkService = NetworkService(rootService)
 
         assertEquals(rootService, rootService)
+        assertEquals(playerActionService, rootService.playerActionService)
+        assertEquals(cableCarService, rootService.cableCarService)
+        assertEquals(setupService, rootService.setupService)
+        assertEquals(ioService, rootService.ioService)
+        assertEquals(aiService, rootService.aIService)
+        assertEquals(networkService, rootService.networkService)
         assertNotNull(rootService)
     }
 
