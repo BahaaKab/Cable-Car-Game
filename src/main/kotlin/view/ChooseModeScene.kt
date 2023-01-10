@@ -7,6 +7,7 @@ import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
+import view.components.CableCarLogo
 import java.awt.Color
 
 
@@ -19,24 +20,7 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
     // Farbe London Underground/tfl: 36, 53, 136,1
     // Farbe unsere GUI-Vorlage: 5, 24, 156, 1
 
-    private val cableCarLabel : Label = Label(
-        posX = 640, posY = 40,
-        width = 640, height = 170,
-        text = "CABLECAR",
-        font = Font(size = 120, color = Color.WHITE,
-            fontWeight = Font.FontWeight.BOLD, family = "Johnston ITC Std Light" ),
-        alignment = Alignment.CENTER,
-        visual = ColorVisual(5,24,156)
-    )
-
-    private val undergroundLabel : Label = Label(
-        posX = 660, posY= 208,
-        width = 600, height = 80,
-        text = "UNDERGROUND",
-        font = Font(size = 70, color = Color(5,24,156),
-            fontWeight = Font.FontWeight.BOLD, family = "Johnston ITC Std Light"),
-        alignment = Alignment.CENTER
-    )
+    private val cableCarLogo = CableCarLogo(660, 40).apply { scale = 2.58 }
 
     private val chooseModeLabel : Label = Label(
         posX = 560, posY = 380,
@@ -70,7 +54,7 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
     init {
         opacity = 1.0
         background = ColorVisual(247, 247, 247)
-        addComponents(cableCarLabel, undergroundLabel, chooseModeLabel)
+        addComponents( cableCarLogo, chooseModeLabel)
         addComponents(localButton, networkButton)
     }
 }
