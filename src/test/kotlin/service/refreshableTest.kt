@@ -81,11 +81,17 @@ class refreshableTest : Refreshable {
     override fun refreshAfterGetTurn() { refreshAfterGetTurnCalled = true }
     override fun refreshAfterNextTurn() { refreshAfterNextTurnCalled = true }
 
+    /**
+     * Checks if the refreshable has been called
+     *
+     * The refreshable isn't called at the beginning
+     * So we call it and check if that was successful
+     * **/
     @Test
     fun testRefreshables() {
-        assertFalse(refreshAfterEndGameCalled, "false")
+        assertFalse(refreshAfterEndGameCalled)
         refreshAfterEndGame()
-        assertTrue(refreshAfterEndGameCalled, "true")
+        assertTrue(refreshAfterEndGameCalled)
     }
 
 }
