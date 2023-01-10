@@ -13,7 +13,7 @@ package entity
  */
 open class Tile (
     val connectors: List<Int>,
-    val connections: List<Int>,
+    var connections: List<Int>,
     val isEmpty: Boolean,
     val isEndTile: Boolean) {
 
