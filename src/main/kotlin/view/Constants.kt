@@ -8,6 +8,7 @@ const val DEFAULT_FONT_BOLD = "Johnston ITC Std Light" // It says light but is i
 const val DEFAULT_FONT_MEDIUM = "Johnston ITC Std Medium"
 val DEFAULT_BLUE = Color(5, 24, 156)
 val DEFAULT_BLUE_VISUAL = ColorVisual(5, 24, 156)
+const val DEFAULT_BLUE_STRING = "5,24,156"
 const val DEFAULT_GREY_STRING = "233,233,236"
 val DEFAULT_YELLOW_COLOR = ColorVisual(253,211,41)
 val DEFAULT_BLUE_COLOR = ColorVisual(17,139,206)
