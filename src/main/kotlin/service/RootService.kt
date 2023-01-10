@@ -3,15 +3,13 @@ package service
 import entity.CableCar
 import view.Refreshable
 
-@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
-
 class RootService {
-    var cableCar: CableCar? = null
+    lateinit var cableCar: CableCar
     var playerActionService = PlayerActionService(this)
     var cableCarService = CableCarService(this)
     var setupService = SetupService(this)
-    var ioService: IOService? = null
-    private val aIService = AIService(this)
+    var ioService = IOService(this)
+    val aIService = AIService(this)
     var networkService = NetworkService(this)
 
     /**

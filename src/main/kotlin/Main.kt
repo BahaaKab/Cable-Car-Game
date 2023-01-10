@@ -4,13 +4,16 @@ import java.io.File
 import java.io.FileNotFoundException
 
 fun main() {
-    val uri = CableCarApplication::class.java.getResource("/Johnston-ITC-Std-Medium.ttf")?.toURI()
+    val uri1 = CableCarApplication::class.java.getResource("/johnston-itc-std-bold.ttf")?.toURI()
         ?: throw FileNotFoundException()
-    BoardGameApplication.loadFont(File(uri))
+    val fontFile1 = File(uri1)
 
-    val uri2 = CableCarApplication::class.java.getResource("/johnston-itc-std-bold.ttf")?.toURI()
+    val uri2 = CableCarApplication::class.java.getResource("/johnston-itc-std-medium.ttf")?.toURI()
         ?: throw FileNotFoundException()
-    BoardGameApplication.loadFont(File(uri2))
+    val fontFile2 = File(uri2)
+
+    BoardGameApplication.loadFont(fontFile1)
+    BoardGameApplication.loadFont(fontFile2)
 
     CableCarApplication().show()
     println("Application ended. Goodbye")

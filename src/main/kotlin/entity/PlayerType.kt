@@ -8,7 +8,6 @@ enum class PlayerType {
     AI_EASY,
     AI_HARD,
     HUMAN,
-    NETWORK,
     ;
 
     /**
@@ -18,6 +17,5 @@ enum class PlayerType {
         AI_EASY -> "AI_easy"
         AI_HARD -> "AI_hard"
         HUMAN -> "human"
-        NETWORK -> "network"
     }
 }

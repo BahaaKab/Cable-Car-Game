@@ -1,7 +1,5 @@
 package entity
 
-import BOT_LEFT
-import BOT_RIGHT
 import kotlin.test.*
 
 /**
@@ -57,6 +55,25 @@ class PlayerTest {
         assertEquals(21, player1.score)
         assertEquals(newHandTile, player1.handTile)
         assertEquals(newCurrentTile, player1.currentTile)
+    }
+
+    /**
+     * Test the secondary constructor of [Player] using the [PlayerInfo] class.
+     */
+    @Test
+    fun testSecondaryConstructor() {
+        val playerInfo = PlayerInfo(
+            name = "player",
+            color = Color.BLACK,
+            playerType = PlayerType.AI_EASY,
+            isNetworkPlayer = false
+        )
+        val player = Player(playerInfo, stationTiles)
+        assertEquals("player", player.name)
+        assertEquals(Color.BLACK, player.color)
+        assertEquals(PlayerType.AI_EASY, player.playerType)
+        assertEquals(false, player.isNetworkPlayer)
+        assertEquals(stationTiles, player.stationTiles)
     }
 
     /**
