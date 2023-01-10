@@ -5,15 +5,18 @@ import service.RootService
 
 @Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
-class CableCarApplication : BoardGameApplication("Cable Car") {
+object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
 
     private val rootService = RootService()
     private val gameScene = GameScene(rootService)
     private val endScene =  EndScene(rootService)
     private val chooseModeScene = ChooseModeScene(rootService)
     private val lobbyScene = LobbyScene(rootService)
+     val connectionScene = ConnectionScene(rootService)
+     val connectingScene = ConnectingScene(rootService)
+
 
     init {
-        this.showGameScene(gameScene)
+        showGameScene(connectionScene)
     }
 }
