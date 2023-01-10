@@ -27,7 +27,7 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         width = 800, height = 140,
         text = "Which type of Game would you like to play?",
         font = Font(size = 20, color = Color(5,24,156)
-            , fontWeight = Font.FontWeight.SEMI_BOLD, family = "Johnston ITC Std Medium"),
+            , fontWeight = Font.FontWeight.SEMI_BOLD, family = DEFAULT_FONT_MEDIUM),
         alignment = Alignment.CENTER
     ).apply { componentStyle = ("-fx-background-color: rgba(255,255,255,1);-fx-background-radius: 30;"+
             "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);") }
@@ -36,7 +36,7 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         posX = 860, posY = 580,
         width = 200, height = 50,
         text = "Local Game",
-        font = Font(size = 23, color = Color.WHITE, family = "Johnston ITC Std Light"),
+        font = Font(size = 23, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER,
         visual = ColorVisual(249, 249, 250)
     ).apply { componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100" }
@@ -45,7 +45,7 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         posX = 860, posY = 680,
         width = 200, height = 50,
         text = "Network Game",
-        font = Font(size = 23, color = Color.WHITE, family = "Johnston ITC Std Light"),
+        font = Font(size = 23, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER,
         visual = ColorVisual(249, 249, 250)
     ).apply { componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100" }
