@@ -3,14 +3,17 @@ package service
 import entity.CableCar
 import view.Refreshable
 
+/**
+ * The [RootService] is used to connect every Class in the project
+ * **/
 class RootService {
     lateinit var cableCar: CableCar
-    var playerActionService = PlayerActionService(this)
-    var cableCarService = CableCarService(this)
-    var setupService = SetupService(this)
-    var ioService = IOService(this)
+    val playerActionService = PlayerActionService(this)
+    val cableCarService = CableCarService(this)
+    val setupService = SetupService(this)
+    val ioService = IOService(this)
     val aIService = AIService(this)
-    var networkService = NetworkService(this)
+    val networkService = NetworkService(this)
 
     /**
      * Adds the provided [newRefreshable] to all services connected
