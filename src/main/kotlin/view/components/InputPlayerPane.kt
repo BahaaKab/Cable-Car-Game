@@ -10,6 +10,13 @@ import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_BOLD
 import java.awt.Color
 
+/** A Pane which contains a "playerField" in the lobbyScene. Width: 755, Height: 75
+ *
+ * @param posX Horizontal coordinate for this Pane. Default: 0.
+ * @param posY Vertical coordinate for this Pane. Default: 0.
+ * @param playerNumber The Number of the Player (e.g. 1 -> "Player1")
+ * @param color The default color of the player (e.g. ColorVisual(1,1,1) )
+ * */
 class InputPlayerPane(posX: Number = 0, posY: Number = 0, playerNumber: Int, color: ColorVisual) :
     Pane<UIComponent>(posX, posY, 0, 0) {
 
