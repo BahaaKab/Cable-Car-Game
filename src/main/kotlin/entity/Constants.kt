@@ -1,3 +1,5 @@
+package entity
+
 /** Define various constants that are helpful for each layer of the Cable Car domain model. */
 
 
@@ -12,4 +14,3 @@ const val BOT_RIGHT = 4
 const val BOT_LEFT = 5
 const val LEFT_BOT = 6
 const val LEFT_TOP = 7
-
