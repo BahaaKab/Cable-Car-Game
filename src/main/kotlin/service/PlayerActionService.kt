@@ -105,7 +105,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      *
      * @return if it's a legal position or not
      */
-    private fun positionIsIllegal(posX : Int, posY : Int, gameTile : GameTile) : Boolean {
+    fun positionIsIllegal(posX : Int, posY : Int, gameTile : GameTile) : Boolean {
         // Get all adjacent StationTiles
         val adjStationTiles = getAdjacentTiles(posX, posY).filterIsInstance<StationTile>()
         // A check for each adjacent [StationTile] if it forms a path of length 1
@@ -142,7 +142,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      *
      * @return boolean value if there exist only illegal positions
      */
-    private fun onlyIllegalPositionsLeft(gameTile : GameTile) : Boolean = with(rootService.cableCar.currentState) {
+    fun onlyIllegalPositionsLeft(gameTile : GameTile) : Boolean = with(rootService.cableCar.currentState) {
          // First check if any Position in the mid is free. If a position p in the mid is free it always implies that
          // there has to be a legal position on the board even if the position p doesn't have any adjacent GameTile
         for(y in (2..7)){
@@ -180,7 +180,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      *
      * @return Whether at least one adjacent tile is a GameTile or a StationTile.
      */
-    private fun isAdjacentToTiles(posX: Int, posY : Int) =
+    fun isAdjacentToTiles(posX: Int, posY : Int) =
         getAdjacentTiles(posX, posY).any { it is GameTile || it is StationTile }
 
     /**
