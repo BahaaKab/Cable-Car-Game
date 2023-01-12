@@ -3,10 +3,17 @@ package service
 import entity.*
 import kotlin.IllegalArgumentException
 
+/**
+ * A service class which is responsive for setting up the [CableCar] game instance from information provided by the
+ * GUI and/or the [CableCarNetworkClient].
+ */
 class SetupService(private val rootService: RootService) : AbstractRefreshingService() {
-
     /**
-     * Creates and starts a new local game in hotseat mode.
+     * Create a [CableCar] game instance in [GameMode.HOTSEAT] configuration.
+     *
+     * @param playerInfos The players' information
+     * @param tilesRotatable Whether it is allowed to rotate [GameTile]s
+     * @param AISpeed The initial AI speed
      * **/
     fun startLocalGame(playerInfos: List<PlayerInfo>, tilesRotatable: Boolean, AISpeed: Int) {
         val drawPile = rootService.ioService.getTilesFromCSV().shuffled().toMutableList()
@@ -35,9 +42,16 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
     }
 
     /**
+     * Create a [CableCar] game instance in [GameMode.NETWORK] configuration.
      *
+     * @param isHostPlayer Whether this game instance is responsible for hosting the session
+     * @param playerInfos The players' information
+     * @param tilesRotatable Whether it is allowed to rotate [GameTile]s
+     * @param tileIDs The order of tiles provided by the host, if the session is not hosted from this game instance
+     * @param AISpeed The initial AI speed
      */
-    fun startNetworkGame(isHostPlayer: Boolean,
+    fun startNetworkGame(
+        isHostPlayer: Boolean,
         playerInfos: List<PlayerInfo>,
         tilesRotatable: Boolean,
         tileIDs: List<Int>?,
@@ -81,7 +95,13 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
     }
 
     /**
+     * Create the players from their player infos. Make the assignment of [StationTile]s depending on the number and
+     * order of players.
      *
+     * @param playerInfos The players' information
+     * @param board The initial cable car board
+     *
+     * @return The Players respective their [StationTile]s
      */
     private fun createPlayers(playerInfos: List<PlayerInfo>, board: Array<Array<Tile?>>) : List<Player> {
         val stationTileAssignments = getStationTileAssignments(playerInfos.size)
@@ -92,7 +112,28 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
     }
 
     /**
+     * Get a  station tile through it's id.
+     * The rulebook of cable car provides a fixed assignment of station tiles to specific players. To implement this
+     * order, each station is identified by an id. The ids are assigned with a topdown view on the board clockwise,
+     * starting with the upper left side:
      *
+     *    -  1  2  3  4  5  6  7  8  -
+     *   32  -  -  -  -  -  -  -  -   9
+     *   31  -  -  -  -  -  -  -  -  10
+     *   30  -  -  -  -  -  -  -  -  11
+     *   29  -  -  -  P  P  -  -  -  12
+     *   28  -  -  -  P  P  -  -  -  13
+     *   27  -  -  -  -  -  -  -  -  14
+     *   26  -  -  -  -  -  -  -  -  15
+     *   25  -  -  -  -  -  -  -  -  16
+     *    - 24 23 22 21 20 19 18 17  -
+     *
+     * @param id The [StationTile]'s id
+     * @param board The initial cable car board
+     *
+     * @throws IllegalArgumentException If the id is not between 1 and 32
+     * @throws IllegalStateException If the stationTiles are not properly set up on the board
+     * @return The station tile that corresponds to the given id
      */
     private fun getStationTileFromId(id: Int, board: Array<Array<Tile?>>) : StationTile {
         val stationTile = when(id) {
@@ -106,7 +147,13 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
     }
 
     /**
+     * Get the Assignment of station tiles. This depends on the number of players that are participating.
      *
+     * @param numberOfPlayers The number of players
+     *
+     * @throws IllegalArgumentException If number of players is not between 2 and 6
+     * @return The station Tile assignments as a List of Lists, where the nth inner List contains the station tile
+     * ids for the nth player.
      */
     private fun getStationTileAssignments(numberOfPlayers: Int) : List<List<Int>> = when(numberOfPlayers) {
         2 -> listOf(
@@ -143,7 +190,14 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
     }
 
     /**
+     * Create the initial cable car board setup.
      *
+     * The initial setup has
+     * - Empty corner tiles in each corner
+     * - Station tiles along each edge of the board, with two connections facing the center of the board
+     * - four power station tiles in the center of the board with four connection facing the outside of the board
+     *
+     * @return The board
      */
     private fun createBoard() : Array<Array<Tile?>> {
         // Create an empty board
