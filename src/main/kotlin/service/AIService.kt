@@ -1,7 +1,5 @@
 package service
 
-import TurnMessage
-
 /**
  *
  * Service layer class that provides the logic for artificial Intelligence and how it will behave based on difficulty.
