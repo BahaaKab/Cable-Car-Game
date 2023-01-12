@@ -22,7 +22,7 @@ import java.awt.Color
  * @param isHost A boolean that indicates if this Pane shows the Multiplayer-Host-Name
  * */
 class InputPlayerPane(posX: Number = 0, posY: Number = 0, private val isMultiplayer : Boolean = false,
-                      private val isHost : Boolean = false) : Pane<UIComponent>(posX, posY, 590, 90) {
+                      private val isHost : Boolean = false) : Pane<UIComponent>(posX, posY, width = 590, height = 90){
 
         private val playerTypes = listOf(PlayerType.HUMAN, PlayerType.AI_EASY, PlayerType.AI_HARD)
         private var typeCounter = 0
