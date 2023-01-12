@@ -20,6 +20,9 @@ import java.awt.Color
 class InputPlayerPane(posX: Number = 0, posY: Number = 0, playerNumber: Int, color: ColorVisual) :
     Pane<UIComponent>(posX, posY, 0, 0) {
 
+        private val playerTypes = listOf(PlayerType.HUMAN, PlayerType.AI_EASY, PlayerType.AI_HARD)
+        private var typeCounter = 0
+
         private val colorLabel = Label(
             posX = 0, posY = 42,
             width = 75, height = 16,
@@ -51,15 +54,19 @@ class InputPlayerPane(posX: Number = 0, posY: Number = 0, playerNumber: Int, col
             width = 300, height = 30,
             prompt = "Player $playerNumber",
             font = Font(size = 24, family = DEFAULT_FONT_BOLD)
-        ).apply { componentStyle = "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);" }
+        ).apply { componentStyle = "-fx-background-color: rgba(0,0,0,0); -fx-border-color: rgb(5,24,156);" +
+                " -fx-border-width: 0 0 3 0" }
 
-        private val playerType = ComboBox(
+        private val playerType = Button(
             posX = 540, posY = 33,
             width = 145, height = 31,
             font = Font(size = 21, color = Color(233,233,236), family = DEFAULT_FONT_BOLD),
-            prompt = "HUMAN",
-            listOf(PlayerType.HUMAN,PlayerType.AI_EASY, PlayerType.AI_HARD)
-        ).apply { componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);" }
+            text = "${playerTypes[typeCounter]}"
+        ).apply { componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);"
+                  onMouseClicked = { typeCounter = (typeCounter+1) % 3
+                                     this.text = "${playerTypes[typeCounter]}"
+                                    }
+                }
 
         init {
             addAll(inputBackground, colorLabel, playerLabel, nameField, playerType, circleLabel)
