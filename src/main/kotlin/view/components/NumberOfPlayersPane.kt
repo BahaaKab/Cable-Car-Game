@@ -10,12 +10,14 @@ import view.*
 
 /** A pane which contains the display of the number of players in LobbyScene. Width: 125, Height: 50
  *
+ * Default width: 120, default height: 66
+ *
  * @param posX Horizontal coordinate for this Pane. Default: 0.
  * @param posY Vertical coordinate for this Pane. Default: 0.
  * @param playerNumber The number of players it should show.
  *  */
 class NumberOfPlayersPane(posX: Number = 0, posY: Number = 0, playerNumber: Int) :
-    Pane<UIComponent>(posX, posY, 0, 0) {
+    Pane<UIComponent>(posX, posY, width = 120, height = 66) {
 
     private val lineLabel = Label(
         posX = 0, posY = 15,
