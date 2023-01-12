@@ -11,6 +11,7 @@ import tools.aqua.bgw.visual.ImageVisual
 import view.components.CableCarLogo
 import view.components.InputPlayerPane
 import view.components.NumberOfPlayersPane
+import view.components.PlayerIndicatorPane
 import java.awt.Color
 import javax.imageio.ImageIO
 
@@ -21,7 +22,7 @@ import javax.imageio.ImageIO
  * @param isMultiplayer A boolean that defines which game mode the LobbyScene shows
  * @param hostName The name of the hostPlayer if the scene shows a Multiplayer-Lobby*/
 class LobbyScene(private val rootService: RootService, private val isMultiplayer : Boolean = false,
-                 val hostName : String = "") : MenuScene(1920, 1080), Refreshable {
+                 private val hostName : String = "") : MenuScene(1920, 1080), Refreshable {
 
     private val cableCarLogo = CableCarLogo(810,50).apply { scale = 1.1 }
 
@@ -89,6 +90,10 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
         addComponents(cableCarLogo , backButton, playerOrderButton, tileRotationButton, startButton,
                       backArrow, cubePicture, refreshArrow)
 
+        for (i in 1 .. 6 ){
+            addComponents(PlayerIndicatorPane(554, 375 + 90 * (i-1), i, colors[i-1]))
+        }
+
         if(isMultiplayer){
             connectionLabel()
             for (input in playerInputs) {
@@ -105,7 +110,7 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
         }
     }
 
-
+    /**This method creates the button to go back to the Scene before, based on the game mode. */
     private fun backButton() : Button {
         var i = 0
         var name = "Menu"
@@ -127,6 +132,7 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
             ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
     }
 
+    /** In single-player this method creates the display in which you can choose the number of players.*/
     private fun playerDisplay() : List<NumberOfPlayersPane>{
         val mutList = mutableListOf<NumberOfPlayersPane>()
         for(i in 2 .. 6) {
@@ -135,15 +141,17 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
         return mutList.toList()
     }
 
+    /** A method that creates the Input-Pane that displays the players names, kinds and order.*/
     private fun playerInput() : List<InputPlayerPane>{
         val mutList = mutableListOf<InputPlayerPane>()
-        mutList.add(InputPlayerPane(575, 375 , 1, colors[0], isMultiplayer, true))
+        mutList.add(InputPlayerPane(755, 375 ,  isMultiplayer, true))
         for(i in 2 .. 6) {
-            mutList.add(InputPlayerPane(575, 375 + 90 * (i-1), i, colors[i-1], isMultiplayer))
+            mutList.add(InputPlayerPane(755, 375 + 90 * (i-1), isMultiplayer))
         }
         return mutList.toList()
     }
 
+    /**In multiplayer this method displays the SessionID and the password.*/
     private fun connectionLabel(){
         val backgroundLabel = Label(
             posX = 570, posY = 270,
