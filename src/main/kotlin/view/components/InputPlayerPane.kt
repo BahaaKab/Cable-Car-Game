@@ -29,19 +29,19 @@ class InputPlayerPane(posX: Number = 0, posY: Number = 0, playerNumber: Int, col
         private val playerLabel = Label(
             posX = 100, posY = 30,
             width = 90, height = 40,
-            text = "Player$playerNumber:",
+            text = "Player $playerNumber:",
             alignment = Alignment.CENTER,
             font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD)
         )
 
         private val inputBackground = Label(
             posX = 200, posY = 15,
-            width = 555, height = 75
+            width = 570, height = 75
         ).apply { componentStyle = "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);" +
                     "-fx-background-radius: 10;-fx-background-color: rgba(255,255,255,1);"}
 
         private val circleLabel = Label(
-            posX = 710, posY = 42,
+            posX = 725, posY = 42,
             width = 25, height = 25
         ).apply { componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
                     "-fx-border-color: rgba(5, 24, 156, 1); -fx-border-radius: 100; -fx-border-width: 4;"}
@@ -55,7 +55,7 @@ class InputPlayerPane(posX: Number = 0, posY: Number = 0, playerNumber: Int, col
 
         private val playerType = ComboBox(
             posX = 540, posY = 33,
-            width = 130, height = 31,
+            width = 145, height = 31,
             font = Font(size = 21, color = Color(233,233,236), family = DEFAULT_FONT_BOLD),
             prompt = "HUMAN",
             listOf(PlayerType.HUMAN,PlayerType.AI_EASY, PlayerType.AI_HARD)
