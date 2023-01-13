@@ -15,7 +15,7 @@ import view.components.ConnectingPane
 import java.awt.Color
 import javax.imageio.ImageIO
 
-class ConnectingScene (private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
+class ConnectingScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
     private val logoPane = CableCarLogo(posX = 841, posY = 104)
     private val cancelVisual = ImageVisual(ImageIO.read(ConnectionScene::class.java.getResource("/arrow.png")))
     private val connectingPane = ConnectingPane(0, 0)
@@ -46,7 +46,9 @@ class ConnectingScene (private val rootService: RootService) : BoardGameScene(19
             connectingDataPane
         )
     }
+
     override fun refreshAfterJoinGame() {
-        CableCarApplication.showGameScene(CableCarApplication.connectingScene) }
+        CableCarApplication.showGameScene(CableCarApplication.connectingScene)
+    }
 }
 
