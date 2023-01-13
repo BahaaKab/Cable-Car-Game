@@ -7,6 +7,7 @@ import service.RootService
 
 object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
 
+
     private val rootService = RootService()
     private val gameScene = GameScene(rootService)
     private val endScene =  EndScene(rootService)

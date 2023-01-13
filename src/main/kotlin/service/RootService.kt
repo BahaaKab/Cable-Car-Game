@@ -3,16 +3,17 @@ package service
 import entity.CableCar
 import view.Refreshable
 
-@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
-
+/**
+ * The [RootService] is used to connect every Class in the project
+ * **/
 class RootService {
-    var cableCar: CableCar? = null
-    var playerActionService = PlayerActionService(this)
-    var cableCarService = CableCarService(this)
-    var setupService = SetupService(this)
-    var ioService = IOService(this)
-    private val aIService = AIService(this)
-    var networkService = NetworkService(this)
+    lateinit var cableCar: CableCar
+    val playerActionService = PlayerActionService(this)
+    val cableCarService = CableCarService(this)
+    val setupService = SetupService(this)
+    val ioService = IOService(this)
+    val aIService = AIService(this)
+    val networkService = NetworkService(this)
 
     /**
      * Adds the provided [newRefreshable] to all services connected
