@@ -1,15 +1,4 @@
 package service
-/*
- * A [TurnMessage] expects the following parameter on a [0..9][0..9] board:
- * @param posX: Int as x-coordinate
- * @param posY: Int as y-coordinate
- * @param fromSupply: Boolean if a card was drawn
- * @param rotation: Int in degree for 0°, 90°, 180° and 270° clockwise rotation
- */
-import edu.udo.cs.sopra.ntf.GameStateVerificationInfo
-import edu.udo.cs.sopra.ntf.TurnMessage
-import entity.*
-import kotlin.random.Random
 
 /**
  *
