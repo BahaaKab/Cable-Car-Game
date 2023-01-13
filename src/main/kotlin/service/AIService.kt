@@ -1,5 +1,4 @@
 package service
-
 /*
  * A [TurnMessage] expects the following parameter on a [0..9][0..9] board:
  * @param posX: Int as x-coordinate
@@ -7,11 +6,9 @@ package service
  * @param fromSupply: Boolean if a card was drawn
  * @param rotation: Int in degree for 0°, 90°, 180° and 270° clockwise rotation
  */
-import TurnMessage
-import entity.GameTile
-import entity.Player
-import entity.PlayerType
-import entity.State
+import edu.udo.cs.sopra.ntf.GameStateVerificationInfo
+import edu.udo.cs.sopra.ntf.TurnMessage
+import entity.*
 import kotlin.random.Random
 
 /**
@@ -48,13 +45,11 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         val currentState : State = rootService.cableCar.currentState
         val fromSupply =  Random.nextBoolean()
         val legalPos: ArrayDeque<Int> = ArrayDeque()
-        val legalPosAfterDraw: ArrayDeque<Int> = ArrayDeque()
 
         // board coded as 1-dim integer
         for(z in (0..63)){
                 if(currentState.board[1+ (z/8)][1+ (z%8)] == null){
                     legalPos.add(z)
-                    legalPosAfterDraw.add(z)
                 }
         }
         legalPos.shuffle()
@@ -70,16 +65,16 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             val thisPosY: Int = 1+ (actualPos%8)
 
             if (placeablePosition(thisPosX,thisPosY)){
-                return TurnMessage(thisPosX, thisPosY, fromSupply, 0)
+                return TurnMessage(thisPosX, thisPosY, fromSupply, 0, actualGameStateVeriInfo())
 
             }
             if (rootService.cableCar.allowTileRotation){
                 for(i in (1..3)){
                     rootService.playerActionService.rotateTileRight()
                     if (placeablePosition(thisPosX,thisPosY)){
-                        return TurnMessage(thisPosX, thisPosY, fromSupply, i*90)
-                    }
+                        return TurnMessage(thisPosX, thisPosY, fromSupply, i*90, actualGameStateVeriInfo())
 
+                    }
                 }
             }
         }
@@ -93,18 +88,18 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      *
      * @param posX
      * @param posY
-     * @return Boolean wheather placeable
+     * @return Boolean whether placeable
      */
-    fun placeablePosition(posX: Int, posY: Int) : Boolean {
-        val currentPlayer: Player = rootService.cableCar.currentState.activePlayer
+    fun placeablePosition(posX: Int, posY: Int) : Boolean = with(rootService.playerActionService){
+        /* val currentPlayer: Player = rootService.cableCar.currentState.activePlayer
         val currentState: State = rootService.cableCar.currentState
         // In this case the player has just one HandTile and hasn't drawn an alternative one
         if (currentPlayer.currentTile == null) {
             currentPlayer.currentTile = currentPlayer.handTile!!.deepCopy()
             currentPlayer.handTile = null
             // Checks if the position is legal
-            if (currentState.board[posX][posY] == null && rootService.playerActionService.isAdjacentToTiles(posX, posY)
-                && !rootService.playerActionService.positionIsIllegal(posX,posY,currentPlayer.currentTile!!)) {
+            if (currentState.board[posX][posY] == null && isAdjacent(posX, posY)
+                && !positionIsIllegal(posX,posY,currentPlayer.currentTile!!)) {
 
                 return true
             }
@@ -112,9 +107,9 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
              * Checks if the position is illegal. In that case a GameTile couldn't be placed. But it's also checked that
              * each position on the board is illegal. In that case the GameTile can be placed
              */
-            else if(currentState.board[posX][posY] == null && rootService.playerActionService.isAdjacentToTiles(posX,posY)
-                && rootService.playerActionService.positionIsIllegal(posX,posY,currentPlayer.currentTile!!)
-                && rootService.playerActionService.onlyIllegalPositionsLeft(currentPlayer.currentTile!!)){
+            else if(currentState.board[posX][posY] == null && isAdjacent(posX,posY)
+                && positionIsIllegal(posX,posY,currentPlayer.currentTile!!)
+                && onlyIllegalPositionsLeft(currentPlayer.currentTile!!)){
 
                 return true
             }
@@ -131,27 +126,42 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         // In this case the player has one HandTile and has an alternative Tile as a currentTile
         else {
             // same cases as above
-            if (currentState.board[posX][posX] == null && rootService.playerActionService.isAdjacentToTiles(posX, posY)
-                && !rootService.playerActionService.positionIsIllegal(posX,posY,currentPlayer.currentTile!!)) {
+            if (currentState.board[posX][posX] == null && isAdjacent(posX, posY)
+                && !positionIsIllegal(posX,posY,currentPlayer.currentTile!!)) {
 
                 return true
             }
-            else if(currentState.board[posX][posY] == null && rootService.playerActionService.isAdjacentToTiles(posX,posY)
-                && rootService.playerActionService.positionIsIllegal(posX,posY,currentPlayer.currentTile!!)
-                && rootService.playerActionService.onlyIllegalPositionsLeft(currentPlayer.currentTile!!)){
+            else if(currentState.board[posX][posY] == null && isAdjacent(posX,posY)
+                && positionIsIllegal(posX,posY,currentPlayer.currentTile!!)
+                && onlyIllegalPositionsLeft(currentPlayer.currentTile!!)){
 
                 return true
             }
         }
+
+         */
         return false
     }
+
+
+    fun isAdjacent(posX: Int, posY: Int):Boolean = with(rootService.cableCar.currentState){
+        val surround = listOf<Int>(-1,-2,+2,+1)
+        return surround.any { board[posX+it%2][posY-it/2] is GameTile || board[posX+it%2][posY-it/2] is StationTile }
+    }
+
+    fun actualGameStateVeriInfo() = GameStateVerificationInfo(rootService.cableCar.currentState.playedTiles,
+        List(rootService.cableCar.currentState.drawPile.size){index -> rootService.cableCar.currentState.drawPile[index].id  },
+        List(rootService.cableCar.currentState.players.size){index -> rootService.cableCar.currentState.players[index].score })
 
     /**
      * to find good tile for HARD AI that is allowed
      */
     private fun hardTurn(): TurnMessage{
-        return TurnMessage(0,0,true,0 )
+        return TurnMessage(0, 0, true, 0, GameStateVerificationInfo(rootService.cableCar.currentState.playedTiles,
+            List(rootService.cableCar.currentState.drawPile.size){index -> rootService.cableCar.currentState.drawPile[index].id  },List(rootService.cableCar.currentState.players.size){index -> rootService.cableCar.currentState.players[index].score }))
+
     }
+
 
     /**
      * to find the score for each move while calculating
@@ -172,6 +182,5 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
 
     }
 
-
-
 }
+
