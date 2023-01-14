@@ -15,6 +15,7 @@ package entity
 class GameTile(val id: Int, connections: List<Int>): Tile(
     List(8) { it }, connections, false, false
 ) {
+    var rotation=0
     init {
         require(connectors.size == 8)
         require(connections.size == 8)
@@ -25,5 +26,9 @@ class GameTile(val id: Int, connections: List<Int>): Tile(
      */
     override fun updatePoints(points: Int) = points + 1
 
-    override fun deepCopy() = GameTile(id, connections.toList())
+    override fun deepCopy(): GameTile{
+        val copiedTile = GameTile(id, connections.toList())
+        copiedTile.rotation=rotation
+        return copiedTile
+    }
 }
