@@ -57,7 +57,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
                 if (placeablePosition(thisPosX,thisPosY)){
                     return placeCurrentTile(thisPosX,thisPosY,fromSupply)
                 }
-                if (rootService.cableCar.allowTileRotation){
+                if (!rootService.cableCar.allowTileRotation){
                     break
                 }
                 rotateCurrentTileClockwise()
