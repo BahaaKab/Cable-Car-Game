@@ -1,5 +1,6 @@
 package entity
-import PlayerType as NetPlayerType
+
+import edu.udo.cs.sopra.ntf.PlayerType
 
 /**
  * Enum to distinguish between the for [PlayerType]s:
@@ -21,7 +22,7 @@ enum class PlayerType {
     }
 
     fun toNetworkPlayerType() = when(this) {
-        AI_EASY, AI_HARD -> NetPlayerType.AI
-        HUMAN -> NetPlayerType.HUMAN
+        AI_EASY, AI_HARD -> PlayerType.AI
+        HUMAN -> PlayerType.HUMAN
     }
 }

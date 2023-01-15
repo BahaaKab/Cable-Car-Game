@@ -1,27 +1,39 @@
 package service
 
-import GameInitMessage
-import TurnMessage
+import edu.udo.cs.sopra.ntf.GameInitMessage
+import edu.udo.cs.sopra.ntf.GameStateVerificationInfo
+import edu.udo.cs.sopra.ntf.TurnMessage
+import edu.udo.cs.sopra.ntf.TileInfo
 import entity.PlayerInfo
-
-
-val SECRET = "cable22"
 
 /**
  *
  */
 class NetworkService(private val rootService: RootService) : AbstractRefreshingService() {
+    /**
+     * The sopra server hosting the BGW sessions.
+     */
+    val HOST = "sopra.cs.tu-dortmund.de:80/bgw-net/connect"
+
+    /**
+     * The global secret that is used to verify a connection with the server.
+     */
+    val SECRET = "cable22"
+
+    /**
+     *
+     */
     var networkClient: CableCarNetworkClient? = null
 
     /**
      *
      */
-    fun hostGame(secret: String, player: PlayerInfo, sessionID: String) {
+    fun hostGame(player: PlayerInfo, sessionID: String) {
         val client = CableCarNetworkClient(
             this,
             playerName = player.name,
-            host = "localhost", // TODO: pass from somewhere or is this fix?
-            secret = secret
+            host = HOST,
+            secret = SECRET
         )
 
         networkClient = client
@@ -38,12 +50,12 @@ class NetworkService(private val rootService: RootService) : AbstractRefreshingS
     /**
      *
      */
-    fun joinGame(secret: String, player: PlayerInfo, sessionID: String) {
+    fun joinGame(player: PlayerInfo, sessionID: String) {
         val client = CableCarNetworkClient(
             this,
             playerName = player.name,
-            host = "localhost", // TODO: pass from somewhere or is this fix?
-            secret = secret
+            host = HOST,
+            secret = SECRET
         )
 
         networkClient = client
@@ -73,7 +85,12 @@ class NetworkService(private val rootService: RootService) : AbstractRefreshingS
         // If no network client exists, throw exception
         val client = checkNotNull(networkClient)
         // Else, if client is connected, send TurnMessage
-        val turnMessage = TurnMessage(posX, posY, fromSupply, rotation)
+        val gameStateVerificationInfo = GameStateVerificationInfo(
+            placedTiles = listOf<TileInfo>(), // TODO
+            supply = rootService.cableCar.currentState.drawPile.map { it.id },
+            playerScores = rootService.cableCar.currentState.players.map { it.score }
+        )
+        val turnMessage = TurnMessage(posX, posY, fromSupply, rotation, gameStateVerificationInfo)
         if (client.isOpen) { client.sendGameActionMessage(turnMessage) }
     }
 
@@ -89,15 +106,9 @@ class NetworkService(private val rootService: RootService) : AbstractRefreshingS
             val gameInitMessage = GameInitMessage(
                 rotationAllowed = allowTileRotation,
                 players = players,
-                tileSupply = currentState.drawPile.map { it.id }
+                tileSupply = currentState.drawPile.map { it.toNetworkTile() }
             )
             if (client.isOpen) { client.sendGameActionMessage(gameInitMessage) }
         }
     }
-
-    /* ## Waiting for NetworkMessage
-    fun validateTiles(message: NetworkMessage?): Boolean {
-        return false
-    }
-    */
 }

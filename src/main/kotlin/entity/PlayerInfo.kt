@@ -1,6 +1,6 @@
 package entity
 
-import PlayerInfo as NetPlayerInfo
+import edu.udo.cs.sopra.ntf.PlayerInfo
 
 /**
  * This class contains the information of the Playerobjects.
@@ -16,5 +16,5 @@ data class PlayerInfo(
     val color: Color,
     val isNetworkPlayer: Boolean
 ) {
-    fun toNetworkPlayerInfo() = NetPlayerInfo(name, playerType.toNetworkPlayerType())
+    fun toNetworkPlayerInfo() = PlayerInfo(name, playerType.toNetworkPlayerType())
 }

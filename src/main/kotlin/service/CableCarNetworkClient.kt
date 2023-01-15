@@ -1,8 +1,8 @@
 package service
 
-import GameInitMessage
-import TurnMessage
-import tools.aqua.bgw.core.BoardGameApplication
+import edu.udo.cs.sopra.ntf.GameInitMessage
+import edu.udo.cs.sopra.ntf.GameStateVerificationInfo
+import edu.udo.cs.sopra.ntf.TurnMessage
 import tools.aqua.bgw.net.client.BoardGameClient
 import tools.aqua.bgw.net.client.NetworkLogging
 import tools.aqua.bgw.net.common.annotations.GameActionReceiver
@@ -93,5 +93,12 @@ class CableCarNetworkClient(
     @GameActionReceiver
     fun onTurnMessageReceived(message: TurnMessage, sender: String) {
         // if sender is the active player, perform his turn based on the message data
+    }
+
+    /**
+     *
+     */
+    private fun gameStateIsValid(gameStateVerificationInfo: GameStateVerificationInfo): Boolean {
+        return false
     }
 }
