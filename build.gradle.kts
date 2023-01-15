@@ -34,7 +34,7 @@ dependencies {
     implementation(group = "tools.aqua", name = "bgw-gui", version = "0.7.3")
     implementation(group = "tools.aqua", name = "bgw-net-common", version = "0.7.3")
     implementation(group = "tools.aqua", name = "bgw-net-client", version = "0.7.3")
-    implementation(group = "edu.udo.cs.sopra", name = "ntf", version = "1.1")
+    implementation(group = "edu.udo.cs.sopra", name = "ntf", version = "1.4")
 }
 
 

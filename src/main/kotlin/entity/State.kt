@@ -1,5 +1,7 @@
 package entity
 
+import edu.udo.cs.sopra.ntf.TileInfo
+
 /**
  * The [State] Class is used to save the current state of the game-board.
  *
@@ -11,4 +13,6 @@ package entity
 class State (var drawPile : MutableList<GameTile>,
              var activePlayer : Player,
              val board: Array<Array<Tile?>> = arrayOf(),
-             val players: List<Player>)
+             val players: List<Player>) {
+    val playedTiles: MutableList<TileInfo> = mutableListOf()
+}
