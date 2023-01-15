@@ -227,11 +227,15 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         // Otherwise he uses the handTile.
         val tileToRotate = currentTile ?: handTile
         // The shift index is used to rotate rotate the connections on a tile.
-        val indexShift = if (clockwise) { 2 } else { -2 }
         with (checkNotNull(tileToRotate)) {
+            val indexShift = if (clockwise) { 2 } else { connections.size - 2 }
+            // First set the new values
             connections = connections.map { (it + indexShift) % connections.size }
+            // Then set the values to the correct indices
+            connections = List(connections.size) { connections[(it + 2) % connections.size] }
         }
     }
+
 
     /**
      * Changes the AISpeed in the [CableCar] class.
