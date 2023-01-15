@@ -61,10 +61,12 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
     /**
      * [Player] places a [GameTile] on a given position. Either a [GameTile] on the Hand or an alternative [GameTile]
-     * the [Player] has drawn
+     * the [Player] has drawn.
      *
-     * @param posX
-     * @param posY
+     * @param posX The x position
+     * @param posY The y position
+     *
+     * @throws IllegalStateException If the player has no tile to place
      */
     fun placeTile(posX: Int, posY: Int) = with(rootService) {
         val player = cableCar.currentState.activePlayer
@@ -73,6 +75,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val tileToPlace = checkNotNull(player.currentTile ?: player.handTile)
         // If the position for the placement is either not valid or not legal while there are still legal placements
         // possible, return.
+        // TODO: This needs some thoughts as a tile still needs to be adjacent to some other game or station tiles,
+        //  even if no allowed position exists.
         val isValid = board[posX][posY] == null && isAdjacentToTiles(posX, posY)
         val isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || onlyIllegalPositionsLeft(tileToPlace)
         if (!isValid || !isAllowed) {
@@ -99,11 +103,11 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * checks if it's illegal to place [GameTile] on a special Position that's null.
      * In detail: It gets checked out if a closed path of length 1 gets constructed by placing the [GameTile]
      *
-     * @param posX
-     * @param posY
-     * @param gameTile
+     * @param posX The x position
+     * @param posY The y position
+     * @param gameTile The tile to place
      *
-     * @return if it's a legal position or not
+     * @return Whether the position is illegal
      */
     fun positionIsIllegal(posX : Int, posY : Int, gameTile : GameTile) : Boolean {
         // Get all adjacent StationTiles
@@ -138,9 +142,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * on the adjacent positions of [StationTile]s a [GameTile] can only be placed so that it constructs a closed path
      * of length 1.
      *
-     * @param gameTile
+     * @param gameTile The game tile that the placement is checked against
      *
-     * @return boolean value if there exist only illegal positions
+     * @return Whether all possible positions are illegal positions
      */
     fun onlyIllegalPositionsLeft(gameTile : GameTile) : Boolean = with(rootService.cableCar.currentState) {
          // First check if any Position in the mid is free. If a position p in the mid is free it always implies that
@@ -175,8 +179,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     /**
      * Determines if a Tile can be placed at Position (posX,posY)
      *
-     * @param posX
-     * @param posY
+     * @param posX The x position
+     * @param posY The y position
      *
      * @return Whether at least one adjacent tile is a GameTile or a StationTile.
      */
@@ -186,8 +190,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     /**
      * Get the adjacent tiles to a given position.
      *
-     * @param posX
-     * @param posY
+     * @param posX The x position
+     * @param posY The y position
      *
      * @return The list of all adjacent tiles or null in case there is no adjacent Tile.
      */
