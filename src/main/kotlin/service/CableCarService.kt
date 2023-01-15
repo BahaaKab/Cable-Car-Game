@@ -64,8 +64,8 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     fun calculateWinners(): List<Player> {
         val currentState : State = rootService.cableCar.currentState
         val winnerList : MutableList<Player> = mutableListOf()
-        val playerList : List<Player> = currentState.players
-        playerList.sortedByDescending { it.score }
+        var playerList : List<Player> = currentState.players
+        playerList = playerList.sortedByDescending { it.score }
         val winnerScore : Int = playerList[0].score
         for(i in playerList.indices){
             if(playerList[i].score == winnerScore){
