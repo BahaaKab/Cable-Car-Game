@@ -205,7 +205,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             Array(10) { null }
         }
         // Add the stationTiles...
-        for (i in 2..8) {
+        for (i in 1..8) {
             // ... on the left side
             board[0][i] = StationTile(listOf(RIGHT_TOP, RIGHT_BOT))
             // .. on the right side
