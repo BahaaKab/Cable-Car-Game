@@ -17,6 +17,9 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
             for(stationTile in player.stationTiles){
                 val path : List<Tile> = stationTile.path
                 // check if the path goes to another StationTile or to a PowerStationTile
+                if(path.isEmpty()){
+                    continue
+                }
                 val pathIsClosed : Boolean = path.last().isEndTile
                 if(!pathIsClosed){
                     continue
@@ -95,7 +98,10 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
          */
         for(player in playerList){
             for(stationTiles in player.stationTiles){
-                if(stationTiles.path.last() in adjacentTiles){
+                if(stationTiles in adjacentTiles){
+                    updatePath(stationTiles)
+                }
+                else if(stationTiles.path.isNotEmpty() && stationTiles.path.last() in adjacentTiles){
                     updatePath(stationTiles)
                 }
             }
@@ -107,7 +113,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      *
      * @param stationTile where the path begins
      */
-    private fun updatePath(stationTile: StationTile) {
+    fun updatePath(stationTile: StationTile) {
         val currentState : State = rootService.cableCar.currentState
         stationTile.path = mutableListOf()
         val gridPosition : Array<Int> = getPosition(stationTile)
@@ -142,7 +148,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      * @param [stationTile]
      * @return Array of the position of the [StationTile]
      */
-    private fun getPosition(stationTile : StationTile) : Array<Int> {
+    fun getPosition(stationTile : StationTile) : Array<Int> {
         val gameBoard : Array<Array<Tile?>> = rootService.cableCar.currentState.board
 
         for(x in (1..8)){
