@@ -14,3 +14,5 @@ const val BOT_RIGHT = 4
 const val BOT_LEFT = 5
 const val LEFT_BOT = 6
 const val LEFT_TOP = 7
+
+val PLAYER_ORDER_COLORS = arrayOf(Color.YELLOW, Color.BLUE, Color.ORANGE, Color.GREEN, Color.PURPLE, Color.BLACK)

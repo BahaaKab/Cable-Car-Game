@@ -23,6 +23,6 @@ class LobbyScene(private val rootService: RootService) : MenuScene(), Refreshabl
     /**
      * @see view.Refreshable.refreshAfterJoinGame
      */
-    override fun refreshAfterJoinGame() {
+    override fun refreshAfterJoinGame(names: List<String>) {
     }
 }

@@ -9,7 +9,7 @@ import entity.PlayerInfo
 /**
  *
  */
-class NetworkService(private val rootService: RootService) : AbstractRefreshingService() {
+class NetworkService(val rootService: RootService) : AbstractRefreshingService() {
     /**
      * The sopra server hosting the BGW sessions.
      */
@@ -101,7 +101,7 @@ class NetworkService(private val rootService: RootService) : AbstractRefreshingS
         // If no network client exists, throw exception
         val client = checkNotNull(networkClient)
         // Else, if client is connected, send GameInitMessage
-        with (checkNotNull(rootService.cableCar)) {
+        with (rootService.cableCar) {
             val players = playerInfos.map { it.toNetworkPlayerInfo() }
             val gameInitMessage = GameInitMessage(
                 rotationAllowed = allowTileRotation,
