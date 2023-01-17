@@ -159,4 +159,26 @@ class PlayerActionServiceTest {
 
         assertEquals(false, rootService.playerActionService.onlyIllegalPositionsLeft(gameTile))
     }
+
+    /**
+     * Test to check if there are only illegal positions left. In this case there are only illegal positions left
+     */
+    @Test
+    fun testOnlyIllegalPositions2() {
+        setup.startLocalGame(players, false, 0)
+        assertNotNull(rootService.cableCar)
+        val game = rootService.cableCar.currentState
+        val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
+
+        for(i in 0..9){
+            for(j in 0..9){
+                if(game.board[i][j] == null && !(i==1 && j==1) && !(i==1 && j==8) && !(i==8 && j==8)
+                    && !(i==8 && j==1) && !(i==4 && j==4) && !(i==4 && j==5) && !(i==5 && j==4) && !(i==5 && j==5)){
+                    // On each free grid spot place a GameTile
+                    game.board[i][j] = GameTile(1, listOf(7,2,1,4,3,6,5,0))
+                }
+            }
+        }
+        assertEquals(true, rootService.playerActionService.onlyIllegalPositionsLeft(gameTile))
+    }
 }
