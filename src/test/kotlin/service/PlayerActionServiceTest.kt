@@ -140,5 +140,33 @@ class PlayerActionServiceTest {
 
         val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
         assertEquals(true, rootService.playerActionService.positionIsIllegal(1,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,8,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,8,gameTile))
+    }
+
+    /**
+     * Test if illegal positions get legal if no other legal position is possible
+     */
+    @Test
+    fun testPositionIsIllegal2() {
+        setup.startLocalGame(players, false, 0)
+        assertNotNull(rootService.cableCar)
+        val game = rootService.cableCar.currentState
+        // All other Grid-Positions except the corners get a GameTile
+        for(i in 0..9){
+            for(j in 0..9){
+                if(game.board[i][j] != null && !(i==1 && j==1) && !(i==1 && j==8) && !(i==8 && j==8)
+                    && !(i==4 && j==4) && !(i==4 && j==5) && !(i==5 && j==4) && !(i==5 && j==5)){
+                    game.board[i][j] = game.drawPile.removeFirst()
+                }
+            }
+        }
+        val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
+        // All corner positions should be legal now
+        assertEquals(false, rootService.playerActionService.positionIsIllegal(1,1,gameTile))
+        assertEquals(false, rootService.playerActionService.positionIsIllegal(1,8,gameTile))
+        assertEquals(false, rootService.playerActionService.positionIsIllegal(8,1,gameTile))
+        assertEquals(false, rootService.playerActionService.positionIsIllegal(8,8,gameTile))
     }
 }
