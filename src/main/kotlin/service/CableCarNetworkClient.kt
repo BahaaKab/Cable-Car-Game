@@ -2,10 +2,10 @@ package service
 
 import edu.udo.cs.sopra.ntf.GameInitMessage
 import edu.udo.cs.sopra.ntf.GameStateVerificationInfo
-import edu.udo.cs.sopra.ntf.PlayerType
 import edu.udo.cs.sopra.ntf.TurnMessage
 import entity.PLAYER_ORDER_COLORS
 import entity.PlayerInfo
+import entity.PlayerType
 import entity.State
 import tools.aqua.bgw.core.BoardGameApplication
 import tools.aqua.bgw.net.client.BoardGameClient
@@ -112,13 +112,8 @@ class CableCarNetworkClient(
         // TODO: How to properly check, that the game has not started and that the sender is actually the host?
         val playerInfos = message.players.mapIndexed { index, info ->
             val name = info.name
-            //TODO: Not so nice, as we have to suggest an AI difficulty level
-            val playerType = when(info.playerType) {
-                PlayerType.AI -> entity.PlayerType.AI_HARD
-                PlayerType.HUMAN -> entity.PlayerType.HUMAN
-            }
             val color = PLAYER_ORDER_COLORS[index]
-
+            val playerType = PlayerType.HUMAN
             PlayerInfo(name, playerType, color, isNetworkPlayer = true)
         }
 
@@ -156,7 +151,7 @@ class CableCarNetworkClient(
         // Place tile
         playerActionService.placeTile(message.posX, message.posY)
         // Validate the gameState
-        check(isValidGameState(message.verifcationInfo))
+        check(isValidGameState(message.gameStateVerificationInfo))
     }
 
     /**
