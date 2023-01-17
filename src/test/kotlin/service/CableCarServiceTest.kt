@@ -242,7 +242,7 @@ class CableCarServiceTest {
         rootService.cableCarService.calculatePoints()
         // In this case the two paths of the [Player]s are closed and should give them 2 points
         assertEquals(2,p1.score)
-        assertEquals(2,p1.score)
+        assertEquals(2,p2.score)
     }
 
     /**
