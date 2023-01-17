@@ -1,5 +1,7 @@
 package service
 
+import entity.Color
+import entity.GameTile
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
@@ -22,10 +24,27 @@ class TileImageLoader {
     private val image : BufferedImage = ImageIO.read(TileImageLoader::class.java.getResource(CARDS_FILE))
 
     /**
-     * Provides the card image for the given [entity.GameTile.id]
+     * Provides the tile image for the given [entity.GameTile.id]
      */
-    fun frontImageFor(id : Int) =
-        getImageByCoordinates(id % 10, id/10)
+    fun frontImageFor(id : Int) = getImageByCoordinates(id % 10, id / 10)
+
+    /**
+     * Provides the tile image for the given [entity.GameTile]
+     */
+    fun frontImageFor(gameTile: GameTile) = frontImageFor(gameTile.id)
+
+    /**
+     * Provides the station tile image for the given [entity.Color]
+     */
+    fun stationTileFor(color: Color) = when (color) {
+        Color.YELLOW -> getImageByCoordinates(0, 6)
+        Color.BLUE -> getImageByCoordinates(1, 6)
+        Color.ORANGE -> getImageByCoordinates(2, 6)
+        Color.GREEN -> getImageByCoordinates(3, 6)
+        Color.PURPLE -> getImageByCoordinates(4, 6)
+        Color.BLACK -> getImageByCoordinates(5, 6)
+    }
+
 
     /**
      * Retrieves from the full raster image [image] the corresponding sub-image
@@ -35,7 +54,7 @@ class TileImageLoader {
      * @param y row in the raster image, starting at 0
      *
      */
-    private fun getImageByCoordinates (x: Int, y: Int) : BufferedImage =
+    private fun getImageByCoordinates(x: Int, y: Int) : BufferedImage =
         image.getSubimage(
             x * IMG_WIDTH,
             y * IMG_HEIGHT,
