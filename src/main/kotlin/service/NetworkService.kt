@@ -7,40 +7,48 @@ import edu.udo.cs.sopra.ntf.TileInfo
 import entity.PlayerInfo
 
 /**
- *
+ * Connect with the SoPra-server and send network messages.
  */
 class NetworkService(val rootService: RootService) : AbstractRefreshingService() {
     /**
-     * The sopra server hosting the BGW sessions.
+     * The sopra server hosting the BGW sessions
      */
-    val HOST = "sopra.cs.tu-dortmund.de:80/bgw-net/connect"
+    private val host = "sopra.cs.tu-dortmund.de:80/bgw-net/connect"
 
     /**
-     * The global secret that is used to verify a connection with the server.
+     * The global secret that is used to verify a connection with the server
      */
-    val SECRET = "cable22"
+    private val secret = "cable22"
 
     /**
-     *
+     * The Game ID
+     */
+    private val gameID = "CableCar"
+
+    /**
+     * The network client instance
      */
     var networkClient: CableCarNetworkClient? = null
 
     /**
+     * Connect to the SoPra-server and create a game lobby.
      *
+     * @param player The hosts [PlayerInfo]
+     * @param sessionID The ID that other players will need to join the session
      */
     fun hostGame(player: PlayerInfo, sessionID: String) {
         val client = CableCarNetworkClient(
             this,
             playerName = player.name,
-            host = HOST,
-            secret = SECRET
+            host = host,
+            secret = secret
         )
 
         networkClient = client
 
         if (client.connect()) {
             client.createGame(
-                gameID = "CableCar",  //TODO: pass from somewhere?
+                gameID = gameID,
                 sessionID = sessionID,
                 greetingMessage = "Welcome to CableCar! You just joined the session '$sessionID'."
             )
@@ -48,14 +56,17 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     }
 
     /**
+     * Connect to the SoPra-server and join a game.
      *
+     * @param player The players [PlayerInfo]
+     * @param sessionID The ID of the game lobby, that should be joined
      */
     fun joinGame(player: PlayerInfo, sessionID: String) {
         val client = CableCarNetworkClient(
             this,
             playerName = player.name,
-            host = HOST,
-            secret = SECRET
+            host = host,
+            secret = secret
         )
 
         networkClient = client
@@ -69,7 +80,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     }
 
     /**
-     *
+     * Disconnect safely from the SoPra-server
      */
     fun disconnect() {
         // If no network client exists, return
@@ -79,7 +90,14 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     }
 
     /**
+     * Send a [TurnMessage] to the other network players.
      *
+     * @param posX The x position of the tile to place
+     * @param posY The y position of the tile to place
+     * @param fromSupply Whether the tile was drawn from the draw pile
+     * @param rotation The rotation of the tile
+     *
+     * @throws IllegalStateException If no [CableCarNetworkClient] was initialized.
      */
     fun sendTurnMessage(posX: Int, posY: Int, fromSupply: Boolean, rotation: Int) {
         // If no network client exists, throw exception
@@ -95,7 +113,11 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     }
 
     /**
+     * Send a [GameInitMessage] to sync the guest players to your game state.
      *
+     * @param playerInfos All player infos. The list order defines the turn order.
+     *
+     * @throws IllegalStateException If no [CableCarNetworkClient] was initialized.
      */
     fun sendGameInitMessage(playerInfos: List<PlayerInfo>) {
         // If no network client exists, throw exception
