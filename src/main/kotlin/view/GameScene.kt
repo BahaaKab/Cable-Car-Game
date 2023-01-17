@@ -90,6 +90,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * @see view.Refreshable.refreshAfterStartGame
      */
     override fun refreshAfterStartGame() {
+        CableCarApplication.showGameScene(this)
     }
 
     /**
