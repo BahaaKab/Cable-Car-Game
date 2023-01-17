@@ -108,7 +108,9 @@ class PlayerActionServiceTest {
     }
 
     /**
-     * By creating a new game and then placing a tile we can test if the placing Method is working
+     * By creating a new game and then placing a tile we can test if the placing Method is working.
+     * In this case a tile is placed on a legal position firstly and then on an invalid position because no adjacent
+     * [StationTile] or [GameTile]
      * **/
     @Test
     fun testPlaceTile(){
@@ -127,9 +129,16 @@ class PlayerActionServiceTest {
         assertNull(game.board[6][6])
     }
 
+    /**
+     * Test for checking if a path of length 1 gets constructed
+     */
     @Test
-    fun testPositionIsIllegal() {
-        //TBD
-        //1,1 1,8 8,8 & 8,1
+    fun testPositionIsIllegal1() {
+        setup.startLocalGame(players, false, 0)
+        assertNotNull(rootService.cableCar)
+        val game = rootService.cableCar.currentState
+
+        val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,1,gameTile))
     }
 }
