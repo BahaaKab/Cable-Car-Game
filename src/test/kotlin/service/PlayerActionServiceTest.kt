@@ -1,5 +1,6 @@
 package service
 import entity.*
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.*
 
 /**
@@ -33,7 +34,6 @@ class PlayerActionServiceTest {
         //Executes a player action
         rootService.playerActionService.placeTile(1,3)
         assertNotNull(game.board[1][3])
-        rootService.cableCarService.nextTurn()
         //Tests the undo function
         assertEquals(history.undoStates.size,1)
         rootService.playerActionService.undo()
@@ -57,14 +57,12 @@ class PlayerActionServiceTest {
         //Executes a player action
         rootService.playerActionService.placeTile(1,3)
         assertNotNull(game.board[1][3])
-        rootService.cableCarService.nextTurn()
         //Tests the undo function
         assertEquals(history.undoStates.size,1)
         rootService.playerActionService.undo()
         assertNull(game.board[1][3])
         assertEquals(history.redoStates.size, 1)
         rootService.playerActionService.redo()
-        rootService.cableCarService.nextTurn()
         assertEquals(history.redoStates.size, 0)
         assertEquals(history.undoStates.size,1)
         assertNotNull(game.board[1][3])
@@ -72,10 +70,41 @@ class PlayerActionServiceTest {
     }
 
 
+
+    /**
+     * Tests the drawPile function
+     *
+     * First we draw and play some Tiles.
+     * After that we check if we can draw Tiles from an empty drawPile
+     * **/
     @Test
     fun testDrawPile(){
-        //Diese Methode habe ich gemacht. Wir haben aber vereinbart, dass man gegentesten soll.
-        //Daher muss jemand anderes diese Methode testen
+        setup.startLocalGame(players, false, 0)
+        val game = rootService.cableCar.currentState
+        assertEquals(58,game.drawPile.size)
+
+        //Draws Tiles
+        rootService.playerActionService.drawTile()
+        assertEquals(57, game.drawPile.size)
+        rootService.playerActionService.placeTile(1,5)
+        assertNotNull(game.board[1][5])
+
+        rootService.playerActionService.drawTile()
+        assertEquals(56, game.drawPile.size)
+        rootService.playerActionService.placeTile(1,3)
+        assertNotNull(game.board[1][3])
+
+        rootService.playerActionService.drawTile()
+        assertEquals(55, game.drawPile.size)
+        rootService.playerActionService.placeTile(1,4)
+        assertNotNull(game.board[1][4])
+
+        //Tests if we can draw from an empty draw pile
+        game.drawPile.removeAll(game.drawPile)
+        assertEquals(0, game.drawPile.size)
+        assertThrows<Exception> { rootService.playerActionService.drawTile() }
+
+
     }
 
     /**
@@ -101,6 +130,6 @@ class PlayerActionServiceTest {
     @Test
     fun testPositionIsIllegal() {
         //TBD
-
+        //1,1 1,8 8,8 & 8,1
     }
 }
