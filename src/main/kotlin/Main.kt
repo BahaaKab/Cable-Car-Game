@@ -15,6 +15,6 @@ fun main() {
     BoardGameApplication.loadFont(fontFile1)
     BoardGameApplication.loadFont(fontFile2)
 
-    CableCarApplication().show()
+    CableCarApplication.show()
     println("Application ended. Goodbye")
 }
