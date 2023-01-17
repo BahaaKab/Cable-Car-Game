@@ -18,6 +18,6 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
 
 
     init {
-        showGameScene(connectionScene)
+        showMenuScene(connectionScene)
     }
 }

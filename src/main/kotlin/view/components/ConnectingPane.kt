@@ -1,15 +1,15 @@
 package view.components
 
-import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.components.uicomponents.Label
+import tools.aqua.bgw.components.uicomponents.UIComponent
 import tools.aqua.bgw.util.Font
 import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_BOLD
 
 
 class ConnectingPane(posX: Int, posY: Int) :
-    Pane<ComponentView>(posX, posY, 850, 240) {
+    Pane<UIComponent>(posX, posY, 850, 240) {
     init {
         addAll(
 

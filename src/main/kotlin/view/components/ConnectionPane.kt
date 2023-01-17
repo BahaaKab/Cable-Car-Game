@@ -1,18 +1,15 @@
 package view.components
 
-import tools.aqua.bgw.components.ComponentView
-import tools.aqua.bgw.components.gamecomponentviews.TokenView
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.components.uicomponents.TextField
+import tools.aqua.bgw.components.uicomponents.UIComponent
 import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.visual.ImageVisual
+import tools.aqua.bgw.visual.ColorVisual
 import view.*
-import javax.imageio.ImageIO
 
 class ConnectionPane(posX: Int, posY: Int) :
-    Pane<ComponentView>(posX, posY, 850, 240) {
-    private val playerColorVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/colordef.png")))
+    Pane<UIComponent>(posX, posY, 850, 240) {
 
     init {
         addAll(
@@ -22,10 +19,10 @@ class ConnectionPane(posX: Int, posY: Int) :
                         "-fx-background-radius: 10;-fx-background-color: rgba(255,255,255,1);"
             },
 
-            TokenView(
+            Label(
                 posX = 555, posY = 388,
                 width = 70, height = 10,
-                visual = playerColorVisual
+                visual = ColorVisual(230,230,233)
             ),
             Label(
                 width = 300, height = 50,

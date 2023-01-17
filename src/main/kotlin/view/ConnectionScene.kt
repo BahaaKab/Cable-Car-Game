@@ -1,10 +1,10 @@
 package view
 
 import service.RootService
-import tools.aqua.bgw.components.gamecomponentviews.TokenView
 import tools.aqua.bgw.components.uicomponents.Button
+import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
-import tools.aqua.bgw.core.BoardGameScene
+import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
@@ -15,7 +15,7 @@ import view.components.HumanPlayerType
 import java.awt.Color
 import javax.imageio.ImageIO
 
-class ConnectionScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
+class ConnectionScene(private val rootService: RootService) : MenuScene(1920, 1080), Refreshable {
 
     private val logoPane = CableCarLogo(posX = 841, posY = 104)
 
@@ -43,7 +43,7 @@ class ConnectionScene(private val rootService: RootService) : BoardGameScene(192
         visual = Visual.EMPTY
     ).apply {
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: 20px"
-        onMouseClicked = { CableCarApplication.showGameScene(CableCarApplication.connectingScene) }
+        onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.connectingScene) }
     }
 
     val joinGameButton = Button(
@@ -55,15 +55,16 @@ class ConnectionScene(private val rootService: RootService) : BoardGameScene(192
         visual = Visual.EMPTY
     ).apply {
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: 20px"
-        onMouseClicked = { CableCarApplication.showGameScene(CableCarApplication.connectingScene) }
+        onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.connectingScene) }
     }
 
     init {
+        opacity = 1.0
         background = ColorVisual(247, 247, 247)
         addComponents(
             logoPane,
             menuButton,
-            TokenView(
+            Label(
                 posX = 545, posY = 272,
                 width = 22, height = 15,
                 visual = menuVisual

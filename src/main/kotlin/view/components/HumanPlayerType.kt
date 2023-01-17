@@ -9,7 +9,7 @@ import view.DEFAULT_FONT_BOLD
 import java.awt.Color
 
 class HumanPlayerType(posX: Number = 0, posY: Number = 0) :
-    Pane<Label>(posX = posX, posY = posY, width = 0, height = 0) {
+    Pane<Label>(posX = posX, posY = posY, width = 119, height = 40) {
 
     init {
         addAll(

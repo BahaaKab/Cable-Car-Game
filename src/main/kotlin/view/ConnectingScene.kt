@@ -1,10 +1,10 @@
 package view
 
 import service.RootService
-import tools.aqua.bgw.components.gamecomponentviews.TokenView
 import tools.aqua.bgw.components.uicomponents.Button
+import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
-import tools.aqua.bgw.core.BoardGameScene
+import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
@@ -15,7 +15,7 @@ import view.components.ConnectingPane
 import java.awt.Color
 import javax.imageio.ImageIO
 
-class ConnectingScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
+class ConnectingScene(private val rootService: RootService) : MenuScene(1920, 1080), Refreshable {
     private val logoPane = CableCarLogo(posX = 841, posY = 104)
     private val cancelVisual = ImageVisual(ImageIO.read(ConnectionScene::class.java.getResource("/arrow.png")))
     private val connectingPane = ConnectingPane(0, 0)
@@ -33,11 +33,12 @@ class ConnectingScene(private val rootService: RootService) : BoardGameScene(192
     }
 
     init {
+        opacity = 1.0
         background = ColorVisual(247, 247, 247)
         addComponents(
             logoPane,
             cancelButton,
-            TokenView(
+            Label(
                 posX = 545, posY = 272,
                 width = 22, height = 15,
                 visual = cancelVisual
@@ -48,7 +49,7 @@ class ConnectingScene(private val rootService: RootService) : BoardGameScene(192
     }
 
     override fun refreshAfterJoinGame() {
-        CableCarApplication.showGameScene(CableCarApplication.connectingScene)
+        CableCarApplication.showMenuScene(CableCarApplication.connectingScene)
     }
 }
 
