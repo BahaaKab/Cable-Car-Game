@@ -15,5 +15,6 @@ val DEFAULT_BLUE_COLOR = ColorVisual(17,139,206)
 val DEFAULT_RED_COLOR = ColorVisual(213,41,39)
 val DEFAULT_GREEN_COLOR = ColorVisual(12,111,47)
 val DEFAULT_PURPLE_COLOR = ColorVisual(142,13,78)
+val DEFAULT_BLACK_COLOR = ColorVisual(2,2,2)
 const val DEFAULT_BORDER_RADIUS = "20px"
 val TILEIMAGELOADER = TileImageLoader()

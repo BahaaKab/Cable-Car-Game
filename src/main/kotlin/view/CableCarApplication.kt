@@ -5,7 +5,7 @@ import service.RootService
 
 @Suppress("UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
-class CableCarApplication : BoardGameApplication("Cable Car") {
+object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
 
 
     private val rootService = RootService()
@@ -15,8 +15,11 @@ class CableCarApplication : BoardGameApplication("Cable Car") {
     }
     private val chooseModeScene = ChooseModeScene(rootService)
     private val lobbyScene = LobbyScene(rootService)
+     val connectionScene = ConnectionScene(rootService)
+     val connectingScene = ConnectingScene(rootService)
+
 
     init {
-        this.showGameScene(gameScene)
+        showMenuScene(connectionScene)
     }
 }

@@ -63,6 +63,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             // If the game is hosted by another player, sync the draw pile via the tileIDs passed through
             // the GameInitMessage
             requireNotNull(tileIDs)
+            require(tileIDs.size == 60)
             val gameTiles = rootService.ioService.getTilesFromCSV().sortedBy { it.id }
             tileIDs.map{ gameTiles[it] }
         }.toMutableList()
