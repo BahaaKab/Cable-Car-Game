@@ -36,22 +36,11 @@ class EndScene(private val rootService: RootService) : MenuScene(1920,1080), Ref
         componentStyle = "-fx-background-color: rgb($DEFAULT_BLUE_STRING);-fx-background-radius: 30"
     }
 
-    private val mainMenuButton = Button(
-        posX = 870, posY = 850,
-        width = 180, height = 50,
-        text = "Main Menu",
-        font = Font(size = 25, color = Color.WHITE, family = DEFAULT_FONT_MEDIUM),
-        alignment = Alignment.CENTER,
-        visual = Visual.EMPTY
-    ).apply {
-        componentStyle = "-fx-background-color: rgb($DEFAULT_BLUE_STRING);-fx-background-radius: 30"
-    }
-
     init {
         opacity = 1.0
         background = ColorVisual(247,247,247)
         addComponents(
-            logoPane, scoreboardPane, exitButton, mainMenuButton
+            logoPane, scoreboardPane, exitButton
         )
     }
 }
