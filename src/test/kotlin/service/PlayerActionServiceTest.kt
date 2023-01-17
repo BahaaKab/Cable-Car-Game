@@ -41,10 +41,34 @@ class PlayerActionServiceTest {
         assertEquals(history.redoStates.size, 1)
     }
 
+    /**
+     * Tests the redo function
+     *
+     * We undo a state and then we redo it again
+     * **/
     @Test
     fun testRedo(){
-        //Diese Methode habe ich gemacht. Wir haben aber vereinbart, dass man gegentesten soll.
-        //Daher muss jemand anderes diese Methode testen
+        setup.startLocalGame(players, false, 0)
+        val game = rootService.cableCar.currentState
+        val history = rootService.cableCar.history
+        //Tests if the initialization works
+        assertEquals(history.redoStates.size, 0)
+        assertEquals(history.undoStates.size, 0)
+        //Executes a player action
+        rootService.playerActionService.placeTile(1,3)
+        assertNotNull(game.board[1][3])
+        rootService.cableCarService.nextTurn()
+        //Tests the undo function
+        assertEquals(history.undoStates.size,1)
+        rootService.playerActionService.undo()
+        assertNull(game.board[1][3])
+        assertEquals(history.redoStates.size, 1)
+        rootService.playerActionService.redo()
+        rootService.cableCarService.nextTurn()
+        assertEquals(history.redoStates.size, 0)
+        assertEquals(history.undoStates.size,1)
+        assertNotNull(game.board[1][3])
+
     }
 
 
