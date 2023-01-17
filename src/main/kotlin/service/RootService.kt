@@ -5,7 +5,7 @@ import view.Refreshable
 
 /**
  * The [RootService] is used to connect every Class in the project
- * **/
+ */
 class RootService {
     lateinit var cableCar: CableCar
     val playerActionService = PlayerActionService(this)
@@ -34,5 +34,10 @@ class RootService {
     fun addRefreshables(vararg newRefreshables: Refreshable) {
         newRefreshables.forEach { addRefreshable(it) }
     }
+
+    /**
+     * Check, a [CableCar] instance already exists
+     */
+    fun isGameInitialized(): Boolean = this::cableCar.isInitialized
 
 }

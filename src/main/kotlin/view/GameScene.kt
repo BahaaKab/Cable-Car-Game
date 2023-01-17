@@ -101,7 +101,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterJoinGame
      */
-    override fun refreshAfterJoinGame() {
+    override fun refreshAfterJoinGame(names: List<String>) {
     }
 
     /**

@@ -211,6 +211,6 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
     /**
      * @see view.Refreshable.refreshAfterJoinGame
      */
-    override fun refreshAfterJoinGame() {
+    override fun refreshAfterJoinGame(names: List<String>) {
     }
 }
