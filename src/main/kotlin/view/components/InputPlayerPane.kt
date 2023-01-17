@@ -21,112 +21,129 @@ import java.awt.Color
  * @param isMultiplayer A boolean that indicates which kind of Pane is needed
  * @param isHost A boolean that indicates if this Pane shows the Multiplayer-Host-Name
  * */
-class InputPlayerPane(posX: Number = 0, posY: Number = 0, private val isMultiplayer : Boolean = false,
-                      private val isHost : Boolean = false) : Pane<UIComponent>(posX, posY, width = 590, height = 90){
+class InputPlayerPane(
+    posX: Number = 0, posY: Number = 0, private val isMultiplayer: Boolean = false,
+    private val isHost: Boolean = false
+) : Pane<UIComponent>(posX, posY, width = 590, height = 90) {
 
-        private val playerTypes = listOf(PlayerType.HUMAN, PlayerType.AI_EASY, PlayerType.AI_HARD)
-        private var typeCounter = 0
+    private val playerTypes = listOf(PlayerType.HUMAN, PlayerType.AI_EASY, PlayerType.AI_HARD)
+    private var typeCounter = 0
 
-        private val inputBackground = Label(
-            posX = 20, posY = 15,
-            width = 570, height = 75
-        ).apply { componentStyle = "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);" +
-                    "-fx-background-radius: 10;-fx-background-color: rgba(255,255,255,1);"}
+    private val inputBackground = Label(
+        posX = 20, posY = 15,
+        width = 570, height = 75
+    ).apply {
+        componentStyle = "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);" +
+                "-fx-background-radius: 10;-fx-background-color: rgba(255,255,255,1);"
+    }
 
-        private val circleLabel = Label(
-            posX = 545, posY = 42,
-            width = 25, height = 25
-        ).apply { componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
-                    "-fx-border-color: rgba(5, 24, 156, 1); -fx-border-radius: 100; -fx-border-width: 4;"}
+    private val circleLabel = Label(
+        posX = 545, posY = 42,
+        width = 25, height = 25
+    ).apply {
+        componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
+                "-fx-border-color: rgba(5, 24, 156, 1); -fx-border-radius: 100; -fx-border-width: 4;"
+    }
 
-        private val playerName = Label(
-            posX = 50, posY = 38,
-            width = 300, height = 30,
-            alignment = Alignment.CENTER_LEFT,
-            font = Font(size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM,
-                        fontWeight = Font.FontWeight.BOLD),
-            text = "Waiting for Player..."
-        ).apply { isVisible = false }
+    private val playerName = Label(
+        posX = 50, posY = 38,
+        width = 300, height = 30,
+        alignment = Alignment.CENTER_LEFT,
+        font = Font(
+            size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM,
+            fontWeight = Font.FontWeight.BOLD
+        ),
+        text = "Waiting for Player..."
+    ).apply { isVisible = false }
 
-        private val nameField = TextField(
-            posX = 40, posY = 30,
-            width = 300, height = 30,
-            prompt = "Type a name ...",
-            font = Font(size = 24, family = DEFAULT_FONT_BOLD)
-        ).apply { componentStyle = "-fx-background-color: rgba(0,0,0,0); -fx-border-color: rgb(5,24,156);" +
+    private val nameField = TextField(
+        posX = 40, posY = 30,
+        width = 300, height = 30,
+        prompt = "Type a name ...",
+        font = Font(size = 24, family = DEFAULT_FONT_BOLD)
+    ).apply {
+        componentStyle = "-fx-background-color: rgba(0,0,0,0); -fx-border-color: rgb(5,24,156);" +
                 " -fx-border-width: 0 0 3 0"
-                }
+    }
 
-        init {
-            addAll(inputBackground, circleLabel, playerName)
+    init {
+        addAll(inputBackground, circleLabel, playerName)
 
-            if(isMultiplayer){
-                multiPlayerConfiguration()
-            }else{
-                singlePlayerConfiguration()
+        if (isMultiplayer) {
+            multiPlayerConfiguration()
+        } else {
+            singlePlayerConfiguration()
+        }
+    }
+
+
+    /** A Method for creating all & adding needed components for the Hot-Seat LobbyScene*/
+    private fun singlePlayerConfiguration() {
+        val playerType = Button(
+            posX = 360, posY = 33,
+            width = 145, height = 31,
+            font = Font(size = 21, color = Color(233, 233, 236), family = DEFAULT_FONT_BOLD),
+            text = "${playerTypes[typeCounter]}"
+        ).apply {
+            componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);"
+            onMouseClicked = {
+                typeCounter = (typeCounter + 1) % 3
+                this.text = "${playerTypes[typeCounter]}"
             }
         }
 
-
-        /** A Method for creating all & adding needed components for the Hot-Seat LobbyScene*/
-        private fun singlePlayerConfiguration(){
-            val playerType = Button(
-                posX = 360, posY = 33,
-                width = 145, height = 31,
-                font = Font(size = 21, color = Color(233,233,236), family = DEFAULT_FONT_BOLD),
-                text = "${playerTypes[typeCounter]}"
-            ).apply { componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);"
-                onMouseClicked = { typeCounter = (typeCounter+1) % 3
-                    this.text = "${playerTypes[typeCounter]}"
-                }
-            }
-
-            addAll(playerType, nameField)
-        }
+        addAll(playerType, nameField)
+    }
 
     /** A Method for creating all needed components for the Multiplayer LobbyScene*/
-        private fun multiPlayerConfiguration(){
-            playerName.isVisible = true
-            if(isHost){
-                val hostLabel = Label(
-                    posX = 420, posY = 36,
-                    width = 87, height = 34,
-                    font = Font(size = 23, color = Color(255,255,255), family = DEFAULT_FONT_BOLD),
-                    text = "HOST",
-                    visual = ColorVisual(233,233,236)
-                )
-                addAll(hostLabel)
-            }else{
-                val kickButton = Button(
-                    posX = 7, posY = 8,
-                    width = 35, height = 20
-                ).apply { componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
+    private fun multiPlayerConfiguration() {
+        playerName.isVisible = true
+        if (isHost) {
+            val hostLabel = Label(
+                posX = 420, posY = 36,
+                width = 87, height = 34,
+                font = Font(size = 23, color = Color(255, 255, 255), family = DEFAULT_FONT_BOLD),
+                text = "HOST",
+                visual = ColorVisual(233, 233, 236)
+            )
+            addAll(hostLabel)
+        } else {
+            val kickButton = Button(
+                posX = 7, posY = 8,
+                width = 35, height = 20
+            ).apply {
+                componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
                         "-fx-border-color: rgba(212, 41, 38, 1); -fx-border-radius: 100; -fx-border-width: 4;" +
                         "-fx-background-color: rgba(212, 41, 38, 1); " +
                         "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);"
-                        scale = 0.8
-                }
-                val crossLabel = Label(
-                    posX = 7, posY = 12,
-                    width = 35, height = 20,
-                    alignment = Alignment.CENTER,
-                    font = Font(size = 22, fontWeight = Font.FontWeight.BOLD, color = Color(255,255,255)),
-                    text = "X",
-                    visual = Visual.EMPTY
-                )
-                addAll(kickButton, crossLabel)
+                scale = 0.8
             }
-        }
-
-        /** A Method to change the name of the displayed player name*/
-        fun changePlayerName(name : String){
-            if(isMultiplayer){
-                playerName.text = name
-            }
-        }
-
-        /** A Method to get the String that players are typing in the textfield in Hot-Seat-Mode.*/
-        fun getTextFieldInput() : String{
-            return nameField.text
+            val crossLabel = Label(
+                posX = 7, posY = 12,
+                width = 35, height = 20,
+                alignment = Alignment.CENTER,
+                font = Font(size = 22, fontWeight = Font.FontWeight.BOLD, color = Color(255, 255, 255)),
+                text = "X",
+                visual = Visual.EMPTY
+            )
+            addAll(kickButton, crossLabel)
         }
     }
+
+    /** A Method to change the name of the displayed player name*/
+    fun changePlayerName(name: String) {
+        if (isMultiplayer) {
+            playerName.text = name
+        }
+    }
+
+    /** A Method to get the String that players are typing in the textfield in Hot-Seat-Mode.*/
+    fun getTextFieldInput(): String {
+        return nameField.text
+    }
+
+    /**
+     *
+     */
+    fun getPlayerType() = playerTypes[typeCounter]
+}
