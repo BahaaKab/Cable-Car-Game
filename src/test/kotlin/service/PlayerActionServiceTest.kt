@@ -193,4 +193,15 @@ class PlayerActionServiceTest {
         assertTrue(rootService.playerActionService.isAdjacentToTiles(1,3))
     }
 
+    /**
+     * Tests if we can set the AI Speed
+     * **/
+    @Test
+    fun testSetAISpeed(){
+        setup.startLocalGame(players, false, 0)
+        assertEquals(0, rootService.cableCar.AISpeed)
+        rootService.playerActionService.setAISpeed(4)
+        assertEquals(4, rootService.cableCar.AISpeed)
+    }
+
 }
