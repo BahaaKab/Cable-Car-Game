@@ -181,4 +181,16 @@ class PlayerActionServiceTest {
         }
         assertEquals(true, rootService.playerActionService.onlyIllegalPositionsLeft(gameTile))
     }
+
+    /**
+     * Checks if we can place tile on places it is supposed to
+     * and also checks if we cant place tiles on places that it is not supposed to
+     * **/
+    @Test
+    fun testIsAdjacentToTiles(){
+        setup.startLocalGame(players, false, 0)
+        assertFalse(rootService.playerActionService.isAdjacentToTiles(3,3))
+        assertTrue(rootService.playerActionService.isAdjacentToTiles(1,3))
+    }
+
 }
