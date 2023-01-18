@@ -26,12 +26,20 @@ import javax.imageio.ImageIO
 class LobbyScene(private val rootService: RootService, private val isNetworkMode : Boolean = false,
                  private val hostName : String = "") : MenuScene(1920, 1080), Refreshable {
 
+    private var tileRotation = false
+
+    private var playerNumber = 2
+
     private val cableCarLogo = CableCarLogo(810,50).apply { scale = 1.1 }
+
+    private val refreshArrowVisual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.png")))
+
+    private val rotateRightArrow = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/rotateRight.PNG")))
 
     private val backArrow = Label(
         posX = 644, posY = 215,
         width = 30, height = 30,
-        visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_back.jpg")))
+        visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow.PNG")))
     )
 
     private val backButton = backButton()
@@ -49,7 +57,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     private val cubePicture = Label(
         posX = 781, posY = 216,
         width = 28, height = 28,
-        visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/cube.jpg")))
+        visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/cube.png")))
     )
 
     private val tileRotationButton = Button(
@@ -60,12 +68,24 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             fontWeight = Font.FontWeight.BOLD),
         alignment = Alignment.CENTER_RIGHT,
         visual = ColorVisual(249, 249, 250)
-    ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
+    ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+        onMouseClicked = {
+            if(tileRotation){
+                componentStyle ="-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+                refreshArrow.visual = refreshArrowVisual
+            }else{
+                componentStyle ="-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
+                refreshArrow.visual = rotateRightArrow
+            }
+            tileRotation = tileRotation.not()
+            println(tileRotation)
+        }
+    }
 
     private val refreshArrow = Label(
         posX = 1074, posY = 216,
         width = 28, height = 28,
-        visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.jpg")))
+        visual = refreshArrowVisual
     )
 
     private val playerDisplay = playerDisplay()
@@ -74,6 +94,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                                 DEFAULT_GREEN_COLOR, DEFAULT_PURPLE_COLOR, DEFAULT_BLACK_COLOR)
 
     private val playerInputs = playerInput()
+
+    private val playerIndicators = playerIndicator()
 
     private val startButton = Button(
         posX = 860, 950,
@@ -90,7 +112,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             } else {
 
                 val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
-                    val name = playerInputPane.getTextFieldInput()
+                    val name = checkPlayerName(playerInputPane.getTextFieldInput(), i)
                     val playerType = playerInputPane.getPlayerType()
                     val color = PLAYER_ORDER_COLORS[i]
                     PlayerInfo(name, playerType, color, false)
@@ -109,8 +131,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         addComponents(cableCarLogo , backButton, playerOrderButton, tileRotationButton, startButton,
                       backArrow, cubePicture, refreshArrow)
 
-        for (i in 1 .. 6 ){
-            addComponents(PlayerIndicatorPane(554, 375 + 90 * (i-1), i, colors[i-1]))
+        for (playerIndicator in playerIndicators ){
+            addComponents(playerIndicator)
         }
 
         if(isNetworkMode){
@@ -127,6 +149,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                 addComponents(input)
             }
         }
+
+        displayPlayers(2)
     }
 
     /**This method creates the button to go back to the Scene before, based on the game mode. */
@@ -156,6 +180,14 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         val mutList = mutableListOf<NumberOfPlayersPane>()
         for(i in 2 .. 6) {
             mutList.add(NumberOfPlayersPane( 555 + 125 * (i-2), 290, i))
+        }
+        return mutList.toList()
+    }
+
+    private fun playerIndicator() : List<PlayerIndicatorPane>{
+        val mutList = mutableListOf<PlayerIndicatorPane>()
+        for(i in 1 .. 6) {
+            mutList.add(PlayerIndicatorPane(554, 375 + 90 * (i-1), i, colors[i-1]))
         }
         return mutList.toList()
     }
@@ -213,6 +245,31 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         )
 
         addComponents(backgroundLabel, sessionID, sesIDReal, secretID, secretReal)
+    }
+
+    private fun checkPlayerName(name : String, i : Int) : String{
+        return if(name == ""){
+            "Player $i"
+        }else{
+            name
+        }
+    }
+
+    fun displayPlayers(i : Int){
+        for(display in playerDisplay){
+            if(display.playerNumber in 3.. i){
+                display.blueLine()
+            }else{
+                display.greyLine()
+            }
+        }
+
+        for(k in playerInputs.indices){
+            playerInputs[k].isVisible = (k <= (i-1))
+            playerIndicators[k].isVisible = (k <= (i-1))
+        }
+
+        playerNumber = i
     }
 
     /**
