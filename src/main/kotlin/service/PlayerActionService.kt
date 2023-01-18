@@ -84,14 +84,17 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
         // Otherwise place the tile
         board[posX][posY] = tileToPlace
+        // Refresh the GUI
+        onAllRefreshables { refreshAfterPlaceTile(posX = posX, posY = posY) }
         // If the original hand tile was used, draw a new handTile, otherwise clear the currentTile
-        if (player.currentTile == null) { drawTile() } else { player.currentTile = null }
+        if (player.currentTile == null) {
+            player.handTile = null
+            drawTile()
+        } else { player.currentTile = null }
         // If this is a network game, create the turn message
         if (cableCar.gameMode == GameMode.NETWORK) {
             // TODO
         }
-        // Refresh the GUI
-        onAllRefreshables { refreshAfterPlaceTile() }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
         cableCarService.updatePaths(posX,posY)
         cableCarService.calculatePoints()
@@ -232,6 +235,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val tileToRotate = currentTile ?: handTile
         // The shift index is used to rotate rotate the connections on a tile.
         with (checkNotNull(tileToRotate)) {
+            rotation += if (clockwise) { 90 } else { -90 }
             val indexShift = if (clockwise) { 2 } else { connections.size - 2 }
             // First set the new values
             connections = connections.map { (it + indexShift) % connections.size }
