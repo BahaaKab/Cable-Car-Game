@@ -138,7 +138,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterPlaceTile
      */
-    override fun refreshAfterPlaceTile() {
+    override fun refreshAfterPlaceTile(posX: Int, posY: Int) {
     }
 
     /**

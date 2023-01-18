@@ -91,7 +91,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             // TODO
         }
         // Refresh the GUI
-        onAllRefreshables { refreshAfterPlaceTile() }
+        onAllRefreshables { refreshAfterPlaceTile(posX = posX, posY = posY) }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
         cableCarService.updatePaths(posX,posY)
         cableCarService.calculatePoints()
