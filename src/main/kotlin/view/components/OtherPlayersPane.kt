@@ -133,8 +133,8 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
     fun refreshOtherPlayers() {
         checkNotNull(rootService.cableCar)
         with(rootService.cableCar.currentState) {
+            getUsedPanes().forEach { it.playerCard.clear() }
             getUsedPanes().forEachIndexed { index, pane ->
-                pane.playerCard.clear()
                 if(players[(players.indexOf(activePlayer) + index + 1) % players.size].handTile == null) {
                     pane.playerCard.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
                 } else {
