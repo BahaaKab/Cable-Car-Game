@@ -14,7 +14,7 @@ interface Refreshable {
     fun refreshAfterRotateTileRight() { }
     fun refreshAfterUndo() { }
     fun refreshAfterRedo() { }
-    fun refreshAfterPlaceTile() { }
+    fun refreshAfterPlaceTile(posX : Int, posY : Int) { }
     fun refreshAfterDrawTile() { }
     fun refreshAfterGetTurn() { }
     fun refreshAfterNextTurn() { }
