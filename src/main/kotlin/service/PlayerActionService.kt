@@ -49,7 +49,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      */
     fun drawTile() = with(rootService.cableCar.currentState) {
         if(drawPile.isEmpty()) return
-
+        
         if (activePlayer.handTile == null) {
             activePlayer.handTile = drawPile.removeFirst()
         } else if (activePlayer.currentTile == null) {
