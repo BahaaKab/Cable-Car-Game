@@ -85,7 +85,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         // Otherwise place the tile
         board[posX][posY] = tileToPlace
         // Refresh the GUI
-        onAllRefreshables { refreshAfterPlaceTile() }
+        onAllRefreshables { refreshAfterPlaceTile(posX, posY) }
         // If the original hand tile was used, draw a new handTile, otherwise clear the currentTile
         if (player.currentTile == null) {
             player.handTile = null
