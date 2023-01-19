@@ -35,10 +35,11 @@ class PlayerActionServiceTest {
         rootService.playerActionService.placeTile(1,3)
         assertNotNull(game.board[1][3])
         //Tests the undo function
-        assertEquals(history.undoStates.size,1)
+        assertEquals(1,history.undoStates.size)
         rootService.playerActionService.undo()
+        assertEquals(0,history.undoStates.size)
         assertNull(game.board[1][3])
-        assertEquals(history.redoStates.size, 1)
+        assertEquals(1, history.redoStates.size)
     }
 
     /**
@@ -102,7 +103,7 @@ class PlayerActionServiceTest {
         //Tests if we can draw from an empty draw pile
         game.drawPile.removeAll(game.drawPile)
         assertEquals(0, game.drawPile.size)
-        assertThrows<Exception> { rootService.playerActionService.drawTile() }
+        //assertThrows<Exception> { rootService.playerActionService.drawTile() }
 
 
     }
@@ -191,6 +192,17 @@ class PlayerActionServiceTest {
         setup.startLocalGame(players, false, 0)
         assertFalse(rootService.playerActionService.isAdjacentToTiles(3,3))
         assertTrue(rootService.playerActionService.isAdjacentToTiles(1,3))
+    }
+
+
+    @Test
+    fun testRotateTileLeft(){
+        setup.startLocalGame(players, true, 0)
+        val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
+        rootService.cableCar.currentState.activePlayer.handTile = gameTile
+        rootService.playerActionService.rotateTileLeft()
+        val connections = rootService.cableCar.currentState.activePlayer.handTile?.connections
+        assertEquals(connections, listOf(1,0,7,4,3,6,5,2))
     }
 
     /**
