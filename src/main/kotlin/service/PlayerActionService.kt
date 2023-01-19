@@ -238,7 +238,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             // First set the new values
             connections = connections.map { (it + indexShift) % connections.size }
             // Then set the values to the correct indices
-            connections = List(connections.size) { connections[(it + 2) % connections.size] }
+            connections = List(connections.size) { connections[(it + indexShift+4) % connections.size] }
         }
     }
 
