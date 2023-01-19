@@ -71,6 +71,29 @@ class InputPlayerPane(
                 " -fx-border-width: 0 0 3 0"
     }
 
+    // Now following: The KickButton for the Host of Multiplayer-Lobbys
+
+    private val kickButton = Button(
+        posX = 7, posY = 8,
+        width = 35, height = 20
+    ).apply {
+        componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
+                "-fx-border-color: rgba(212, 41, 38, 1); -fx-border-radius: 100; -fx-border-width: 4;" +
+                "-fx-background-color: rgba(212, 41, 38, 1); " +
+                "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);"
+        scale = 0.8
+    }
+
+    private val crossLabel = Label(
+        posX = 7, posY = 12,
+        width = 35, height = 20,
+        alignment = Alignment.CENTER,
+        font = Font(size = 22, fontWeight = Font.FontWeight.BOLD, color = Color(255, 255, 255)),
+        text = "X",
+        visual = Visual.EMPTY
+    )
+
+
     init {
         addAll(inputBackground, circleLabel, playerName)
 
@@ -113,24 +136,6 @@ class InputPlayerPane(
             )
             addAll(hostLabel)
         } else {
-            val kickButton = Button(
-                posX = 7, posY = 8,
-                width = 35, height = 20
-            ).apply {
-                componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
-                        "-fx-border-color: rgba(212, 41, 38, 1); -fx-border-radius: 100; -fx-border-width: 4;" +
-                        "-fx-background-color: rgba(212, 41, 38, 1); " +
-                        "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);"
-                scale = 0.8
-            }
-            val crossLabel = Label(
-                posX = 7, posY = 12,
-                width = 35, height = 20,
-                alignment = Alignment.CENTER,
-                font = Font(size = 22, fontWeight = Font.FontWeight.BOLD, color = Color(255, 255, 255)),
-                text = "X",
-                visual = Visual.EMPTY
-            )
             addAll(kickButton, crossLabel)
         }
     }
@@ -144,6 +149,9 @@ class InputPlayerPane(
 
     /** A Method to get the String that players are typing in the textfield in Hot-Seat-Mode.*/
     fun getTextFieldInput(): String {
+        if(nameField.text.trim() == ""){
+            nameField.text = "Player$orderNumber"
+        }
         return nameField.text
     }
 
@@ -153,4 +161,9 @@ class InputPlayerPane(
     fun getPlayerType() = playerTypes[typeCounter]
 
     fun setOrderNumber(number : Int) { orderNumber = number }
+
+    fun deactivateKick(){
+        kickButton.isVisible = false
+        crossLabel.isVisible = false
+    }
 }

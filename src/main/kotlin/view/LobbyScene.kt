@@ -5,6 +5,7 @@ import entity.PLAYER_ORDER_COLORS
 import tools.aqua.bgw.core.MenuScene
 import service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
+import tools.aqua.bgw.components.uicomponents.ComboBox
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
@@ -26,7 +27,8 @@ import kotlin.random.Random
  * @param isNetworkMode A boolean that defines which game mode the LobbyScene shows
  * @param hostName The name of the hostPlayer if the scene shows a Multiplayer-Lobby*/
 class LobbyScene(private val rootService: RootService, private val isNetworkMode : Boolean = false,
-                 private val hostName : String = "") : MenuScene(1920, 1080), Refreshable {
+                 private val yourName : String = "", isHost : Boolean = false)
+            : MenuScene(1920, 1080), Refreshable {
 
     private var tileRotation = false
     private var playerNumber = 2
@@ -37,7 +39,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     private val rotateRightArrow = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/rotateRight.PNG")))
 
     private val backArrow = Label(
-        posX = 644, posY = 215,
+        posX = 544, posY = 215,
         width = 30, height = 30,
         visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow.PNG")))
     )
@@ -45,7 +47,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     private val backButton = backButton()
 
     private val playerOrderButton = Button(
-        posX = 770, posY = 210,
+        posX = 670, posY = 210,
         width = 264, height = 30,
         text = "Shuffle Player Order",
         font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
@@ -57,13 +59,13 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     private val cubePicture = Label(
-        posX = 781, posY = 216,
+        posX = 681, posY = 216,
         width = 28, height = 28,
         visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/cube.png")))
     )
 
     private val tileRotationButton = Button(
-        posX = 1064, posY = 210,
+        posX = 964, posY = 210,
         width = 215, height = 30,
         text = "Enable Rotation",
         font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
@@ -72,21 +74,46 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         visual = ColorVisual(249, 249, 250)
     ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
         onMouseClicked = {
-            if(tileRotation){
-                componentStyle ="-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+
+            if (tileRotation) {
+                componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
                 refreshArrow.visual = refreshArrowVisual
-            }else{
-                componentStyle ="-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
+            } else {
+                componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
                 refreshArrow.visual = rotateRightArrow
             }
             tileRotation = tileRotation.not()
         }
+
     }
 
     private val refreshArrow = Label(
-        posX = 1074, posY = 216,
+        posX = 974, posY = 216,
         width = 28, height = 28,
         visual = refreshArrowVisual
+    )
+
+    private val aISpeedBackground = Label(
+        posX = 1200, posY = 210,
+        width = 220, height = 36
+    ).apply {
+        componentStyle = "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);" +
+                "-fx-background-radius: 80;-fx-background-color: rgba(255,255,255,1);"
+    }
+
+    private val aISpeedLabel = Label(
+        posX = 1215, posY = 213,
+        width = 100, height = 30,
+        text = "AI-Speed:",
+        font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),
+        alignment = Alignment.CENTER
+    )
+
+    private val aISpeedSetting = ComboBox(
+        posX = 1315, posY = 210,
+        width = 100, height = 40,
+        font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),
+        items = listOf(1,2,3,4,5)
     )
 
     private val playerDisplay = playerDisplay()
@@ -112,6 +139,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         onMouseClicked = {
             if(isNetworkMode) {
                 // Todo
+                //rootService.setupService.startNetworkGame()
             } else {
 
                 val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
@@ -120,11 +148,26 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                     val color = PLAYER_ORDER_COLORS[i]
                     PlayerInfo(name, playerType, color, false)
                 }
-                // TODO: make AISpeed choosable
-                rootService.setupService.startLocalGame(playerInfos, tileRotation, 1)
+                rootService.setupService.startLocalGame(playerInfos, tileRotation, getAISpeed())
             }
         }
     }
+
+    private val sesIDReal = Label(
+        posX = 710, posY = 280,
+        width = 240, height = 40,
+        alignment = Alignment.CENTER_LEFT,
+        font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
+        text = "thisIsOurFavouriteGame"
+    )
+
+    private val secretReal = Label(
+        posX = 1060, posY = 280,
+        width = 270, height = 40,
+        alignment = Alignment.CENTER_LEFT,
+        font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
+        text = "AMIN4PRESIDENT"
+    )
 
 
     init {
@@ -132,7 +175,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         background = ColorVisual(247, 247, 247)
 
         addComponents(cableCarLogo , backButton, playerOrderButton, tileRotationButton, startButton,
-                      backArrow, cubePicture, refreshArrow)
+                      backArrow, cubePicture, refreshArrow, aISpeedBackground, aISpeedLabel, aISpeedSetting)
 
         for (i in playerIndicators.indices ){
             addComponents(playerIndicators[i], orderButtons[i])
@@ -143,7 +186,17 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             for (input in playerInputs) {
                 addComponents(input)
             }
-            playerInputs[0].changePlayerName(hostName)
+            if(isHost) {
+                playerInputs[0].changePlayerName(yourName)
+                playerNumber = 1
+            }else{
+                startButton.isDisabled = true
+                tileRotationButton.isDisabled = true
+                playerOrderButton.isDisabled = true
+                for(playerInput in playerInputs){
+                    playerInput.deactivateKick()
+                }
+            }
         }else {
             for (display in playerDisplay) {
                 addComponents(display)
@@ -151,9 +204,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             for (input in playerInputs) {
                 addComponents(input)
             }
+            displayPlayers(2)
         }
-
-        displayPlayers(2)
     }
 
     /**This method creates the button to go back to the Scene before, based on the game mode. */
@@ -168,7 +220,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         backArrow.posX = (backArrow.posX - i)
 
         return Button(
-                posX = (635-i), posY = 210,
+                posX = (535-i), posY = 210,
                 width = (110+i), height = 30,
                 text = name,
                 font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
@@ -244,14 +296,6 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             text = "Session ID:"
         )
 
-        val sesIDReal = Label(
-            posX = 710, posY = 280,
-            width = 240, height = 40,
-            alignment = Alignment.CENTER_LEFT,
-            font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
-            text = "thisIsOurFavouriteGame"
-        )
-
         val secretID = Label(
             posX = 980, posY = 280,
             width = 100, height = 40,
@@ -259,14 +303,6 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_BOLD,
                         fontWeight = Font.FontWeight.BOLD),
             text = "Secret:"
-        )
-
-        val secretReal = Label(
-            posX = 1060, posY = 280,
-            width = 270, height = 40,
-            alignment = Alignment.CENTER_LEFT,
-            font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
-            text = "AMIN4PRESIDENT"
         )
 
         addComponents(backgroundLabel, sessionID, sesIDReal, secretID, secretReal)
@@ -302,6 +338,9 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     fun playerOrderOptions(paneNumber : Int){
+        if (paneNumber > playerNumber){
+            return
+        }
 
         if(changingPosition == paneNumber){
             changingPosition = -1
@@ -332,16 +371,16 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
 
         if(newPos == changingPosition){
             changingPosition = -1
-            println("Test 1")
             return
         }
 
         changePanes(newPos-1 , changingPosition-1)
 
-        for(i in playerInputs.indices){
-            playerInputs[i].isVisible = (i < playerNumber)
+        if(!isNetworkMode) {
+            for (i in playerInputs.indices) {
+                playerInputs[i].isVisible = (i < playerNumber)
+            }
         }
-
         changingPosition = -1
     }
 
@@ -367,6 +406,22 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         playerInputs[pos2Pane] = tmpInputPlayer
     }
 
+    private fun getAISpeed() : Int {
+        return if(aISpeedSetting.selectedItem == null){
+            1
+        }else{
+            aISpeedSetting.selectedItem!!
+        }
+    }
+
+    fun setSessionID(session : String){
+        sesIDReal.text = session
+    }
+
+    fun setSecret(secret : String){
+        secretReal.text = secret
+    }
+
 
     /**
      * @see view.Refreshable.refreshAfterStartGame
@@ -385,5 +440,15 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
      * @see view.Refreshable.refreshAfterJoinGame
      */
     override fun refreshAfterJoinGame(names: List<String>) {
+        for(i in names.indices){
+            playerInputs[i].changePlayerName(names[i])
+        }
+        playerInputs[names.size].changePlayerName(yourName)
+        playerNumber = names.size+1
+    }
+
+    override fun refreshAfterGuestJoined(name: String) {
+        playerInputs[playerNumber].changePlayerName(name)
+        playerNumber+1
     }
 }
