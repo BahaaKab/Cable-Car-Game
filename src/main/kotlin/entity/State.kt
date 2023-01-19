@@ -14,5 +14,25 @@ class State (var drawPile : MutableList<GameTile>,
              var activePlayer : Player,
              val board: Array<Array<Tile?>> = arrayOf(),
              val players: List<Player>) {
-    val playedTiles: MutableList<TileInfo> = mutableListOf()
+
+    /**
+     * Tiles that were already placed
+     */
+    val placedTiles: MutableList<TileInfo> = mutableListOf()
+
+    /**
+     * Deep copy a state
+     *
+     * @returns The copied state
+     */
+    fun deepCopy() : State {
+        val copiedDrawPile = drawPile.map { it.deepCopy() }.toMutableList()
+        val copiedBoard = board.map { column -> column.map { it?.deepCopy() }.toTypedArray() }.toTypedArray()
+        val copiedPlayers = players.map { it.deepCopy() }
+        val copiedPlacedTiles = placedTiles.map { it.copy() }
+        val newActivePlayer = copiedPlayers[players.indexOf(activePlayer)]
+        return State(copiedDrawPile, newActivePlayer, copiedBoard, copiedPlayers).apply {
+            placedTiles.addAll(copiedPlacedTiles)
+        }
+    }
 }

@@ -18,7 +18,7 @@ import java.awt.Color
  * @param posY Vertical coordinate for this Pane. Default: 0.
  */
 class CableCarLogo(posX: Number = 0, posY: Number = 0) :
-    Pane<Label>(posX = posX, posY = posY, width = 238, height = 89) {
+    Pane<Label>(posX = posX, posY = posY, width = 0, height = 0) {
 
     private val cableCarLabel = Label(
         posX = 0, posY = 0,

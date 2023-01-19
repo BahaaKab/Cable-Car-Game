@@ -54,7 +54,7 @@ class RefreshableTest : Refreshable {
     override fun refreshAfterRotateTileRight() { refreshAfterRotateTileRightCalled = true }
     override fun refreshAfterUndo() { refreshAfterUndoCalled = true }
     override fun refreshAfterRedo() { refreshAfterRedoCalled = true }
-    override fun refreshAfterPlaceTile() { refreshAfterPlaceTileCalled = true }
+    override fun refreshAfterPlaceTile(posX: Int, posY: Int) { refreshAfterPlaceTileCalled = true }
     override fun refreshAfterDrawTile() { refreshAfterDrawTileCalled = true }
     override fun refreshAfterGetTurn() { refreshAfterGetTurnCalled = true }
     override fun refreshAfterNextTurn() { refreshAfterNextTurnCalled = true }
@@ -89,7 +89,7 @@ class RefreshableTest : Refreshable {
         refreshAfterRotateTileRight()
         refreshAfterUndo()
         refreshAfterRedo()
-        refreshAfterPlaceTile()
+        refreshAfterPlaceTile(10,10)
         refreshAfterDrawTile()
         refreshAfterGetTurn()
         refreshAfterNextTurn()

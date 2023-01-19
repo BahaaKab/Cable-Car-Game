@@ -1,5 +1,6 @@
 package service
 
+import edu.udo.cs.sopra.ntf.TileInfo
 import entity.*
 
 
@@ -48,9 +49,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * without having an alternative [GameTile]
      */
     fun drawTile() = with(rootService.cableCar.currentState) {
-        // Throw an exception if the draw Pile is empty
-        check(drawPile.isNotEmpty())
-        //
+        if(drawPile.isEmpty()) return
+        
         if (activePlayer.handTile == null) {
             activePlayer.handTile = drawPile.removeFirst()
         } else if (activePlayer.currentTile == null) {
@@ -84,14 +84,20 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
         // Otherwise place the tile
         board[posX][posY] = tileToPlace
+        cableCar.currentState.placedTiles.add(
+            TileInfo(posX, posY, tileToPlace.id, tileToPlace.rotation)
+        )
+        // Refresh the GUI
+        onAllRefreshables { refreshAfterPlaceTile(posX, posY) }
         // If the original hand tile was used, draw a new handTile, otherwise clear the currentTile
-        if (player.currentTile == null) { drawTile() } else { player.currentTile = null }
+        if (player.currentTile == null) {
+            player.handTile = null
+            drawTile()
+        } else { player.currentTile = null }
         // If this is a network game, create the turn message
         if (cableCar.gameMode == GameMode.NETWORK) {
             // TODO
         }
-        // Refresh the GUI
-        onAllRefreshables { refreshAfterPlaceTile() }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
         cableCarService.updatePaths(posX,posY)
         cableCarService.calculatePoints()
@@ -119,7 +125,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 continue
             }
             val startConnectorGameTile : Int = stationTile.OUTER_TILE_CONNECTIONS[stationTile.startPosition]
-            val endConnectorGameTile : Int = gameTile.OUTER_TILE_CONNECTIONS[startConnectorGameTile]
+            val endConnectorGameTile : Int = gameTile.connections[startConnectorGameTile]
             var x : Int = posX
             var y : Int = posY
             when(endConnectorGameTile){
@@ -207,6 +213,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Rotates the handTile of the current [Player] by 90° to the left-hand side.
      */
     fun rotateTileLeft() {
+        if(!rootService.cableCar.allowTileRotation) return
         rotateTile(clockwise = false)
         onAllRefreshables { refreshAfterRotateTileLeft() }
     }
@@ -215,6 +222,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Rotates the handTile of the current [Player] by 90° to the right-hand side.
      */
     fun rotateTileRight() {
+        if(!rootService.cableCar.allowTileRotation) return
         rotateTile(clockwise = true)
         onAllRefreshables { refreshAfterRotateTileRight() }
     }
@@ -232,11 +240,12 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val tileToRotate = currentTile ?: handTile
         // The shift index is used to rotate rotate the connections on a tile.
         with (checkNotNull(tileToRotate)) {
+            rotation += if (clockwise) { 90 } else { -90 }
             val indexShift = if (clockwise) { 2 } else { connections.size - 2 }
             // First set the new values
             connections = connections.map { (it + indexShift) % connections.size }
             // Then set the values to the correct indices
-            connections = List(connections.size) { connections[(it + 2) % connections.size] }
+            connections = List(connections.size) { connections[(it + indexShift+4) % connections.size] }
         }
     }
 

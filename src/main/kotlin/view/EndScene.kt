@@ -23,7 +23,7 @@ class EndScene(private val rootService: RootService) : MenuScene(1920,1080), Ref
         scale = 1.2
     }
 
-    private val scoreboardPane = ScoreboardPane(775, 300)
+    private val scoreboardPane = ScoreboardPane(rootService = rootService, posX = 775, posY = 300)
 
     val exitButton = Button(
         posX = 870, posY = 775,
@@ -42,5 +42,32 @@ class EndScene(private val rootService: RootService) : MenuScene(1920,1080), Ref
         addComponents(
             logoPane, scoreboardPane, exitButton
         )
+    }
+
+    override fun refreshAfterEndGame() {
+        scoreboardPane.showOnlyRelevant()
+        CableCarApplication.showMenuScene(this)
+
+        val playersSorted = rootService.cableCar.currentState.players.sortedByDescending {
+            it.score
+        }
+
+        val pointsList = playersSorted.map { it.score }
+
+        val rankingMap = mutableMapOf<Int, Int>().apply {
+
+            // toSet() removes duplicates, and then we need a list to iterate over
+            pointsList.toSet().toList().forEachIndexed { index, int ->
+                put(int, index+1)
+            }
+        }
+
+        scoreboardPane.getUsedNameLabels().forEachIndexed { index, label ->
+            label.text = "${rankingMap[pointsList[index]]}. ${playersSorted[index].name}"
+        }
+
+        scoreboardPane.getUsedPointsLabels().forEachIndexed { index, label ->
+            label.text = "${pointsList[index]}"
+        }
     }
 }

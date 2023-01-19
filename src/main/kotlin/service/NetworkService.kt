@@ -104,7 +104,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
         val client = checkNotNull(networkClient)
         // Else, if client is connected, send TurnMessage
         val gameStateVerificationInfo = GameStateVerificationInfo(
-            placedTiles = listOf<TileInfo>(), // TODO
+            placedTiles = rootService.cableCar.currentState.placedTiles,
             supply = rootService.cableCar.currentState.drawPile.map { it.id },
             playerScores = rootService.cableCar.currentState.players.map { it.score }
         )

@@ -161,8 +161,12 @@ class CableCarNetworkClient(
      *
      * @returns Whether the local state matches the host player's state.
      */
-    private fun isValidGameState(gameStateVerificationInfo: GameStateVerificationInfo): Boolean {
-        // TODO
-        return true
+    private fun isValidGameState(gameStateVerificationInfo: GameStateVerificationInfo) : Boolean = with(gameStateVerificationInfo){
+        val currentState = networkService.rootService.cableCar.currentState
+        val drawPileIds = currentState.drawPile.map { it.id }
+        val isValidDrawPile = supply == drawPileIds
+        val isValidPlacedTiles = placedTiles.sortedBy { it.id } == currentState.placedTiles.sortedBy { it.id }
+        val isValidPlayerScores = playerScores == currentState.players.map { it.score }
+        return isValidDrawPile && isValidPlacedTiles && isValidPlayerScores
     }
 }
