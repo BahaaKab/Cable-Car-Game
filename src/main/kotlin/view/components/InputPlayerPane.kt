@@ -19,13 +19,14 @@ import java.awt.Color
  *
  * @param posX Horizontal coordinate for this Pane. Default: 0.
  * @param posY Vertical coordinate for this Pane. Default: 0.
+ * @param orderNumber An Integer that references the position of the Pane in comparison to others.
  * @param isNetwork A boolean that indicates which kind of Pane is needed
  * @param isHost A boolean that indicates if this Pane shows the Multiplayer-Host-Name
  * */
 class InputPlayerPane(
-    posX: Number = 0, posY: Number = 0, private var orderNumber : Int, private val isNetwork: Boolean = false,
-    private val isHost: Boolean = false
-) : Pane<UIComponent>(posX, posY, width = 590, height = 90) {
+    posX: Number = 0, posY: Number = 0, private var orderNumber : Int,
+    private val isNetwork: Boolean = false, private val isHost: Boolean = false)
+    : Pane<UIComponent>(posX, posY, width = 590, height = 90) {
 
     private val playerTypes = listOf(PlayerType.HUMAN, PlayerType.AI_EASY, PlayerType.AI_HARD)
     private var typeCounter = 0
@@ -147,7 +148,7 @@ class InputPlayerPane(
         }
     }
 
-    /** A Method to get the String that players are typing in the textfield in Hot-Seat-Mode.*/
+    /** A Method to get the String that players are typing in the Textfield in Hot-Seat-Mode. */
     fun getTextFieldInput(): String {
         if(nameField.text.trim() == ""){
             nameField.text = "Player$orderNumber"
@@ -155,13 +156,13 @@ class InputPlayerPane(
         return nameField.text
     }
 
-    /**
-     *
-     */
+    /** Returns which playerType is currently selected in the comboBox. */
     fun getPlayerType() = playerTypes[typeCounter]
 
+    /** Sets a new orderNumber. */
     fun setOrderNumber(number : Int) { orderNumber = number }
 
+    /** A method that deactivates the kickButton. */
     fun deactivateKick(){
         kickButton.isVisible = false
         crossLabel.isVisible = false

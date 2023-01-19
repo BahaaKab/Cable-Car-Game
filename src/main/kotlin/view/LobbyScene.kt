@@ -25,7 +25,9 @@ import kotlin.random.Random
  *
  * @param rootService A reference to the administration of the Game-State
  * @param isNetworkMode A boolean that defines which game mode the LobbyScene shows
- * @param hostName The name of the hostPlayer if the scene shows a Multiplayer-Lobby*/
+ * @param yourName The name of the hostPlayer if the scene shows a Multiplayer-Lobby
+ * @param isHost A Boolean that shows if the local Player is the Host of a Network-Game
+ * */
 class LobbyScene(private val rootService: RootService, private val isNetworkMode : Boolean = false,
                  private val yourName: String = "", isHost : Boolean = false)
             : MenuScene(1920, 1080), Refreshable {
@@ -217,7 +219,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         }
     }
 
-    /**This method creates the button to go back to the Scene before, based on the game mode. */
+    /** This method creates the button to go back to the Scene before, based on the game mode. */
     private fun backButton(): Button {
         var i = 0
         var name = "Menu"
@@ -252,6 +254,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         return mutList.toList()
     }
 
+    /** A Method which creates the "playerX:" and colorX labels.*/
     private fun playerIndicator(): List<PlayerIndicatorPane>{
         val mutList = mutableListOf<PlayerIndicatorPane>()
         for(i in 1 .. 6) {
@@ -260,6 +263,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         return mutList.toList()
     }
 
+    /** This Method creates all buttons needed for switching the order of the players. */
     private fun orderButtons(): List<Button>{
         val mutList = mutableListOf<Button>()
         for(i in 1 .. 6) {
@@ -290,7 +294,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         return mutList.toTypedArray()
     }
 
-    /**In multiplayer this method displays the SessionID and the password.*/
+    /** In multiplayer this method displays the SessionID and the password.*/
     private fun connectionLabel() {
         val backgroundLabel = Label(
             posX = 570, posY = 270,
@@ -325,7 +329,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         addComponents(backgroundLabel, sessionID, sesIDReal, secretID, secretReal)
     }
 
-    private fun checkPlayerName(name : String, i : Int) : String{
+    /** A Method that checks if a player-name is not empty. */
+    private fun checkPlayerName(name : String, i : Int) : String {
         return if(name == ""){
             "Player $i"
         }else{
@@ -333,8 +338,9 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         }
     }
 
-    fun displayPlayers(i : Int){
-        for(display in playerDisplay){
+    /** A Method that changes the number of visible Input-Fields for players.*/
+    fun displayPlayers(i : Int) {
+        for (display in playerDisplay){
             if(display.playerNumber in 3.. i){
                 display.blueLine()
             }else{
@@ -342,7 +348,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             }
         }
 
-        for(k in playerInputs.indices){
+        for (k in playerInputs.indices){
             playerInputs[k].isVisible = (k <= (i-1))
             playerIndicators[k].isVisible = (k <= (i-1))
 
@@ -354,7 +360,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         playerNumber = i
     }
 
-    fun playerOrderOptions(paneNumber : Int){
+    /** This Method shows the Buttons that are able to push in the next move. */
+    fun playerOrderOptions(paneNumber : Int) {
         if (paneNumber > playerNumber){
             return
         }
@@ -380,6 +387,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         }
     }
 
+    /** A Method that changes two selected InputPanes. */
     private fun changePlayersInput(newPos : Int){
 
         for (button in orderButtons){
@@ -401,16 +409,18 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         changingPosition = -1
     }
 
+    /** A Method that shuffles all InputPanes.*/
     private fun randomOrder(){
 
         for(i in 0 until playerNumber){
             changePanes(i, Random.nextInt(i, playerNumber))
         }
     }
-    /**
+
+    /** This Method switches two InputPlanes specified by two params that indicates the postions.
      *
-     * @param pos1Pane : newPos+1
-     * @param pos2Pane : changingPosition+1
+     * @param pos1Pane Indicates the position of the first InputPlane (1.Pane = 1)
+     * @param pos2Pane Indicates the position of the second InputPlane (2.Pane = 2)
      * */
     private fun changePanes(pos1Pane : Int, pos2Pane : Int){
         playerInputs[pos1Pane].posY = (375 + 90 * (pos2Pane)) * 1.0
@@ -423,6 +433,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         playerInputs[pos2Pane] = tmpInputPlayer
     }
 
+    /** This gets the selected AI-Speed. */
     private fun getAISpeed() : Int {
         return if(aISpeedSetting.selectedItem == null){
             1
@@ -431,10 +442,12 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         }
     }
 
+    /** Sets a new SessionID. */
     fun setSessionID(session : String){
         sesIDReal.text = session
     }
 
+    /** Sets a new secret. */
     fun setSecret(secret : String){
         secretReal.text = secret
     }
@@ -453,9 +466,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     override fun refreshAfterHostGame() {
     }
 
-    /**
-     * @see view.Refreshable.refreshAfterJoinGame
-     */
+    /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.*/
     override fun refreshAfterJoinGame(names: List<String>) {
         for(i in names.indices){
             playerInputs[i].changePlayerName(names[i])
@@ -464,6 +475,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         playerNumber = names.size+1
     }
 
+    /** After someone joined, his/her name will be added as new name to the showed list. */
     override fun refreshAfterGuestJoined(name: String) {
         playerInputs[playerNumber].changePlayerName(name)
         playerNumber+1

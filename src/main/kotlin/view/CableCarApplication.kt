@@ -14,7 +14,7 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
         exitButton.onMouseClicked = { exit() }
     }
     val chooseModeScene = ChooseModeScene(rootService)
-    val lobbyScene = LobbyScene(rootService)
+    var lobbyScene = LobbyScene(rootService)
     val connectionScene = ConnectionScene(rootService)
     val connectingScene = ConnectingScene(rootService)
 
