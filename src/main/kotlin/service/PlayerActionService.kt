@@ -213,6 +213,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Rotates the handTile of the current [Player] by 90° to the left-hand side.
      */
     fun rotateTileLeft() {
+        if(!rootService.cableCar.allowTileRotation) return
         rotateTile(clockwise = false)
         onAllRefreshables { refreshAfterRotateTileLeft() }
     }
@@ -221,6 +222,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Rotates the handTile of the current [Player] by 90° to the right-hand side.
      */
     fun rotateTileRight() {
+        if(!rootService.cableCar.allowTileRotation) return
         rotateTile(clockwise = true)
         onAllRefreshables { refreshAfterRotateTileRight() }
     }
