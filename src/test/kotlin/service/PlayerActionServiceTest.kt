@@ -1,6 +1,5 @@
 package service
 import entity.*
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.*
 
 /**
@@ -137,13 +136,37 @@ class PlayerActionServiceTest {
     fun testPositionIsIllegal() {
         setup.startLocalGame(players, false, 0)
         assertNotNull(rootService.cableCar)
-        val game = rootService.cableCar.currentState
 
         val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
         assertEquals(true, rootService.playerActionService.positionIsIllegal(1,1,gameTile))
         assertEquals(true, rootService.playerActionService.positionIsIllegal(1,8,gameTile))
         assertEquals(true, rootService.playerActionService.positionIsIllegal(8,1,gameTile))
         assertEquals(true, rootService.playerActionService.positionIsIllegal(8,8,gameTile))
+    }
+
+    /**
+     * Tests if we can or cannot place illegal tiles
+     * **/
+    @Test
+    fun testPlacingIllegalTile() {
+        setup.startLocalGame(players, false, 0)
+        assertNotNull(rootService.cableCar)
+        val game = rootService.cableCar.currentState
+
+        val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
+        game.activePlayer.handTile = gameTile
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,8,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,8,gameTile))
+        rootService.playerActionService.placeTile(1,1)
+        assertNull(game.board[1][1])
+        rootService.playerActionService.placeTile(1,8)
+        assertNull(game.board[1][8])
+        rootService.playerActionService.placeTile(8,1)
+        assertNull(game.board[8][1])
+        rootService.playerActionService.placeTile(8,8)
+        assertNull(game.board[8][8])
     }
 
     /**
@@ -155,7 +178,6 @@ class PlayerActionServiceTest {
     fun testOnlyIllegalPositions1() {
         setup.startLocalGame(players, false, 0)
         assertNotNull(rootService.cableCar)
-        val game = rootService.cableCar.currentState
         val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
 
         assertEquals(false, rootService.playerActionService.onlyIllegalPositionsLeft(gameTile))
