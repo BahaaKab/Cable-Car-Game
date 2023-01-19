@@ -248,7 +248,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      *
      * @return [GameStateVerificationInfo]
      */
-    private fun actualGameStateVerificationInfo() = GameStateVerificationInfo(rootService.cableCar.currentState.playedTiles,
+    private fun actualGameStateVerificationInfo() = GameStateVerificationInfo(rootService.cableCar.currentState.placedTiles,
         List(rootService.cableCar.currentState.drawPile.size)
         {index -> rootService.cableCar.currentState.drawPile[index].id  },
         List(rootService.cableCar.currentState.players.size)
@@ -258,7 +258,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * to find good tile for HARD AI that is allowed
      */
     private fun hardTurn(): TurnMessage{
-        return TurnMessage(0, 0, true, 0, GameStateVerificationInfo(rootService.cableCar.currentState.playedTiles,
+        return TurnMessage(0, 0, true, 0, GameStateVerificationInfo(rootService.cableCar.currentState.placedTiles,
             List(rootService.cableCar.currentState.drawPile.size){index -> rootService.cableCar.currentState.drawPile[index].id  },List(rootService.cableCar.currentState.players.size){index -> rootService.cableCar.currentState.players[index].score }))
 
     }
@@ -276,7 +276,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      */
     private fun placeCurrentTile(posX: Int, posY: Int, fromSupply:Boolean) : TurnMessage = with(rootService.cableCar.currentState){
         val latestRotation=activePlayer.currentTile!!.rotation
-        playedTiles.add(TileInfo(posX,posY,activePlayer.currentTile!!.id,activePlayer.currentTile!!.rotation))
+        placedTiles.add(TileInfo(posX,posY,activePlayer.currentTile!!.id,activePlayer.currentTile!!.rotation))
         board[posX][posY]=activePlayer.currentTile
         activePlayer.currentTile=null
         return TurnMessage(posX, posY, fromSupply,latestRotation , actualGameStateVerificationInfo())
