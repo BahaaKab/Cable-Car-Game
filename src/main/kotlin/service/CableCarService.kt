@@ -76,8 +76,8 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      *
      * @return Whether the game ends with the current [State]
      */
-    private fun isGameEnding(): Boolean = !rootService.cableCar.currentState.board.all { column ->
-            column.filterNotNull().isEmpty()
+    private fun isGameEnding(): Boolean = rootService.cableCar.currentState.board.all { column ->
+        column.filterNotNull().size == column.size
     }
 
     /**
