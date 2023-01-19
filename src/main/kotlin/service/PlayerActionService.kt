@@ -48,9 +48,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * without having an alternative [GameTile]
      */
     fun drawTile() = with(rootService.cableCar.currentState) {
-        // Throw an exception if the draw Pile is empty
-        check(drawPile.isNotEmpty())
-        //
+        if(drawPile.isEmpty()) return
+        
         if (activePlayer.handTile == null) {
             activePlayer.handTile = drawPile.removeFirst()
         } else if (activePlayer.currentTile == null) {
@@ -84,14 +83,17 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
         // Otherwise place the tile
         board[posX][posY] = tileToPlace
+        // Refresh the GUI
+        onAllRefreshables { refreshAfterPlaceTile(posX, posY) }
         // If the original hand tile was used, draw a new handTile, otherwise clear the currentTile
-        if (player.currentTile == null) { drawTile() } else { player.currentTile = null }
+        if (player.currentTile == null) {
+            player.handTile = null
+            drawTile()
+        } else { player.currentTile = null }
         // If this is a network game, create the turn message
         if (cableCar.gameMode == GameMode.NETWORK) {
             // TODO
         }
-        // Refresh the GUI
-        onAllRefreshables { refreshAfterPlaceTile() }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
         cableCarService.updatePaths(posX,posY)
         cableCarService.calculatePoints()
@@ -236,7 +238,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             // First set the new values
             connections = connections.map { (it + indexShift) % connections.size }
             // Then set the values to the correct indices
-            connections = List(connections.size) { connections[(it + 2) % connections.size] }
+            connections = List(connections.size) { connections[(it + indexShift+4) % connections.size] }
         }
     }
 

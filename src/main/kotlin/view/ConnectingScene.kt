@@ -48,7 +48,7 @@ class ConnectingScene(private val rootService: RootService) : MenuScene(1920, 10
         )
     }
 
-    override fun refreshAfterJoinGame() {
+    override fun refreshAfterJoinGame(names: List<String>) {
         CableCarApplication.showMenuScene(CableCarApplication.connectingScene)
     }
 }

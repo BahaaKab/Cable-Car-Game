@@ -1,6 +1,5 @@
 package service
 
-
 import entity.*
 
 class CableCarService(private val rootService: RootService) : AbstractRefreshingService() {
@@ -35,27 +34,56 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     }
 
     /**
-     * Calculates the next active [Player]
+     * Update the current game state.
      */
-    fun nextTurn() {
-        val currentState : State = rootService.cableCar.currentState
-        val playerList : List<Player> = currentState.players
-        val currentActivePlayer : Player = currentState.activePlayer
-
-        if(currentActivePlayer == playerList.last()){
-            currentState.activePlayer = playerList[0]
+    fun nextTurn() = with(rootService.cableCar) {
+        // Check, if the game should end with the current game state
+        if (isGameEnding()) {
+            return endGame()
         }
-        else{
-            for(i in playerList.indices){
-                if(playerList[i] == currentActivePlayer){
-                    currentState.activePlayer = playerList[i+1]
-                }
+        // Push the current game state to the history
+        history.undoStates.push(currentState.deepCopy())
+
+        // Set the next active player
+        nextPlayer()
+
+        onAllRefreshables { refreshAfterNextTurn() }
+
+        // Decide what to do next based on the kind of player
+        with(currentState.activePlayer) {
+            if (isNetworkPlayer) {
+                // TODO
+                return
+            }
+            if(playerType == PlayerType.AI_EASY || playerType == PlayerType.AI_HARD) {
+                rootService.aIService.doTurn()
+                return
             }
         }
-        onAllRefreshables { refreshAfterNextTurn() }
+
     }
 
-    fun endGame() {
+    /**
+     * Set the next active player for the upcoming turn.
+     */
+    private fun nextPlayer() : Unit = with(rootService.cableCar.currentState) {
+        val indexOfActivePlayer = players.indexOf(activePlayer)
+        activePlayer = players[(indexOfActivePlayer + 1) % players.size]
+    }
+
+    /**
+     * Whether the game ends with the current [State]. This is the case, if there are no tiles to place anymore.
+     *
+     * @return Whether the game ends with the current [State]
+     */
+    private fun isGameEnding(): Boolean = rootService.cableCar.currentState.board.all { column ->
+        column.filterNotNull().size == column.size
+    }
+
+    /**
+     * Trigger the [view.EndScene]
+     */
+    private fun endGame() {
         onAllRefreshables { refreshAfterEndGame() }
     }
 

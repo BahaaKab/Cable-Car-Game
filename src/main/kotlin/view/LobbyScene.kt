@@ -1,5 +1,7 @@
 package view
 
+import entity.PlayerInfo
+import entity.PLAYER_ORDER_COLORS
 import tools.aqua.bgw.core.MenuScene
 import service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
@@ -19,9 +21,9 @@ import javax.imageio.ImageIO
 /** LobbyScene shows the settings- & Player-Lobby in HotSeat- or Multiplayer-Mode.
  *
  * @param rootService A reference to the administration of the Game-State
- * @param isMultiplayer A boolean that defines which game mode the LobbyScene shows
+ * @param isNetworkMode A boolean that defines which game mode the LobbyScene shows
  * @param hostName The name of the hostPlayer if the scene shows a Multiplayer-Lobby*/
-class LobbyScene(private val rootService: RootService, private val isMultiplayer : Boolean = false,
+class LobbyScene(private val rootService: RootService, private val isNetworkMode : Boolean = false,
                  private val hostName : String = "") : MenuScene(1920, 1080), Refreshable {
 
     private val cableCarLogo = CableCarLogo(810,50).apply { scale = 1.1 }
@@ -80,7 +82,24 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
         font = Font(size = 23, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER,
         visual = ColorVisual(249, 249, 250)
-    ).apply { componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100" }
+    ).apply {
+        componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
+        onMouseClicked = {
+            if(isNetworkMode) {
+                // Todo
+            } else {
+
+                val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
+                    val name = playerInputPane.getTextFieldInput()
+                    val playerType = playerInputPane.getPlayerType()
+                    val color = PLAYER_ORDER_COLORS[i]
+                    PlayerInfo(name, playerType, color, false)
+                }
+                // TODO: make tileRotation and AISpeed choosable
+                rootService.setupService.startLocalGame(playerInfos, true, 1)
+            }
+        }
+    }
 
 
     init {
@@ -94,7 +113,7 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
             addComponents(PlayerIndicatorPane(554, 375 + 90 * (i-1), i, colors[i-1]))
         }
 
-        if(isMultiplayer){
+        if(isNetworkMode){
             connectionLabel()
             for (input in playerInputs) {
                 addComponents(input)
@@ -114,7 +133,7 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
     private fun backButton() : Button {
         var i = 0
         var name = "Menu"
-        if(isMultiplayer){
+        if(isNetworkMode){
             i = 78
             name = "Leave Lobby"
         }
@@ -144,9 +163,9 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
     /** A method that creates the Input-Pane that displays the players names, kinds and order.*/
     private fun playerInput() : List<InputPlayerPane>{
         val mutList = mutableListOf<InputPlayerPane>()
-        mutList.add(InputPlayerPane(755, 375 ,  isMultiplayer, true))
+        mutList.add(InputPlayerPane(755, 375 ,  isNetworkMode, true))
         for(i in 2 .. 6) {
-            mutList.add(InputPlayerPane(755, 375 + 90 * (i-1), isMultiplayer))
+            mutList.add(InputPlayerPane(755, 375 + 90 * (i-1), isNetworkMode))
         }
         return mutList.toList()
     }
@@ -200,6 +219,7 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
      * @see view.Refreshable.refreshAfterStartGame
      */
     override fun refreshAfterStartGame() {
+        CableCarApplication.hideMenuScene()
     }
 
     /**
@@ -211,6 +231,6 @@ class LobbyScene(private val rootService: RootService, private val isMultiplayer
     /**
      * @see view.Refreshable.refreshAfterJoinGame
      */
-    override fun refreshAfterJoinGame() {
+    override fun refreshAfterJoinGame(names: List<String>) {
     }
 }

@@ -90,6 +90,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * @see view.Refreshable.refreshAfterStartGame
      */
     override fun refreshAfterStartGame() {
+        CableCarApplication.showGameScene(this)
     }
 
     /**
@@ -101,7 +102,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterJoinGame
      */
-    override fun refreshAfterJoinGame() {
+    override fun refreshAfterJoinGame(names: List<String>) {
     }
 
     /**
@@ -137,7 +138,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterPlaceTile
      */
-    override fun refreshAfterPlaceTile() {
+    override fun refreshAfterPlaceTile(posX: Int, posY: Int) {
     }
 
     /**
