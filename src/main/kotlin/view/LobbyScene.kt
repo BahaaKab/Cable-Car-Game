@@ -10,12 +10,14 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
+import tools.aqua.bgw.visual.Visual
 import view.components.CableCarLogo
 import view.components.InputPlayerPane
 import view.components.NumberOfPlayersPane
 import view.components.PlayerIndicatorPane
 import java.awt.Color
 import javax.imageio.ImageIO
+import kotlin.random.Random
 
 
 /** LobbyScene shows the settings- & Player-Lobby in HotSeat- or Multiplayer-Mode.
@@ -27,13 +29,11 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                  private val hostName : String = "") : MenuScene(1920, 1080), Refreshable {
 
     private var tileRotation = false
-
     private var playerNumber = 2
+    private var changingPosition = -1
 
     private val cableCarLogo = CableCarLogo(810,50).apply { scale = 1.1 }
-
     private val refreshArrowVisual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.png")))
-
     private val rotateRightArrow = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/rotateRight.PNG")))
 
     private val backArrow = Label(
@@ -52,7 +52,9 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             fontWeight = Font.FontWeight.BOLD),
         alignment = Alignment.CENTER_RIGHT,
         visual = ColorVisual(249, 249, 250)
-    ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
+    ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+        onMouseClicked = { randomOrder() }
+    }
 
     private val cubePicture = Label(
         posX = 781, posY = 216,
@@ -78,7 +80,6 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                 refreshArrow.visual = rotateRightArrow
             }
             tileRotation = tileRotation.not()
-            println(tileRotation)
         }
     }
 
@@ -96,6 +97,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     private val playerInputs = playerInput()
 
     private val playerIndicators = playerIndicator()
+
+    private val orderButtons = orderButtons()
 
     private val startButton = Button(
         posX = 860, 950,
@@ -117,8 +120,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                     val color = PLAYER_ORDER_COLORS[i]
                     PlayerInfo(name, playerType, color, false)
                 }
-                // TODO: make tileRotation and AISpeed choosable
-                rootService.setupService.startLocalGame(playerInfos, true, 1)
+                // TODO: make AISpeed choosable
+                rootService.setupService.startLocalGame(playerInfos, tileRotation, 1)
             }
         }
     }
@@ -131,8 +134,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         addComponents(cableCarLogo , backButton, playerOrderButton, tileRotationButton, startButton,
                       backArrow, cubePicture, refreshArrow)
 
-        for (playerIndicator in playerIndicators ){
-            addComponents(playerIndicator)
+        for (i in playerIndicators.indices ){
+            addComponents(playerIndicators[i], orderButtons[i])
         }
 
         if(isNetworkMode){
@@ -172,7 +175,9 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                     fontWeight = Font.FontWeight.BOLD),
                 alignment = Alignment.CENTER_RIGHT,
                 visual = ColorVisual(249, 249, 250)
-            ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
+            ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+                    onMouseClicked = {CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene)}
+            }
     }
 
     /** In single-player this method creates the display in which you can choose the number of players.*/
@@ -192,14 +197,34 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         return mutList.toList()
     }
 
-    /** A method that creates the Input-Pane that displays the players names, kinds and order.*/
-    private fun playerInput() : List<InputPlayerPane>{
-        val mutList = mutableListOf<InputPlayerPane>()
-        mutList.add(InputPlayerPane(755, 375 ,  isNetworkMode, true))
-        for(i in 2 .. 6) {
-            mutList.add(InputPlayerPane(755, 375 + 90 * (i-1), isNetworkMode))
+    private fun orderButtons() : List<Button>{
+        val mutList = mutableListOf<Button>()
+        for(i in 1 .. 6) {
+            mutList.add(Button(
+                posX = 1400, posY = 400 + 90 *(i-1),
+                width = 40, height = 40,
+                text = "$i",
+                font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
+                visual = Visual.EMPTY
+                ).apply {
+                    isVisible = false
+                    componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);" +
+                            "-fx-background-radius: 10"
+                    onMouseClicked = { changePlayersInput(i) }
+                }
+            )
         }
         return mutList.toList()
+    }
+
+    /** A method that creates the Input-Pane that displays the players names, kinds and order.*/
+    private fun playerInput() : Array<InputPlayerPane>{
+        val mutList = mutableListOf<InputPlayerPane>()
+        mutList.add(InputPlayerPane(755, 375 , 1, isNetworkMode, true))
+        for(i in 2 .. 6) {
+            mutList.add(InputPlayerPane(755, 375 + 90 * (i-1), i, isNetworkMode))
+        }
+        return mutList.toTypedArray()
     }
 
     /**In multiplayer this method displays the SessionID and the password.*/
@@ -267,10 +292,81 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         for(k in playerInputs.indices){
             playerInputs[k].isVisible = (k <= (i-1))
             playerIndicators[k].isVisible = (k <= (i-1))
+
+            if(changingPosition != -1){
+                orderButtons[k].isVisible = (k <= (i-1))
+            }
         }
 
         playerNumber = i
     }
+
+    fun playerOrderOptions(paneNumber : Int){
+
+        if(changingPosition == paneNumber){
+            changingPosition = -1
+
+            for(buttons in orderButtons){
+                buttons.isVisible = false
+            }
+            return
+        }
+
+        changingPosition = paneNumber
+        for (i in orderButtons.indices){
+            orderButtons[i].isVisible = (i < playerNumber)
+            orderButtons[i].apply {
+                componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);-fx-background-radius: 10"
+            }
+        }
+        orderButtons[(paneNumber-1)].apply {
+            componentStyle = "-fx-background-color: rgba($DEFAULT_GREY_STRING, 1);-fx-background-radius: 10"
+        }
+    }
+
+    private fun changePlayersInput(newPos : Int){
+
+        for (button in orderButtons){
+            button.isVisible = false
+        }
+
+        if(newPos == changingPosition){
+            changingPosition = -1
+            println("Test 1")
+            return
+        }
+
+        changePanes(newPos-1 , changingPosition-1)
+
+        for(i in playerInputs.indices){
+            playerInputs[i].isVisible = (i < playerNumber)
+        }
+
+        changingPosition = -1
+    }
+
+    private fun randomOrder(){
+
+        for(i in 0 until playerNumber){
+            changePanes(i, Random.nextInt(i, playerNumber))
+        }
+    }
+    /**
+     *
+     * @param pos1Pane : newPos+1
+     * @param pos2Pane : changingPosition+1
+     * */
+    private fun changePanes(pos1Pane : Int, pos2Pane : Int){
+        playerInputs[pos1Pane].posY = (375 + 90 * (pos2Pane)) * 1.0
+        playerInputs[pos1Pane].setOrderNumber(pos2Pane+1)
+        playerInputs[pos2Pane].posY = (375 + 90 * (pos1Pane)) * 1.0
+        playerInputs[pos2Pane].setOrderNumber(pos1Pane+1)
+
+        val tmpInputPlayer = playerInputs[pos1Pane]
+        playerInputs[pos1Pane] = playerInputs[pos2Pane]
+        playerInputs[pos2Pane] = tmpInputPlayer
+    }
+
 
     /**
      * @see view.Refreshable.refreshAfterStartGame

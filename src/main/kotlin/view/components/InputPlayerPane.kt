@@ -7,6 +7,7 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.Visual
+import view.CableCarApplication
 import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_BOLD
 import view.DEFAULT_FONT_MEDIUM
@@ -18,11 +19,11 @@ import java.awt.Color
  *
  * @param posX Horizontal coordinate for this Pane. Default: 0.
  * @param posY Vertical coordinate for this Pane. Default: 0.
- * @param isMultiplayer A boolean that indicates which kind of Pane is needed
+ * @param isNetwork A boolean that indicates which kind of Pane is needed
  * @param isHost A boolean that indicates if this Pane shows the Multiplayer-Host-Name
  * */
 class InputPlayerPane(
-    posX: Number = 0, posY: Number = 0, private val isMultiplayer: Boolean = false,
+    posX: Number = 0, posY: Number = 0, private var orderNumber : Int, private val isNetwork: Boolean = false,
     private val isHost: Boolean = false
 ) : Pane<UIComponent>(posX, posY, width = 590, height = 90) {
 
@@ -43,6 +44,10 @@ class InputPlayerPane(
     ).apply {
         componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
                 "-fx-border-color: rgba(5, 24, 156, 1); -fx-border-radius: 100; -fx-border-width: 4;"
+        onMouseClicked = {
+                CableCarApplication.lobbyScene.playerOrderOptions(orderNumber)
+
+        }
     }
 
     private val playerName = Label(
@@ -69,7 +74,7 @@ class InputPlayerPane(
     init {
         addAll(inputBackground, circleLabel, playerName)
 
-        if (isMultiplayer) {
+        if (isNetwork) {
             multiPlayerConfiguration()
         } else {
             singlePlayerConfiguration()
@@ -132,7 +137,7 @@ class InputPlayerPane(
 
     /** A Method to change the name of the displayed player name*/
     fun changePlayerName(name: String) {
-        if (isMultiplayer) {
+        if (isNetwork) {
             playerName.text = name
         }
     }
@@ -146,4 +151,6 @@ class InputPlayerPane(
      *
      */
     fun getPlayerType() = playerTypes[typeCounter]
+
+    fun setOrderNumber(number : Int) { orderNumber = number }
 }
