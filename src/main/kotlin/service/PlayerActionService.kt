@@ -48,9 +48,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * without having an alternative [GameTile]
      */
     fun drawTile() = with(rootService.cableCar.currentState) {
-        // Throw an exception if the draw Pile is empty
-        check(drawPile.isNotEmpty())
-        //
+        if(drawPile.isEmpty()) return
+
         if (activePlayer.handTile == null) {
             activePlayer.handTile = drawPile.removeFirst()
         } else if (activePlayer.currentTile == null) {

@@ -24,8 +24,17 @@ import java.lang.IllegalStateException
 import javax.imageio.ImageIO
 
 
-val tileMapBig = BidirectionalMap<Int, CardView>()
-val tileMapSmall = BidirectionalMap<Int, CardView>()
+val tileMapBig = BidirectionalMap<Int, CardView>().apply {
+    for(i in 0..59) {
+        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+    }
+}
+
+val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
+    for(i in 0..59) {
+        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+    }
+}
 
 /**
  * This class manages the game scene of the application. Here a player can make a move.
@@ -75,14 +84,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                     width = 100, height = 100,
                     front = Visual.EMPTY
                 ).apply {
-                    onMouseClicked = {
-
-                        // Try-Catch needed for when we can't draw a new card
-                        try {
-                            rootService.playerActionService.placeTile(posX = i, posY = j)
-                        } catch (_: IllegalStateException) {
-                        }
-                    }
+                    onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
                 })
             }
         }
@@ -102,37 +104,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         )
     }
 
-    /*
-    private fun copyBufferedImage(toCopy: BufferedImage): BufferedImage {
-        toCopy.colorModel
-        val b = BufferedImage(toCopy.width, toCopy.height, toCopy.type)
-        val g = b.createGraphics()
-        g.drawImage(toCopy, 0, 0, null)
-        g.dispose()
-        return b
-    }
-    */
-
     private fun initializeTileMaps() = with(rootService.cableCar.currentState) {
-        drawPile.forEach {
-            tileMapBig.add(
-                it.id,
-                CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(it)))
-            )
-            tileMapSmall.add(
-                it.id,
-                CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(it)))
-            )
-        }
         players.forEach {
-            tileMapBig.add(
-                it.handTile!!.id,
-                CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(it.handTile!!)))
-            )
-            tileMapSmall.add(
-                it.handTile!!.id,
-                CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(it.handTile!!)))
-            )
             it.stationTiles.forEach { station ->
                 stationTileMap.add(
                     station,
@@ -152,13 +125,11 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 board.set(columnIndex = 0, rowIndex = i,
                     component = stationTileMap.forward(this[0][i] as StationTile).apply { rotate(-90) })
 
-
                 // on the right side
                 try {
                     board.set(columnIndex = 9, rowIndex = i,
                         component = stationTileMap.forward(this[9][i] as StationTile).apply { rotate(90) })
-                } catch (_: Exception) {
-                }
+                } catch (_: Exception) { }
 
                 // on the top side
                 board.set(
@@ -169,8 +140,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 try {
                     board.set(columnIndex = i, rowIndex = 9,
                         component = stationTileMap.forward(this[i][9] as StationTile).apply { rotate(180) })
-                } catch (_: Exception) {
-                }
+                } catch (_: Exception) { }
             }
         }
     }
@@ -194,12 +164,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                         width = 100, height = 100,
                         front = Visual.EMPTY
                     ).apply {
-                        onMouseClicked = {
-                            try {
-                                rootService.playerActionService.placeTile(posX = i, posY = j)
-                            } catch (_: IllegalStateException) {
-                            }
-                        }
+                        onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
                     })
                 }
 
@@ -219,21 +184,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         otherPlayersPane.refreshAfterStartGame()
 
         CableCarApplication.showGameScene(this)
-
-        if (rootService.cableCar.currentState.activePlayer.playerType != PlayerType.HUMAN) {
-            val turnMessage = rootService.aIService.doTurn()
-            println("Rotation: ${turnMessage.rotation}")
-            playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 1000).apply {
-                    onFinished = {
-                        refreshBoard()
-                        activePlayerPane.refreshActivePlayer()
-                        otherPlayersPane.refreshOtherPlayers()
-                        rootService.cableCarService.nextTurn()
-                    }
-                }
-            )
-        }
     }
 
     /**
@@ -273,9 +223,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             (rootService.cableCar.currentState.board[posX][posY]!! as GameTile).id
         ).apply {
             rotate((rootService.cableCar.currentState.board[posX][posY]!! as GameTile).rotation)
-            onMouseClicked = {
-                rootService.playerActionService.placeTile(posX = posX, posY = posY)
-            }
+            onMouseClicked = { rootService.playerActionService.placeTile(posX = posX, posY = posY) }
         })
     }
 
@@ -308,19 +256,5 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     override fun refreshAfterNextTurn() {
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
-        if (rootService.cableCar.currentState.activePlayer.playerType != PlayerType.HUMAN) {
-            val turnMessage = rootService.aIService.doTurn()
-            println("Rotation: ${turnMessage.rotation}")
-            playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 1000).apply {
-                    onFinished = {
-                        refreshBoard()
-                        activePlayerPane.refreshActivePlayer()
-                        otherPlayersPane.refreshOtherPlayers()
-                        rootService.cableCarService.nextTurn()
-                    }
-                }
-            )
-        }
     }
 }
