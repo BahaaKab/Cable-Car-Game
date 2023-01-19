@@ -1,6 +1,6 @@
 package view
 
-@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
+@Suppress("UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
 
 interface Refreshable {
     fun refreshAfterEndGame() { }

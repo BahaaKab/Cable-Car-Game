@@ -1,20 +1,40 @@
 package view
 
+import entity.GameTile
+import entity.Player
+import entity.PlayerType
+import entity.StationTile
 import service.RootService
+import tools.aqua.bgw.animation.DelayAnimation
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.BoardGameScene
+import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
+import tools.aqua.bgw.visual.Visual
 import view.components.ActivePlayerPane
 import view.components.CableCarLogo
-import view.components.OtherPlayersPane
 import view.components.OptionsPane
+import view.components.OtherPlayersPane
 import java.awt.Color
+import java.lang.IllegalStateException
 import javax.imageio.ImageIO
 
+
+val tileMapBig = BidirectionalMap<Int, CardView>().apply {
+    for(i in 0..59) {
+        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+    }
+}
+
+val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
+    for(i in 0..59) {
+        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+    }
+}
 
 /**
  * This class manages the game scene of the application. Here a player can make a move.
@@ -23,17 +43,16 @@ import javax.imageio.ImageIO
  */
 class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
 
-    private val tile1Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(55))
-    private val tile2Visual = ImageVisual(TILEIMAGELOADER.frontImageFor(33))
-
     private val boardVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/board.png")))
+
+    private val stationTileMap = BidirectionalMap<StationTile, CardView>()
 
     private val logoPane = CableCarLogo(posX = 270, posY = 104)
 
-    private val somethingPane = OptionsPane(100, 256)
+    private val optionsPane = OptionsPane(rootService = rootService, posX = 100, posY = 256)
 
     private val connectionStatusLabel = Label(
-        posX = 50, posY= 950,
+        posX = 50, posY = 950,
         width = 500, height = 80,
         text = "Connection successful. The game has started.",
         font = Font(size = 20, color = Color(13, 111, 47), family = DEFAULT_FONT_BOLD)
@@ -42,9 +61,9 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 "-fx-border-radius: 16px;-fx-border-width: 5px;-fx-border-color: rgb(19, 99, 43)"
     }
 
-    private val activePlayerPane = ActivePlayerPane(90, 334)
+    private val activePlayerPane = ActivePlayerPane(rootService = rootService, posX = 90, posY = 334)
 
-    private val otherPlayersPane = OtherPlayersPane(100, 648)
+    private val otherPlayersPane = OtherPlayersPane(rootService = rootService, posX = 100, posY = 648)
 
     private val board = GridPane<CardView>(
         posX = 850, posY = 50,
@@ -53,26 +72,31 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         layoutFromCenter = false,
         visual = boardVisual
     ).apply {
-        setColumnWidths(93)
-        setRowHeights(93)
-        set(
-            columnIndex = 4,
-            rowIndex = 1,
-            component = CardView(width = 93, height = 93, front = tile1Visual)
-        )
+        setColumnWidths(100)
+        setRowHeights(100)
+        for (i in 1..8) {
+            for (j in 1..8) {
 
-        set(
-            columnIndex = 8,
-            rowIndex = 8,
-            component = CardView(width = 93, height = 93,front = tile2Visual)
-        )
+                // We don't want to place empty tiles where the power stations are
+                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+
+                set(columnIndex = i, rowIndex = j, component = CardView(
+                    width = 100, height = 100,
+                    front = Visual.EMPTY
+                ).apply {
+                    onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
+                })
+            }
+        }
     }
 
+    private var players = listOf<Player>()
+
     init {
-        background = ColorVisual(247,247,247)
+        background = ColorVisual(247, 247, 247)
         addComponents(
             logoPane,
-            somethingPane,
+            optionsPane,
             activePlayerPane,
             otherPlayersPane,
             connectionStatusLabel,
@@ -80,82 +104,157 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         )
     }
 
-    /**
-     * @see view.Refreshable.refreshAfterEndGame
-     */
-    override fun refreshAfterEndGame() {
+    private fun initializeTileMaps() = with(rootService.cableCar.currentState) {
+        players.forEach {
+            it.stationTiles.forEach { station ->
+                stationTileMap.add(
+                    station,
+                    CardView(width = 100, height = 100, front = ImageVisual((TILEIMAGELOADER.stationTileFor(it.color))))
+                )
+            }
+        }
+    }
+
+    private fun initializeStationTiles() {
+        checkNotNull(rootService.cableCar)
+
+        // rotate(90) means rotate right by 90 degrees
+        with(rootService.cableCar.currentState.board) {
+            for (i in 1..8) {
+                // on the left side
+                board.set(columnIndex = 0, rowIndex = i,
+                    component = stationTileMap.forward(this[0][i] as StationTile).apply { rotate(-90) })
+
+                // on the right side
+                try {
+                    board.set(columnIndex = 9, rowIndex = i,
+                        component = stationTileMap.forward(this[9][i] as StationTile).apply { rotate(90) })
+                } catch (_: Exception) { }
+
+                // on the top side
+                board.set(
+                    columnIndex = i, rowIndex = 0, component = stationTileMap.forward(this[i][0] as StationTile)
+                )
+
+                // on the bottom side
+                try {
+                    board.set(columnIndex = i, rowIndex = 9,
+                        component = stationTileMap.forward(this[i][9] as StationTile).apply { rotate(180) })
+                } catch (_: Exception) { }
+            }
+        }
+    }
+
+    private fun refreshBoard() {
+        for (i in 1..8) {
+            for (j in 1..8) {
+
+                // We don't want to place empty tiles where the power stations are
+                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+
+                if (rootService.cableCar.currentState.board[i][j] is GameTile) {
+                    board.set(
+                        columnIndex = i, rowIndex = j,
+                        component = tileMapSmall.forward((rootService.cableCar.currentState.board[i][j] as GameTile).id).apply {
+                            rotation = (rootService.cableCar.currentState.board[i][j] as GameTile).rotation.toDouble()
+                        }
+                    )
+                } else {
+                    board.set(columnIndex = i, rowIndex = j, component = CardView(
+                        width = 100, height = 100,
+                        front = Visual.EMPTY
+                    ).apply {
+                        onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
+                    })
+                }
+
+            }
+        }
     }
 
     /**
      * @see view.Refreshable.refreshAfterStartGame
      */
     override fun refreshAfterStartGame() {
+        players = rootService.cableCar.currentState.players
+        initializeTileMaps()
+        initializeStationTiles()
+
+        activePlayerPane.refreshActivePlayer()
+        otherPlayersPane.refreshAfterStartGame()
+
         CableCarApplication.showGameScene(this)
-    }
-
-    /**
-     * @see view.Refreshable.refreshAfterHostGame
-     */
-    override fun refreshAfterHostGame() {
-    }
-
-    /**
-     * @see view.Refreshable.refreshAfterJoinGame
-     */
-    override fun refreshAfterJoinGame(names: List<String>) {
-    }
-
-    /**
-     * @see view.Refreshable.refreshAfterCalculatePoints
-     */
-    override fun refreshAfterCalculatePoints() {
     }
 
     /**
      * @see view.Refreshable.refreshAfterRotateTileLeft
      */
     override fun refreshAfterRotateTileLeft() {
+        activePlayerPane.activePlayerTiles.last().rotate(-90)
     }
 
     /**
      * @see view.Refreshable.refreshAfterRotateTileRight
      */
     override fun refreshAfterRotateTileRight() {
+        activePlayerPane.activePlayerTiles.last().rotate(90)
     }
 
     /**
      * @see view.Refreshable.refreshAfterUndo
      */
     override fun refreshAfterUndo() {
+        refreshBoard()
+        activePlayerPane.refreshActivePlayer()
+        otherPlayersPane.refreshOtherPlayers()
     }
 
     /**
      * @see view.Refreshable.refreshAfterRedo
      */
-    override fun refreshAfterRedo() {
-    }
+    override fun refreshAfterRedo() = refreshAfterUndo()
 
     /**
      * @see view.Refreshable.refreshAfterPlaceTile
      */
     override fun refreshAfterPlaceTile(posX: Int, posY: Int) {
+        activePlayerPane.activePlayerTiles.remove(activePlayerPane.activePlayerTiles.last())
+        board.set(columnIndex = posX, rowIndex = posY, component = tileMapSmall.forward(
+            (rootService.cableCar.currentState.board[posX][posY]!! as GameTile).id
+        ).apply {
+            rotate((rootService.cableCar.currentState.board[posX][posY]!! as GameTile).rotation)
+            onMouseClicked = { rootService.playerActionService.placeTile(posX = posX, posY = posY) }
+        })
     }
+
 
     /**
      * @see view.Refreshable.refreshAfterDrawTile
      */
     override fun refreshAfterDrawTile() {
-    }
-
-    /**
-     * @see view.Refreshable.refreshAfterGetTurn
-     */
-    override fun refreshAfterGetTurn() {
+        if (rootService.cableCar.currentState.activePlayer.currentTile == null) {
+            activePlayerPane.activePlayerTiles.add(
+                tileMapBig.forward(rootService.cableCar.currentState.activePlayer.handTile!!.id)
+            )
+        } else {
+            activePlayerPane.activePlayerTiles.apply {
+                first().apply {
+                    opacity = 0.25
+                }
+            }
+            activePlayerPane.activePlayerTiles.add(
+                tileMapBig.forward(
+                    rootService.cableCar.currentState.activePlayer.currentTile!!.id
+                )
+            )
+        }
     }
 
     /**
      * @see view.Refreshable.refreshAfterNextTurn
      */
     override fun refreshAfterNextTurn() {
+        activePlayerPane.refreshActivePlayer()
+        otherPlayersPane.refreshOtherPlayers()
     }
 }
