@@ -1,5 +1,6 @@
 package view.components
 
+import service.RootService
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.components.uicomponents.LabeledUIComponent
@@ -8,7 +9,7 @@ import tools.aqua.bgw.util.Font
 import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_MEDIUM
 
-class ScoreboardPane(posX: Number = 0, posY: Number = 0) :
+class ScoreboardPane(private val rootService : RootService, posX: Number = 0, posY: Number = 0) :
     Pane<LabeledUIComponent>(posX, posY, 0, 0) {
 
     private val defaultFont = Font(
@@ -133,5 +134,65 @@ class ScoreboardPane(posX: Number = 0, posY: Number = 0) :
             p5PointsLabel,
             p6PointsLabel,
         )
+    }
+
+    fun getUsedNameLabels() = when(rootService.cableCar.currentState.players.size) {
+        2 -> listOf(p1Label, p2Label)
+        3 -> listOf(p1Label, p2Label, p3Label)
+        4 -> listOf(p1Label, p2Label, p3Label, p4Label)
+        5 -> listOf(p1Label, p2Label, p3Label, p4Label, p5Label)
+        else -> listOf(p1Label, p2Label, p3Label, p4Label, p5Label, p6Label)
+    }
+
+    fun getUsedPointsLabels() = when(rootService.cableCar.currentState.players.size) {
+        2 -> listOf(p1PointsLabel, p2PointsLabel)
+        3 -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel)
+        4 -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel, p4PointsLabel)
+        5 -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel, p4PointsLabel, p5PointsLabel)
+        else -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel, p4PointsLabel, p5PointsLabel, p6PointsLabel)
+    }
+
+    fun showOnlyRelevant()  {
+        checkNotNull(rootService.cableCar)
+        with(rootService.cableCar.currentState) {
+            when (players.size) {
+                2 -> {
+                    p3Label.isVisible = false
+                    p4Label.isVisible = false
+                    p5Label.isVisible = false
+                    p6Label.isVisible = false
+
+                    p3PointsLabel.isVisible = false
+                    p4PointsLabel.isVisible = false
+                    p5PointsLabel.isVisible = false
+                    p6PointsLabel.isVisible = false
+                }
+
+                3 -> {
+                    p3Label.isVisible = false
+                    p4Label.isVisible = false
+                    p5Label.isVisible = false
+                    p6Label.isVisible = false
+
+                    p4PointsLabel.isVisible = false
+                    p5PointsLabel.isVisible = false
+                    p6PointsLabel.isVisible = false
+                }
+
+                4 -> {
+                    p5Label.isVisible = false
+                    p6Label.isVisible = false
+
+                    p5PointsLabel.isVisible = false
+                    p6PointsLabel.isVisible = false
+                }
+
+                5 -> {
+                    p6Label.isVisible = false
+
+                    p6PointsLabel.isVisible = false
+                }
+            }
+        }
     }
 }
