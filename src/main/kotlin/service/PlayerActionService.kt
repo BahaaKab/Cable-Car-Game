@@ -125,7 +125,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
                 continue
             }
             val startConnectorGameTile : Int = stationTile.OUTER_TILE_CONNECTIONS[stationTile.startPosition]
-            val endConnectorGameTile : Int = gameTile.OUTER_TILE_CONNECTIONS[startConnectorGameTile]
+            val endConnectorGameTile : Int = gameTile.connections[startConnectorGameTile]
             var x : Int = posX
             var y : Int = posY
             when(endConnectorGameTile){
