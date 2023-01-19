@@ -262,10 +262,10 @@ class SetupServiceTest {
         for (i in 1..8) {
             stationTiles.add(board[9][i] as StationTile)
         }
-        for (i in 1..8) {
+        for (i in 8 downTo 1) {
             stationTiles.add(board[i][9] as StationTile)
         }
-        for (i in 1..8) {
+        for (i in 8 downTo 1) {
             stationTiles.add(board[0][i] as StationTile)
         }
         return stationTiles

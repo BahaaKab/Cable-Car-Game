@@ -140,8 +140,8 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
         val stationTile = when(id) {
             1, 2, 3, 4, 5, 6, 7, 8 -> board[id][0]
             9, 10, 11, 12, 13, 14, 15, 16 -> board[9][id - 8]
-            17, 18, 19, 20, 21, 22, 23, 24 -> board[id - 16][9]
-            25, 26, 27, 28, 29, 30, 31, 32 -> board[0][id - 24]
+            17, 18, 19, 20, 21, 22, 23, 24 -> board[24 - id + 1][9]
+            25, 26, 27, 28, 29, 30, 31, 32 -> board[0][32 - id + 1]
             else -> throw IllegalArgumentException("id has to be between 1 and 32, not $id.")
         }
         return checkNotNull(stationTile) as StationTile
