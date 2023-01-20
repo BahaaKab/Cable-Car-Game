@@ -80,7 +80,26 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         // TODO: This needs some thoughts as a tile still needs to be adjacent to some other game or station tiles,
         //  even if no allowed position exists.
         val isValid = board[posX][posY] == null && isAdjacentToTiles(posX, posY)
-        val isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || onlyIllegalPositionsLeft(tileToPlace)
+        var isAllowed = false
+        if(!rootService.cableCar.allowTileRotation){
+            isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || onlyIllegalPositionsLeft(tileToPlace)
+        }
+        else{
+            // check if all positions are illegal even with all rotation-forms
+            val b1 = onlyIllegalPositionsLeft(tileToPlace)
+            rotateTile(true)
+            val b2 = onlyIllegalPositionsLeft(tileToPlace)
+            rotateTile(true)
+            val b3 = onlyIllegalPositionsLeft(tileToPlace)
+            rotateTile(true)
+            val b4 = onlyIllegalPositionsLeft(tileToPlace)
+            // The Tile is now as it was before
+            rotateTile(true)
+
+            // placing the tile is only possible if the position is legal or if for all tile rotations every grid po-
+            // sition is still illegal
+            isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || (b1 && b2 && b3 && b4)
+        }
         if (!isValid || !isAllowed) {
             return
         }

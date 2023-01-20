@@ -28,7 +28,8 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     /**
      * The network client instance
      */
-    var networkClient: CableCarNetworkClient? = null
+    private lateinit var networkClient: CableCarNetworkClient
+
 
     /**
      * Connect to the SoPra-server and create a game lobby.
@@ -83,10 +84,10 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
      * Disconnect safely from the SoPra-server
      */
     fun disconnect() {
-        // If no network client exists, return
-        val client = networkClient ?: return
         // Else, if the client is connected, disconnect safely
-        if (client.isOpen) { client.disconnect() }
+        if (::networkClient.isInitialized && networkClient.isOpen) {
+            networkClient.disconnect()
+        }
     }
 
     /**
@@ -100,16 +101,15 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
      * @throws IllegalStateException If no [CableCarNetworkClient] was initialized.
      */
     fun sendTurnMessage(posX: Int, posY: Int, fromSupply: Boolean, rotation: Int) {
-        // If no network client exists, throw exception
-        val client = checkNotNull(networkClient)
-        // Else, if client is connected, send TurnMessage
+        // If client is connected, send TurnMessage
+        check(::networkClient.isInitialized && networkClient.isOpen)
         val gameStateVerificationInfo = GameStateVerificationInfo(
             placedTiles = rootService.cableCar.currentState.placedTiles,
             supply = rootService.cableCar.currentState.drawPile.map { it.id },
             playerScores = rootService.cableCar.currentState.players.map { it.score }
         )
         val turnMessage = TurnMessage(posX, posY, fromSupply, rotation, gameStateVerificationInfo)
-        if (client.isOpen) { client.sendGameActionMessage(turnMessage) }
+        networkClient.sendGameActionMessage(turnMessage)
     }
 
     /**
@@ -120,9 +120,8 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
      * @throws IllegalStateException If no [CableCarNetworkClient] was initialized.
      */
     fun sendGameInitMessage(playerInfos: List<PlayerInfo>) {
-        // If no network client exists, throw exception
-        val client = checkNotNull(networkClient)
-        // Else, if client is connected, send GameInitMessage
+        check(::networkClient.isInitialized && networkClient.isOpen)
+        // If client is connected, send GameInitMessage
         with (rootService.cableCar) {
             val players = playerInfos.map { it.toNetworkPlayerInfo() }
             val gameInitMessage = GameInitMessage(
@@ -130,7 +129,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
                 players = players,
                 tileSupply = currentState.drawPile.map { it.toNetworkTile() }
             )
-            if (client.isOpen) { client.sendGameActionMessage(gameInitMessage) }
+            networkClient.sendGameActionMessage(gameInitMessage)
         }
     }
 }
