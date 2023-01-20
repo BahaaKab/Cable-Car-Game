@@ -72,7 +72,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val player = cableCar.currentState.activePlayer
         val board = cableCar.currentState.board
 
+        val fromSupply = player.currentTile != null
         val tileToPlace = checkNotNull(player.currentTile ?: player.handTile)
+
         // If the position for the placement is either not valid or not legal while there are still legal placements
         // possible, return.
         // TODO: This needs some thoughts as a tile still needs to be adjacent to some other game or station tiles,
@@ -96,7 +98,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         } else { player.currentTile = null }
         // If this is a network game, create the turn message
         if (cableCar.gameMode == GameMode.NETWORK) {
-            // TODO
+            networkService.sendTurnMessage(posX, posY, fromSupply, tileToPlace.rotation)
         }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
         cableCarService.updatePaths(posX,posY)
