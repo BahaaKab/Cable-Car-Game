@@ -21,6 +21,11 @@ class NetworkRefreshable() : Refreshable {
     var notification: Notification? = null
 
     /**
+     *
+     */
+    var hasStartedGameInstance = false
+
+    /**
      * Set the [NetworkRefreshable.response] property
      *
      * @param response The response
@@ -36,6 +41,31 @@ class NetworkRefreshable() : Refreshable {
      */
     override fun refreshAfterNetworkNotification(notification: Notification) {
         this.notification = notification
+    }
+
+    /**
+     *
+     */
+    override fun refreshAfterStartGame() {
+        hasStartedGameInstance = true
+    }
+
+    /**
+     *
+     */
+    fun awaitGameInitMessageWithin(timeoutInMillis: Int, block: () -> Unit) {
+        hasStartedGameInstance = false
+
+        block()
+
+        var counter = timeoutInMillis
+        while (!hasStartedGameInstance) {
+            Thread.sleep(5)
+            if (counter <= 0) {
+                throw Exception()
+            }
+            counter -= 5
+        }
     }
 
     /**

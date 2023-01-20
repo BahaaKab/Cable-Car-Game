@@ -59,7 +59,7 @@ class NetworkConnectionTest: NetworkTest() {
 
         val guestRefreshable = NetworkRefreshable()
         val guestRootService = RootService().apply { addRefreshables(guestRefreshable) }
-        val guestPlayerInfo = PlayerInfo("Player 2", PlayerType.HUMAN, Color.BLUE, true)
+        val guestPlayerInfo = PlayerInfo("Player 2", PlayerType.HUMAN, Color.BLUE, false)
 
         hostRootService.networkService.hostGame(hostPlayerInfo, sessionID)
         assertTrue(hostRefreshable.responseSuccessWithin(timeoutInMillis))
@@ -78,7 +78,7 @@ class NetworkConnectionTest: NetworkTest() {
         val invalidSessionID = "INVALID_$coreSessionID"
         val guestRefreshable = NetworkRefreshable()
         val guestRootService = RootService().apply { addRefreshables(guestRefreshable) }
-        val guestPlayerInfo = PlayerInfo("Player 2", PlayerType.HUMAN, Color.BLUE, true)
+        val guestPlayerInfo = PlayerInfo("Player 2", PlayerType.HUMAN, Color.BLUE, false)
 
         guestRootService.networkService.joinGame(guestPlayerInfo, invalidSessionID)
         assertFalse(guestRefreshable.responseSuccessWithin(timeoutInMillis))
@@ -97,7 +97,7 @@ class NetworkConnectionTest: NetworkTest() {
 
         val guestRefreshable = NetworkRefreshable()
         val guestRootService = RootService().apply { addRefreshables(guestRefreshable) }
-        val guestPlayerInfo = PlayerInfo(playerName, PlayerType.HUMAN, Color.BLUE, true)
+        val guestPlayerInfo = PlayerInfo(playerName, PlayerType.HUMAN, Color.BLUE, false)
 
         hostRootService.networkService.hostGame(hostPlayerInfo, sessionID)
         assertTrue(hostRefreshable.responseSuccessWithin(timeoutInMillis))
