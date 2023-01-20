@@ -114,7 +114,7 @@ class CableCarNetworkClient(
     @GameActionReceiver
     fun onGameInitMessageReceived(message: GameInitMessage, sender: String) {
         // If the local player is the host, throw an exception, as the sender cannot be the host
-        check(!networkService.rootService.cableCar.isHostPlayer)
+        check(!networkService.rootService.isGameInitialized() || !networkService.rootService.cableCar.isHostPlayer)
 
         val playerInfos = message.players.mapIndexed { index, info ->
             val name = info.name
