@@ -1,6 +1,8 @@
 package view.components
 
+import service.RootService
 import tools.aqua.bgw.components.ComponentView
+import tools.aqua.bgw.components.container.LinearLayout
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.components.uicomponents.Button
@@ -21,10 +23,8 @@ import javax.imageio.ImageIO
  * @param posX Horizontal coordinate for this Pane. Default: 0.
  * @param posY Vertical coordinate for this Pane. Default: 0.
  */
-class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
+class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX = posX, posY = posY, width = 630, height = 240) {
-
-    private val tileVisual = ImageVisual(TILEIMAGELOADER.frontImageFor(0))
 
     private val rotateLeftVisual = ImageVisual(
         ImageIO.read(GameScene::class.java.getResource("/rotateLeft.png"))
@@ -34,10 +34,10 @@ class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
     )
     private val drawTileVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/drawTile.png")))
 
-    private val activePlayerTile = CardView(
+    val activePlayerTiles = LinearLayout<CardView>(
         posX = 390, posY = 0,
-        width = 240, height = 240,
-        front = tileVisual
+        width = 260, height = 240,
+        spacing = 20
     )
 
     private val activePlayerColorLabel = Label(
@@ -49,7 +49,6 @@ class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
     private val activePlayerNameLabel = Label(
         posX = 110, posY = 16,
         width = 100, height = 20,
-        text = "Player 1",
         font = Font(
             size = 20,
             color = DEFAULT_BLUE,
@@ -61,7 +60,6 @@ class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
     private val activePlayerScoreLabel = Label(
         posX = 110, posY = 41,
         width = 100, height = 20,
-        text = "Score: 9",
         font = Font(
             size = 20,
             color = DEFAULT_BLUE,
@@ -80,7 +78,7 @@ class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
     ).apply {
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
         onMouseClicked = {
-            activePlayerTile.rotation -= 90.0
+            rootService.playerActionService.rotateTileLeft()
         }
     }
 
@@ -100,7 +98,7 @@ class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
     ).apply {
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
         onMouseClicked = {
-            activePlayerTile.rotation += 90.0
+            rootService.playerActionService.rotateTileRight()
         }
     }
 
@@ -119,6 +117,9 @@ class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
         visual = Visual.EMPTY
     ).apply {
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+        onMouseClicked = {
+            rootService.playerActionService.drawTile()
+        }
     }
 
     private val drawTileIcon = Label(
@@ -129,9 +130,28 @@ class ActivePlayerPane(posX: Number = 0, posY: Number = 0) :
 
     init {
         addAll(
-            activePlayerTile, activePlayerColorLabel, activePlayerNameLabel, activePlayerScoreLabel,
+            activePlayerTiles, activePlayerColorLabel, activePlayerNameLabel, activePlayerScoreLabel,
             rotateLeftButton, rotateLeftIcon, rotateRightButton, rotateRightIcon,
             drawTileButton, drawTileIcon
         )
+    }
+
+    fun refreshActivePlayer() = with(rootService.cableCar.currentState.activePlayer) {
+        activePlayerTiles.clear()
+        if(handTile == null) {
+            activePlayerTiles.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
+        } else {
+            activePlayerTiles.add(tileMapBig.forward(handTile!!.id).apply { opacity = 1.0 })
+        }
+        activePlayerNameLabel.text = name
+        activePlayerScoreLabel.text = "Score: $score"
+        activePlayerColorLabel.visual = when(color) {
+            entity.Color.YELLOW -> DEFAULT_YELLOW_COLOR
+            entity.Color.BLUE -> DEFAULT_BLUE_COLOR
+            entity.Color.ORANGE -> DEFAULT_RED_COLOR
+            entity.Color.GREEN -> DEFAULT_GREEN_COLOR
+            entity.Color.PURPLE -> DEFAULT_PURPLE_COLOR
+            entity.Color.BLACK -> DEFAULT_BLUE_COLOR
+        }
     }
 }

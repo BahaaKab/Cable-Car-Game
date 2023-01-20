@@ -23,10 +23,12 @@ import javax.imageio.ImageIO
  * @param rootService A reference to the administration of the Game-State
  * @param isNetworkMode A boolean that defines which game mode the LobbyScene shows
  * @param hostName The name of the hostPlayer if the scene shows a Multiplayer-Lobby*/
-class LobbyScene(private val rootService: RootService, private val isNetworkMode : Boolean = false,
-                 private val hostName : String = "") : MenuScene(1920, 1080), Refreshable {
+class LobbyScene(
+    private val rootService: RootService, private val isNetworkMode: Boolean = false,
+    private val hostName: String = ""
+) : MenuScene(1920, 1080), Refreshable {
 
-    private val cableCarLogo = CableCarLogo(810,50).apply { scale = 1.1 }
+    private val cableCarLogo = CableCarLogo(810, 50).apply { scale = 1.1 }
 
     private val backArrow = Label(
         posX = 644, posY = 215,
@@ -40,8 +42,10 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         posX = 770, posY = 210,
         width = 264, height = 30,
         text = "Shuffle Player Order",
-        font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
-            fontWeight = Font.FontWeight.BOLD),
+        font = Font(
+            size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
+            fontWeight = Font.FontWeight.BOLD
+        ),
         alignment = Alignment.CENTER_RIGHT,
         visual = ColorVisual(249, 249, 250)
     ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
@@ -56,8 +60,10 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         posX = 1064, posY = 210,
         width = 215, height = 30,
         text = "Enable Rotation",
-        font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
-            fontWeight = Font.FontWeight.BOLD),
+        font = Font(
+            size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
+            fontWeight = Font.FontWeight.BOLD
+        ),
         alignment = Alignment.CENTER_RIGHT,
         visual = ColorVisual(249, 249, 250)
     ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
@@ -70,8 +76,10 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
 
     private val playerDisplay = playerDisplay()
 
-    private val colors = listOf(DEFAULT_YELLOW_COLOR, DEFAULT_BLUE_COLOR, DEFAULT_RED_COLOR,
-                                DEFAULT_GREEN_COLOR, DEFAULT_PURPLE_COLOR, DEFAULT_BLACK_COLOR)
+    private val colors = listOf(
+        DEFAULT_YELLOW_COLOR, DEFAULT_BLUE_COLOR, DEFAULT_RED_COLOR,
+        DEFAULT_GREEN_COLOR, DEFAULT_PURPLE_COLOR, DEFAULT_BLACK_COLOR
+    )
 
     private val playerInputs = playerInput()
 
@@ -85,19 +93,22 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     ).apply {
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
-            if(isNetworkMode) {
+            if (isNetworkMode) {
                 // Todo
+                print("")
             } else {
-
-                val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
-                    val name = playerInputPane.getTextFieldInput()
-                    val playerType = playerInputPane.getPlayerType()
-                    val color = PLAYER_ORDER_COLORS[i]
-                    PlayerInfo(name, playerType, color, false)
+                val playerInfos = mutableListOf<PlayerInfo>()
+                playerInputs.forEachIndexed { i, playerInputPane ->
+                    if(playerInputPane.getTextFieldInput() != "") {
+                        val name = playerInputPane.getTextFieldInput()
+                        val playerType = playerInputPane.getPlayerType()
+                        val color = PLAYER_ORDER_COLORS[i]
+                        playerInfos.add(PlayerInfo(name, playerType, color, false))
+                    }
                 }
-                // TODO: make tileRotation and AISpeed choosable
-                rootService.setupService.startLocalGame(playerInfos, true, 1)
+                rootService.setupService.startLocalGame(playerInfos, true, 4)
             }
+
         }
     }
 
@@ -106,20 +117,22 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         opacity = 1.0
         background = ColorVisual(247, 247, 247)
 
-        addComponents(cableCarLogo , backButton, playerOrderButton, tileRotationButton, startButton,
-                      backArrow, cubePicture, refreshArrow)
+        addComponents(
+            cableCarLogo, backButton, playerOrderButton, tileRotationButton, startButton,
+            backArrow, cubePicture, refreshArrow
+        )
 
-        for (i in 1 .. 6 ){
-            addComponents(PlayerIndicatorPane(554, 375 + 90 * (i-1), i, colors[i-1]))
+        for (i in 1..6) {
+            addComponents(PlayerIndicatorPane(554, 375 + 90 * (i - 1), i, colors[i - 1]))
         }
 
-        if(isNetworkMode){
+        if (isNetworkMode) {
             connectionLabel()
             for (input in playerInputs) {
                 addComponents(input)
             }
             playerInputs[0].changePlayerName(hostName)
-        }else {
+        } else {
             for (display in playerDisplay) {
                 addComponents(display)
             }
@@ -130,10 +143,10 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     /**This method creates the button to go back to the Scene before, based on the game mode. */
-    private fun backButton() : Button {
+    private fun backButton(): Button {
         var i = 0
         var name = "Menu"
-        if(isNetworkMode){
+        if (isNetworkMode) {
             i = 78
             name = "Leave Lobby"
         }
@@ -141,49 +154,55 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         backArrow.posX = (backArrow.posX - i)
 
         return Button(
-                posX = (635-i), posY = 210,
-                width = (110+i), height = 30,
-                text = name,
-                font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
-                    fontWeight = Font.FontWeight.BOLD),
-                alignment = Alignment.CENTER_RIGHT,
-                visual = ColorVisual(249, 249, 250)
-            ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
+            posX = (635 - i), posY = 210,
+            width = (110 + i), height = 30,
+            text = name,
+            font = Font(
+                size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
+                fontWeight = Font.FontWeight.BOLD
+            ),
+            alignment = Alignment.CENTER_RIGHT,
+            visual = ColorVisual(249, 249, 250)
+        ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100" }
     }
 
     /** In single-player this method creates the display in which you can choose the number of players.*/
-    private fun playerDisplay() : List<NumberOfPlayersPane>{
+    private fun playerDisplay(): List<NumberOfPlayersPane> {
         val mutList = mutableListOf<NumberOfPlayersPane>()
-        for(i in 2 .. 6) {
-            mutList.add(NumberOfPlayersPane( 555 + 125 * (i-2), 290, i))
+        for (i in 2..6) {
+            mutList.add(NumberOfPlayersPane(555 + 125 * (i - 2), 290, i))
         }
         return mutList.toList()
     }
 
     /** A method that creates the Input-Pane that displays the players names, kinds and order.*/
-    private fun playerInput() : List<InputPlayerPane>{
+    private fun playerInput(): List<InputPlayerPane> {
         val mutList = mutableListOf<InputPlayerPane>()
-        mutList.add(InputPlayerPane(755, 375 ,  isNetworkMode, true))
-        for(i in 2 .. 6) {
-            mutList.add(InputPlayerPane(755, 375 + 90 * (i-1), isNetworkMode))
+        mutList.add(InputPlayerPane(755, 375, isNetworkMode, true))
+        for (i in 2..6) {
+            mutList.add(InputPlayerPane(755, 375 + 90 * (i - 1), isNetworkMode))
         }
         return mutList.toList()
     }
 
     /**In multiplayer this method displays the SessionID and the password.*/
-    private fun connectionLabel(){
+    private fun connectionLabel() {
         val backgroundLabel = Label(
             posX = 570, posY = 270,
             width = 780, height = 60
-            ).apply { componentStyle = "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);" +
-                "-fx-background-radius: 10;-fx-background-color: rgba(255,255,255,1);"}
+        ).apply {
+            componentStyle = "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 10, 0, -1, 2);" +
+                    "-fx-background-radius: 10;-fx-background-color: rgba(255,255,255,1);"
+        }
 
         val sessionID = Label(
             posX = 590, posY = 280,
             width = 120, height = 40,
             alignment = Alignment.CENTER_LEFT,
-            font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_BOLD,
-                        fontWeight = Font.FontWeight.BOLD),
+            font = Font(
+                size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD,
+                fontWeight = Font.FontWeight.BOLD
+            ),
             text = "Session ID:"
         )
 
@@ -191,7 +210,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             posX = 710, posY = 280,
             width = 240, height = 40,
             alignment = Alignment.CENTER_LEFT,
-            font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
+            font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
             text = "thisIsOurFavouriteGame"
         )
 
@@ -199,8 +218,10 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             posX = 980, posY = 280,
             width = 100, height = 40,
             alignment = Alignment.CENTER_LEFT,
-            font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_BOLD,
-                        fontWeight = Font.FontWeight.BOLD),
+            font = Font(
+                size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD,
+                fontWeight = Font.FontWeight.BOLD
+            ),
             text = "Secret:"
         )
 
@@ -208,7 +229,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             posX = 1060, posY = 280,
             width = 270, height = 40,
             alignment = Alignment.CENTER_LEFT,
-            font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
+            font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
             text = "AMIN4PRESIDENT"
         )
 
