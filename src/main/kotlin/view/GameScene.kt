@@ -1,14 +1,14 @@
 package view
 
+import entity.GameMode
 import entity.GameTile
-import entity.Player
-import entity.PlayerType
 import entity.StationTile
 import service.RootService
-import tools.aqua.bgw.animation.DelayAnimation
+import tools.aqua.bgw.animation.FadeAnimation
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
+import tools.aqua.bgw.core.BoardGameApplication
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.util.Font
@@ -20,7 +20,6 @@ import view.components.CableCarLogo
 import view.components.OptionsPane
 import view.components.OtherPlayersPane
 import java.awt.Color
-import java.lang.IllegalStateException
 import javax.imageio.ImageIO
 
 
@@ -90,8 +89,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
-    private var players = listOf<Player>()
-
     init {
         background = ColorVisual(247, 247, 247)
         addComponents(
@@ -104,7 +101,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         )
     }
 
-    private fun initializeTileMaps() = with(rootService.cableCar.currentState) {
+    private fun initializeStationTileMap() = with(rootService.cableCar.currentState) {
         players.forEach {
             it.stationTiles.forEach { station ->
                 stationTileMap.add(
@@ -155,9 +152,11 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 if (rootService.cableCar.currentState.board[i][j] is GameTile) {
                     board.set(
                         columnIndex = i, rowIndex = j,
-                        component = tileMapSmall.forward((rootService.cableCar.currentState.board[i][j] as GameTile).id).apply {
-                            rotation = (rootService.cableCar.currentState.board[i][j] as GameTile).rotation.toDouble()
-                        }
+                        component = tileMapSmall.forward((rootService.cableCar.currentState.board[i][j] as GameTile).id)
+                            .apply {
+                                rotation =
+                                    (rootService.cableCar.currentState.board[i][j] as GameTile).rotation.toDouble()
+                            }
                     )
                 } else {
                     board.set(columnIndex = i, rowIndex = j, component = CardView(
@@ -176,9 +175,23 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * @see view.Refreshable.refreshAfterStartGame
      */
     override fun refreshAfterStartGame() {
-        players = rootService.cableCar.currentState.players
-        initializeTileMaps()
+        initializeStationTileMap()
         initializeStationTiles()
+        if (!rootService.cableCar.allowTileRotation) activePlayerPane.disableTileRotationButtons()
+
+        // Only show the connectionStatusLabel when Network Mode was chosen
+        // Also show it for only 5 seconds
+        if(rootService.cableCar.gameMode == GameMode.NETWORK) {
+            BoardGameApplication.runOnGUIThread {
+                playAnimation(
+                    FadeAnimation(
+                        componentView = connectionStatusLabel,
+                        fromOpacity = 1.0, toOpacity = 0.0,
+                        duration = 5 * 1000
+                    ).apply { onFinished = { componentView.opacity = 0.0 } }
+                )
+            }
+        } else connectionStatusLabel.isVisible = false
 
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshAfterStartGame()
@@ -237,16 +250,14 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 tileMapBig.forward(rootService.cableCar.currentState.activePlayer.handTile!!.id)
             )
         } else {
-            activePlayerPane.activePlayerTiles.apply {
-                first().apply {
-                    opacity = 0.25
-                }
-            }
+            activePlayerPane.activePlayerTiles.first().apply { opacity = 0.5 }
+
             activePlayerPane.activePlayerTiles.add(
                 tileMapBig.forward(
                     rootService.cableCar.currentState.activePlayer.currentTile!!.id
                 )
             )
+            activePlayerPane.disableDrawTileButton()
         }
     }
 
@@ -254,6 +265,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * @see view.Refreshable.refreshAfterNextTurn
      */
     override fun refreshAfterNextTurn() {
+        if (rootService.cableCar.currentState.drawPile.isEmpty()) activePlayerPane.disableDrawTileButton()
+        else activePlayerPane.enableDrawTileButton()
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
     }
