@@ -128,14 +128,84 @@ class PlayerActionServiceTest {
     }
 
 
+    /**
+     * Tests if we can rotate tiles to the left when [CableCar.allowTileRotation] is true.
+     * **/
     @Test
-    fun testRotateTileLeft(){
+    fun testRotateTileLeftWhenRotationAllowed() {
         setup.startLocalGame(players, true, 0)
+        val activePlayer = rootService.cableCar.currentState.activePlayer
         val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
-        rootService.cableCar.currentState.activePlayer.handTile = gameTile
+        val expectedConnections = listOf(1,0,7,4,3,6,5,2)
+
+        activePlayer.handTile = gameTile
         rootService.playerActionService.rotateTileLeft()
-        val connections = rootService.cableCar.currentState.activePlayer.handTile?.connections
-        assertEquals(connections, listOf(1,0,7,4,3,6,5,2))
+        var currentConnections = activePlayer.handTile?.connections
+        //Tests if the rotation works
+        assertEquals(expectedConnections, currentConnections)
+        rootService.playerActionService.rotateTileLeft()
+
+        // Connections should not be the same after another rotation
+        currentConnections = activePlayer.handTile?.connections
+        assertNotEquals(currentConnections,listOf(1,0,7,4,3,6,5,2))
+    }
+
+    /**
+     * Tests if we can rotate tiles to the left although [CableCar.allowTileRotation] is false.
+     * **/
+    @Test
+    fun testRotateTileLeftWhenRotationNotAllowed(){
+        setup.startLocalGame(players, false, 0)
+        val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
+        val activePlayer = rootService.cableCar.currentState.activePlayer
+        val expectedConnections = gameTile.connections.map { it }
+
+        activePlayer.handTile = gameTile
+        rootService.playerActionService.rotateTileLeft()
+        val connections = activePlayer.handTile?.connections
+
+        //Tests if the rotation works
+        assertEquals(expectedConnections, connections)
+    }
+
+    /**
+     * Tests if we can rotate tiles to the right when [CableCar.allowTileRotation] is true.
+     * **/
+    @Test
+    fun testRotateTileRightWhenRotationAllowed () {
+        setup.startLocalGame(players, true, 0)
+        val activePlayer = rootService.cableCar.currentState.activePlayer
+        val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
+        val expectedConnections = listOf(7,2,1,6,5,4,3,0)
+
+        activePlayer.handTile = gameTile
+        rootService.playerActionService.rotateTileRight()
+        var currentConnections = activePlayer.handTile?.connections
+        //Tests if the rotation works
+        assertEquals(expectedConnections, currentConnections)
+        rootService.playerActionService.rotateTileRight()
+
+        // Connections should not be the same after another rotation
+        currentConnections = activePlayer.handTile?.connections
+        assertNotEquals(currentConnections, listOf(7,2,1,6,5,4,3,0))
+    }
+
+    /**
+     * Tests if we can rotate tiles to the left although [CableCar.allowTileRotation] is false.
+     */
+    @Test
+    fun testRotateTileRightWhenRotationNotAllowed(){
+        setup.startLocalGame(players, false, 0)
+        val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
+        val activePlayer = rootService.cableCar.currentState.activePlayer
+        val expectedConnections = gameTile.connections.map { it }
+
+        activePlayer.handTile = gameTile
+        rootService.playerActionService.rotateTileRight()
+        val connections = activePlayer.handTile?.connections
+
+        //Tests if the rotation works
+        assertEquals(expectedConnections, connections)
     }
 
     /**
