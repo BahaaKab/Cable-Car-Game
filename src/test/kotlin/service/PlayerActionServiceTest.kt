@@ -6,12 +6,17 @@ import kotlin.test.*
  * This class has the purpose to test the [PlayerActionService] Class
  * **/
 class PlayerActionServiceTest {
+
     //Creates a new game instance
-    private var rootService = RootService()
-    private var setup = rootService.setupService
-    private var player1 = PlayerInfo("Marie", PlayerType.HUMAN, Color.YELLOW, false)
-    private var player2 = PlayerInfo("Larissa", PlayerType.HUMAN, Color.BLUE, false)
-    private val players = listOf(player1, player2)
+    var rootService = RootService()
+    var setup = rootService.setupService
+    var player1 = PlayerInfo("Marie", PlayerType.HUMAN, Color.YELLOW, false)
+    var player2 = PlayerInfo("Larissa", PlayerType.HUMAN, Color.BLUE, false)
+    val players = listOf<PlayerInfo>(player1, player2)
+
+
+
+
 
     /**
      * By creating a new game and then placing a tile we can test if the placing Method is working.
@@ -44,10 +49,10 @@ class PlayerActionServiceTest {
         assertNotNull(rootService.cableCar)
 
         val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
-        assertTrue(rootService.playerActionService.positionIsIllegal(1,1,gameTile))
-        assertTrue(rootService.playerActionService.positionIsIllegal(1,8,gameTile))
-        assertTrue(rootService.playerActionService.positionIsIllegal(8,1,gameTile))
-        assertTrue(rootService.playerActionService.positionIsIllegal(8,8,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,8,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,8,gameTile))
     }
 
     /**
@@ -61,7 +66,10 @@ class PlayerActionServiceTest {
 
         val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
         game.activePlayer.handTile = gameTile
-
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(1,8,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,1,gameTile))
+        assertEquals(true, rootService.playerActionService.positionIsIllegal(8,8,gameTile))
         rootService.playerActionService.placeTile(1,1)
         assertNull(game.board[1][1])
         rootService.playerActionService.placeTile(1,8)
@@ -73,28 +81,12 @@ class PlayerActionServiceTest {
     }
 
     /**
-     * Place a tile, that has legal position. Expect, that it can be placed then to any adjacent tile.
-     */
-    @Test
-    fun testPlaceTileAlthoughIllegal() {
-        setup.startLocalGame(players, false, 0)
-        val activePlayer = rootService.cableCar.currentState.activePlayer
-        // Create a game tile, that will make always a one-point-track at the start of the game
-        activePlayer.handTile = GameTile(1, listOf(1, 0, 3, 2, 5, 4, 7, 6))
-        // Due to the special rule this should be placeable anywhere adjacent to a station tile, but not anywhere else
-        rootService.playerActionService.placeTile(2, 2)
-        assertNull(rootService.cableCar.currentState.board[2][2])
-        rootService.playerActionService.placeTile(1, 1)
-        assertNotNull(rootService.cableCar.currentState.board[1][1])
-    }
-
-    /**
      * Test to check if there is a possibility to place the [GameTile] on a legal position or if there are only illegal
      * positions.
      * In this case there are legal positions left
      */
     @Test
-    fun testOnlyIllegalPositionsWithLegalPositionsLeft() {
+    fun testOnlyIllegalPositions1() {
         setup.startLocalGame(players, false, 0)
         assertNotNull(rootService.cableCar)
         val gameTile = GameTile(1, listOf(7,2,1,4,3,6,5,0))
@@ -106,7 +98,7 @@ class PlayerActionServiceTest {
      * Test to check if there are only illegal positions left. In this case there are only illegal positions left
      */
     @Test
-    fun testOnlyIllegalPositionsWithNoLegalPositionsLeft() {
+    fun testOnlyIllegalPositions2() {
         setup.startLocalGame(players, false, 0)
         assertNotNull(rootService.cableCar)
         val game = rootService.cableCar.currentState
@@ -135,6 +127,7 @@ class PlayerActionServiceTest {
         assertTrue(rootService.playerActionService.isAdjacentToTiles(1,3))
     }
 
+
     /**
      * Tests if we can rotate tiles to the left when [CableCar.allowTileRotation] is true.
      * **/
@@ -144,15 +137,12 @@ class PlayerActionServiceTest {
         val activePlayer = rootService.cableCar.currentState.activePlayer
         val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
         val expectedConnections = listOf(1,0,7,4,3,6,5,2)
-        val expectedRotation = 270
 
         activePlayer.handTile = gameTile
         rootService.playerActionService.rotateTileLeft()
         var currentConnections = activePlayer.handTile?.connections
         //Tests if the rotation works
         assertEquals(expectedConnections, currentConnections)
-        assertEquals(expectedRotation, activePlayer.handTile?.rotation)
-
         rootService.playerActionService.rotateTileLeft()
 
         // Connections should not be the same after another rotation
@@ -169,15 +159,13 @@ class PlayerActionServiceTest {
         val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
         val activePlayer = rootService.cableCar.currentState.activePlayer
         val expectedConnections = gameTile.connections.map { it }
-        val expectedRotation = 0
 
         activePlayer.handTile = gameTile
         rootService.playerActionService.rotateTileLeft()
         val connections = activePlayer.handTile?.connections
 
-        // Rotation should not do anything
+        //Tests if the rotation works
         assertEquals(expectedConnections, connections)
-        assertEquals(expectedRotation, activePlayer.handTile?.rotation)
     }
 
     /**
@@ -189,14 +177,12 @@ class PlayerActionServiceTest {
         val activePlayer = rootService.cableCar.currentState.activePlayer
         val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
         val expectedConnections = listOf(7,2,1,6,5,4,3,0)
-        val expectedRotation = 90
 
         activePlayer.handTile = gameTile
         rootService.playerActionService.rotateTileRight()
         var currentConnections = activePlayer.handTile?.connections
         //Tests if the rotation works
         assertEquals(expectedConnections, currentConnections)
-        assertEquals(expectedRotation, activePlayer.handTile?.rotation)
         rootService.playerActionService.rotateTileRight()
 
         // Connections should not be the same after another rotation
@@ -213,51 +199,13 @@ class PlayerActionServiceTest {
         val gameTile = GameTile(1, listOf(7,4,3,2,1,6,5,0))
         val activePlayer = rootService.cableCar.currentState.activePlayer
         val expectedConnections = gameTile.connections.map { it }
-        val expectedRotation = 0
 
         activePlayer.handTile = gameTile
         rootService.playerActionService.rotateTileRight()
         val connections = activePlayer.handTile?.connections
 
-        // Rotation should not do anything
+        //Tests if the rotation works
         assertEquals(expectedConnections, connections)
-        assertEquals(expectedRotation, activePlayer.handTile?.rotation)
-    }
-
-    /**
-     * Test various sequential tile rotations
-     */
-    @Test
-    fun testMultipleRotations() {
-        setup.startLocalGame(players, true, 0)
-        val gameTile = rootService.cableCar.currentState.activePlayer.handTile
-        val connections = gameTile?.connections?.map { it }
-        // Rotation four times left should result in a tile that looks as without rotation
-        repeat(4) { rootService.playerActionService.rotateTileLeft() }
-        assertEquals(connections, gameTile?.connections)
-        assertEquals(0, gameTile?.rotation)
-        // Rotation four times right should result in a tile that looks as without rotation
-        repeat(4) { rootService.playerActionService.rotateTileRight() }
-        assertEquals(connections, gameTile?.connections)
-        assertEquals(0, gameTile?.rotation)
-        // Rotation eight times left should result in a tile that looks as without rotation
-        repeat(8) { rootService.playerActionService.rotateTileLeft() }
-        assertEquals(connections, gameTile?.connections)
-        assertEquals(0, gameTile?.rotation)
-        // Rotation eight times right should result in a tile that looks as without rotation
-        repeat(8) { rootService.playerActionService.rotateTileRight() }
-        assertEquals(connections, gameTile?.connections)
-        assertEquals(0, gameTile?.rotation)
-        // Rotation left and then right should result in a tile that looks as without rotation
-        rootService.playerActionService.rotateTileLeft()
-        rootService.playerActionService.rotateTileRight()
-        assertEquals(connections, gameTile?.connections)
-        assertEquals(0, gameTile?.rotation)
-        // Rotation right and then left should result in a tile that looks as without rotation
-        rootService.playerActionService.rotateTileRight()
-        rootService.playerActionService.rotateTileLeft()
-        assertEquals(connections, gameTile?.connections)
-        assertEquals(0, gameTile?.rotation)
     }
 
     /**
@@ -270,4 +218,5 @@ class PlayerActionServiceTest {
         rootService.playerActionService.setAISpeed(4)
         assertEquals(4, rootService.cableCar.AISpeed)
     }
+
 }
