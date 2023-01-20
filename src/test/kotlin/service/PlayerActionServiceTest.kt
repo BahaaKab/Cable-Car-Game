@@ -31,6 +31,8 @@ class PlayerActionServiceTest {
 
         //Tests placing to a legal position
         assertNull(game.board[1][3])
+        // Guarantee, that the tile is placeable at the given position
+        game.activePlayer.handTile = GameTile(1, listOf(5, 4, 7, 6, 1, 0, 3, 2))
         rootService.playerActionService.placeTile(1,3)
         assertNotNull(game.board[1][3])
 
