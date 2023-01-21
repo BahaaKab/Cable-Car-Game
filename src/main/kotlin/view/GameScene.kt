@@ -234,10 +234,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         activePlayerPane.activePlayerTiles.remove(activePlayerPane.activePlayerTiles.last())
         board.set(columnIndex = posX, rowIndex = posY, component = tileMapSmall.forward(
             (rootService.cableCar.currentState.board[posX][posY]!! as GameTile).id
-        ).apply {
-            rotate((rootService.cableCar.currentState.board[posX][posY]!! as GameTile).rotation)
-            onMouseClicked = { rootService.playerActionService.placeTile(posX = posX, posY = posY) }
-        })
+        ).apply { rotate((rootService.cableCar.currentState.board[posX][posY]!! as GameTile).rotation) })
     }
 
 
