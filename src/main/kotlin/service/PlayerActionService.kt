@@ -23,6 +23,12 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
         currentState = history.undoStates.peek().deepCopy()
 
+        for(player in currentState.players) {
+            for(stationTiles in player.stationTiles) {
+                rootService.cableCarService.updatePath(stationTiles)
+            }
+        }
+
         onAllRefreshables { refreshAfterUndo() }
     }
 
@@ -38,6 +44,12 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             history.undoStates.push(redoState)
         }
         currentState = history.undoStates.peek().deepCopy()
+
+        for(player in currentState.players) {
+            for(stationTiles in player.stationTiles) {
+                rootService.cableCarService.updatePath(stationTiles)
+            }
+        }
 
         onAllRefreshables { refreshAfterRedo() }
     }
