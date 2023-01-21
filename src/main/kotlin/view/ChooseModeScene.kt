@@ -54,8 +54,9 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         visual = ColorVisual(249, 249, 250)
     ).apply { componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
-            CableCarApplication.lobbyScene = LobbyScene(rootService, true, "TestName1", true)
-            CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
+            // CableCarApplication.lobbyScene = LobbyScene(rootService, true, "TestName1", true)
+            // CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
+            CableCarApplication.showMenuScene(CableCarApplication.connectionScene)
         }
     }
 

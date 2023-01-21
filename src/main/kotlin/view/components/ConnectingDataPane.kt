@@ -8,8 +8,27 @@ import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_BOLD
 import view.DEFAULT_FONT_MEDIUM
 
+/** A pane to show connection-components in the connecting Scene
+ *
+ * @param posX the x-position Pane
+ * @param posY the y-position Pane */
 class ConnectingDataPane(posX: Int, posY: Int) :
     Pane<UIComponent>(posX, posY, 850, 240) {
+
+    private val sessionID = Label(
+        posX = 650, posY = 325,
+        width = 240, height = 40,
+        font = Font(size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
+        text = "thisIsOurFavouriteGame"
+    )
+
+    private val secretID = Label(
+        posX = 990, posY = 325,
+        width = 270, height = 40,
+        font = Font(size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
+        text = "AMIN4PRESIDENT"
+    )
+
     init {
         addAll(
 
@@ -24,12 +43,6 @@ class ConnectingDataPane(posX: Int, posY: Int) :
                 text = "Session ID:",
                 font = Font(size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD)
             ),
-            Label(
-                posX = 650, posY = 325,
-                width = 240, height = 40,
-                font = Font(size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
-                text = "thisIsOurFavouriteGame"
-            ),
 
             Label(
                 width = 400, height = 50,
@@ -37,14 +50,18 @@ class ConnectingDataPane(posX: Int, posY: Int) :
                 text = "Secret:",
                 font = Font(size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD)
             ),
-            Label(
-                posX = 990, posY = 325,
-                width = 270, height = 40,
-                font = Font(size = 20, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
-                text = "AMIN4PRESIDENT"
-            )
 
-
+            sessionID, secretID
         )
+    }
+
+    /** A method to set the sessionID */
+    fun setSessionID(session : String) {
+        sessionID.text = session
+    }
+
+    /** A method to set the secret */
+    fun setSecret(secret : String) {
+        secretID.text = secret
     }
 }

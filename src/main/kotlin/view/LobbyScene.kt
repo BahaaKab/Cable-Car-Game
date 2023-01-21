@@ -119,7 +119,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         posX = 1315, posY = 210,
         width = 100, height = 40,
         font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),
-        items = listOf(1,2,3,4,5)
+        items = listOf(0,1,2,3,4,5)
     )
 
     private val playerDisplay = playerDisplay()
@@ -145,18 +145,17 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     ).apply {
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
-            if (isNetworkMode) {
-                // Todo
-                //rootService.setupService.startNetworkGame()
-            } else {
-
-                val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
-                    val name = checkPlayerName(playerInputPane.getTextFieldInput(), i)
-                    val playerType = playerInputPane.getPlayerType()
-                    val color = PLAYER_ORDER_COLORS[i]
-                    PlayerInfo(name, playerType, color, false)
+            if (playerNumber >= 2) {
+                if (isNetworkMode) {
+                    rootService.setupService.startNetworkGame(
+                        true, createPlayerInfos(true).subList(0, playerNumber),
+                        tileRotation, null, getAISpeed()
+                    )
+                } else {
+                    rootService.setupService.startLocalGame(
+                        createPlayerInfos(false).subList(0, playerNumber), tileRotation, getAISpeed()
+                    )
                 }
-                rootService.setupService.startLocalGame(playerInfos, tileRotation, getAISpeed())
             }
 
         }
@@ -164,7 +163,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
 
     private val sesIDReal = Label(
         posX = 710, posY = 280,
-        width = 240, height = 40,
+       width = 240, height = 40,
         alignment = Alignment.CENTER_LEFT,
         font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
         text = "thisIsOurFavouriteGame"
@@ -431,6 +430,17 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         val tmpInputPlayer = playerInputs[pos1Pane]
         playerInputs[pos1Pane] = playerInputs[pos2Pane]
         playerInputs[pos2Pane] = tmpInputPlayer
+    }
+
+    /** Create a list of playerInfos for all possible Players to give it the setup Service */
+    private fun createPlayerInfos(isNetwork : Boolean) : List<PlayerInfo> {
+        val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
+            val name = checkPlayerName(playerInputPane.getTextFieldInput(), i)
+            val playerType = playerInputPane.getPlayerType()
+            val color = PLAYER_ORDER_COLORS[i]
+            PlayerInfo(name, playerType, color, isNetwork)
+        }
+        return playerInfos
     }
 
     /** This gets the selected AI-Speed. */
