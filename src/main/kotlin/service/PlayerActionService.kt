@@ -13,18 +13,17 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Undo the last game [State] and move on to the nextTurn.
      */
     fun undo() = with(rootService.cableCar) {
-        if(gameMode == GameMode.NETWORK || history.undoStates.isEmpty()) { return }
+        if(gameMode == GameMode.NETWORK || history.undoStates.isEmpty() ||
+            history.undoStates.size <= currentState.players.size) { return }
 
-        val players = currentState.players
         // Undo all player actions up to the current player's last action
-        repeat(players.size){
+        repeat(currentState.players.size){
             val undoState = history.undoStates.pop()
             history.redoStates.push(undoState)
         }
-        currentState = history.undoStates.peek()
+        currentState = history.undoStates.peek().deepCopy()
 
         onAllRefreshables { refreshAfterUndo() }
-
     }
 
     /**
@@ -34,12 +33,11 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         if(gameMode == GameMode.NETWORK || history.redoStates.isEmpty()) { return }
 
         // Redo all player actions up to the current player's previously done turn
-        val players = currentState.players
-        repeat(players.size) {
+        repeat(currentState.players.size) {
             val redoState = history.redoStates.pop()
             history.undoStates.push(redoState)
         }
-        currentState = history.undoStates.peek()
+        currentState = history.undoStates.peek().deepCopy()
 
         onAllRefreshables { refreshAfterRedo() }
     }

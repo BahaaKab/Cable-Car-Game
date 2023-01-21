@@ -34,7 +34,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             AISpeed = AISpeed,
             isHostPlayer = false,
             gameMode = GameMode.HOTSEAT,
-            history = History(),
+            history = History().apply { undoStates.push(initialState.deepCopy()) },
             currentState = initialState
         )
 
@@ -85,7 +85,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             AISpeed = AISpeed,
             isHostPlayer = isHostPlayer,
             gameMode = GameMode.NETWORK,
-            history = History(),
+            history = History().apply { undoStates.push(initialState.deepCopy()) },
             currentState = initialState
         )
 

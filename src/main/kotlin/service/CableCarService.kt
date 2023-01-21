@@ -41,11 +41,13 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         if (isGameEnding()) {
             return endGame()
         }
-        // Push the current game state to the history
-        history.undoStates.push(currentState.deepCopy())
 
         // Set the next active player
         nextPlayer()
+
+        // Push the current game state to the history
+        history.undoStates.push(currentState.deepCopy())
+        history.redoStates.clear()
 
         onAllRefreshables { refreshAfterNextTurn() }
 
