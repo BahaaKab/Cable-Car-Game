@@ -141,11 +141,14 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         if(handTile == null) {
             activePlayerTiles.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
         } else {
-            activePlayerTiles.add(tileMapBig.forward(handTile!!.id).apply { opacity = 1.0 })
+            activePlayerTiles.add(tileMapBig.forward(handTile!!.id).apply {
+                opacity = 1.0
+                rotation = handTile!!.rotation.toDouble()
+            })
         }
         activePlayerNameLabel.text = name
         activePlayerScoreLabel.text = "Score: $score"
-        activePlayerColorLabel.visual = when(color) {
+        activePlayerColorLabel.visual = when (color) {
             entity.Color.YELLOW -> DEFAULT_YELLOW_COLOR
             entity.Color.BLUE -> DEFAULT_BLUE_COLOR
             entity.Color.ORANGE -> DEFAULT_RED_COLOR
