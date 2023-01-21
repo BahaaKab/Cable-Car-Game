@@ -64,6 +64,14 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     private val otherPlayersPane = OtherPlayersPane(rootService = rootService, posX = 100, posY = 648)
 
+    private val emptyTilesCardViews = List(8) { column ->
+        List(8) { row ->
+            CardView(width = 100, height = 100, front = Visual.EMPTY).apply {
+                onMouseClicked = { rootService.playerActionService.placeTile(posX = column, posY = row) }
+            }
+        }
+    }
+
     private val board = GridPane<CardView>(
         posX = 850, posY = 50,
         columns = 10, rows = 10,
@@ -79,10 +87,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 // We don't want to place empty tiles where the power stations are
                 if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
 
-                set(columnIndex = i, rowIndex = j, component = CardView(
-                    width = 100, height = 100,
-                    front = Visual.EMPTY
-                ).apply {
+                set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i-1][j-1].apply {
                     onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
                 })
             }
@@ -159,10 +164,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                             }
                     )
                 } else {
-                    board.set(columnIndex = i, rowIndex = j, component = CardView(
-                        width = 100, height = 100,
-                        front = Visual.EMPTY
-                    ).apply {
+                    board.set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i-1][j-1].apply {
                         onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
                     })
                 }
@@ -234,7 +236,9 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         activePlayerPane.activePlayerTiles.remove(activePlayerPane.activePlayerTiles.last())
         board.set(columnIndex = posX, rowIndex = posY, component = tileMapSmall.forward(
             (rootService.cableCar.currentState.board[posX][posY]!! as GameTile).id
-        ).apply { rotate((rootService.cableCar.currentState.board[posX][posY]!! as GameTile).rotation) })
+        ).apply {
+            rotation = (rootService.cableCar.currentState.board[posX][posY]!! as GameTile).rotation.toDouble()
+        })
     }
 
 
