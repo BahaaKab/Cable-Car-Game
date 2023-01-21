@@ -38,7 +38,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
 
     private val cableCarLogo = CableCarLogo(810, 50).apply { scale = 1.1 }
     private val refreshArrowVisual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.png")))
-    private val rotateRightArrow = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/rotateRight.PNG")))
+    private val refreshArrowBlue = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh_blue.png")))
 
     private val backArrow = Label(
         posX = 544, posY = 215,
@@ -86,7 +86,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
                 refreshArrow.visual = refreshArrowVisual
             } else {
                 componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
-                refreshArrow.visual = rotateRightArrow
+                refreshArrow.visual = refreshArrowBlue
             }
             tileRotation = tileRotation.not()
         }
