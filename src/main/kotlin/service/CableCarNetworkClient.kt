@@ -37,7 +37,7 @@ class CableCarNetworkClient(
     playerName,
     host,
     secret,
-    NetworkLogging.VERBOSE
+    NetworkLogging.INFO
 ) {
     /**
      * Handle the [CreateGameResponse]. On success, open a game lobby as host.
@@ -106,8 +106,9 @@ class CableCarNetworkClient(
      */
     @GameActionReceiver
     fun onGameInitMessageReceived(message: GameInitMessage, sender: String) {
-        // if sender is the host, validate game tiles and create a game instance based on message data
-        // TODO: How to properly check, that the game has not started and that the sender is actually the host?
+        // If the local player is the host, throw an exception, as the sender cannot be the host
+        check(!networkService.rootService.isGameInitialized() || !networkService.rootService.cableCar.isHostPlayer)
+
         val playerInfos = message.players.mapIndexed { index, info ->
             val name = info.name
             val color = PLAYER_ORDER_COLORS[index]
@@ -122,6 +123,8 @@ class CableCarNetworkClient(
             tileIDs = message.tileSupply.map { it.id },
             AISpeed = 1
         )
+
+        networkService.onAllRefreshables { refreshAfterStartGame() }
     }
 
     /**
@@ -150,6 +153,8 @@ class CableCarNetworkClient(
         playerActionService.placeTile(message.posX, message.posY)
         // Validate the gameState
         check(isValidGameState(message.gameStateVerificationInfo))
+
+        networkService.onAllRefreshables { refreshAfterNextTurn() }
     }
 
     /**
