@@ -26,6 +26,11 @@ class NetworkRefreshable() : Refreshable {
     var hasStartedGameInstance = false
 
     /**
+     *
+     */
+    var hasReceivedTurnMessage = false
+
+    /**
      * Set the [NetworkRefreshable.response] property
      *
      * @param response The response
@@ -60,6 +65,21 @@ class NetworkRefreshable() : Refreshable {
 
         var counter = timeoutInMillis
         while (!hasStartedGameInstance) {
+            Thread.sleep(5)
+            if (counter <= 0) {
+                throw Exception()
+            }
+            counter -= 5
+        }
+    }
+
+    fun awaitTurnMessageWithin(timeoutInMillis: Int, block: () -> Unit) {
+        hasReceivedTurnMessage = false
+
+        block()
+
+        var counter = timeoutInMillis
+        while (!hasReceivedTurnMessage) {
             Thread.sleep(5)
             if (counter <= 0) {
                 throw Exception()
@@ -109,7 +129,7 @@ class NetworkRefreshable() : Refreshable {
      *
      * @return A response or null, when the timeout was exceeded
      */
-    fun responseWithinOrNull(timeoutInMillis: Int): Response? {
+    private fun responseWithinOrNull(timeoutInMillis: Int): Response? {
         var counter = timeoutInMillis
         while (response == null) {
             Thread.sleep(5)

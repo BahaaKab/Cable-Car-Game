@@ -35,8 +35,12 @@ open class NetworkTest {
      * IDs for each test. The [sessionIDCounter] is initialized randomly, when the class is created. This method will
      * be called automatically before each test and will set the [sessionID] with a incremented [sessionIDCounter].
      */
-    @BeforeTest
-    fun setUniqueSessionId() {
+    private fun setUniqueSessionId() {
         sessionID = "${coreSessionID}_${sessionIDCounter ++}"
+    }
+
+    @BeforeTest
+    open fun setup() {
+        setUniqueSessionId()
     }
 }
