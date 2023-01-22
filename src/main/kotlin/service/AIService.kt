@@ -14,6 +14,7 @@ import kotlin.random.Random
 class AIService(private val rootService: RootService) : AbstractRefreshingService() {
     // surround codes every direction of a Tile
     private val surround = listOf(-1,-2,+2,+1)
+    private val aiSpeedFactor: Long = 200
 
 
 
@@ -38,7 +39,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         legalPosArray.shuffle()
         // Does the randomized draw. For a turn and AI it is no difference when the card is drawn
         if (Random.nextBoolean()) {
-            Thread.sleep(500)
+            Thread.sleep(rootService.cableCar.AISpeed*aiSpeedFactor)
             rootService.playerActionService.drawTile()
         }
 
@@ -46,9 +47,8 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             val (thisPosX, thisPosY) = legalPosArray.removeFirst()
             for (i in 1..4) {
                 if (placeablePosition(thisPosX, thisPosY)) {
-                    Thread.sleep(500)
-                    rootService.playerActionService.placeTile(thisPosX, thisPosY)
-                    return
+                    Thread.sleep(rootService.cableCar.AISpeed*aiSpeedFactor)
+                    return rootService.playerActionService.placeTile(thisPosX, thisPosY)
                 }
                 if (!rootService.cableCar.allowTileRotation) {
                     break
