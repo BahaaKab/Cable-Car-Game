@@ -28,7 +28,7 @@ class State (var drawPile : MutableList<GameTile>,
     fun deepCopy() : State {
         val copiedDrawPile = drawPile.map { it.deepCopy() }.toMutableList()
         val copiedBoard = board.map { column -> column.map { it?.deepCopy() }.toTypedArray() }.toTypedArray()
-        val copiedPlayers = players.map { it.deepCopy() }
+        val copiedPlayers = players.map { it.copy() }
         val copiedPlacedTiles = placedTiles.map { it.copy() }
         val newActivePlayer = copiedPlayers[players.indexOf(activePlayer)]
         return State(copiedDrawPile, newActivePlayer, copiedBoard, copiedPlayers).apply {
