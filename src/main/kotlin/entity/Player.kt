@@ -32,7 +32,7 @@ data class Player(val playerType : PlayerType, val color : Color, val name : Str
      * Function that returns a deep-copy of a [Player]
      * @return deep-copy of [Player]
      */
-    fun deepCopy() : Player {
+    fun copy() : Player {
         return Player(playerType, color, name, stationTiles, isNetworkPlayer).also {
             it.score = score
             it.handTile = handTile?.deepCopy()
