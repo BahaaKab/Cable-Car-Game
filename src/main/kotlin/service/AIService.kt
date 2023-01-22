@@ -6,10 +6,8 @@ package service
  * @param fromSupply: Boolean if a card was drawn
  * @param rotation: Int in degree for 0°, 90°, 180° and 270° clockwise rotation
  */
-import edu.udo.cs.sopra.ntf.GameStateVerificationInfo
-import edu.udo.cs.sopra.ntf.TileInfo
-import edu.udo.cs.sopra.ntf.TurnMessage
 import entity.*
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -29,62 +27,42 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
     /**
      * to get the best calculate for AI when set Difficulty to HARD
      *
-     * @return [TurnMessage] of selected AI
      */
-    fun doTurn(): TurnMessage{
-        return when (rootService.cableCar.currentState.activePlayer.playerType){
+    fun makeAIMove(){
+         when (rootService.cableCar.currentState.activePlayer.playerType){
             PlayerType.AI_EASY -> easyTurn()
             PlayerType.AI_HARD -> hardTurn()
-            PlayerType.HUMAN -> throw IllegalAccessError()
+            PlayerType.HUMAN -> return
         }
     }
 
     /**
      * checks board for random place to place a placeable tile
      *
-     * @return [TurnMessage] with random placement
      */
-    private fun easyTurn(): TurnMessage = with(rootService.cableCar.currentState){
-        var fromSupply: Boolean =  Random.nextBoolean()
+     private fun easyTurn() = with(rootService.cableCar.currentState) {
         val legalPosArray = legalPositions()
         legalPosArray.shuffle()
         // Does the randomized draw. For a turn and AI it is no difference when the card is drawn
-        fromSupply=draw(fromSupply)
+        if (Random.nextBoolean()) {
+            Thread.sleep(500)
+            rootService.playerActionService.drawTile()
+        }
 
         while (!legalPosArray.isEmpty()) {
             val (thisPosX, thisPosY) = legalPosArray.removeFirst()
-            for (i in 1..4){
-                if (placeablePosition(thisPosX,thisPosY)){
-                    return placeCurrentTile(thisPosX,thisPosY,fromSupply)
+            for (i in 1..4) {
+                if (placeablePosition(thisPosX, thisPosY)) {
+                    Thread.sleep(500)
+                    rootService.playerActionService.placeTile(thisPosX, thisPosY)
+                    return
                 }
-                if (!rootService.cableCar.allowTileRotation){
+                if (!rootService.cableCar.allowTileRotation) {
                     break
                 }
-                rotateCurrentTileClockwise()
+                rootService.playerActionService.rotateTileRight()
             }
         }
-        throw IllegalStateException()
-    }
-
-    /** tries to draw a card and store in the according info. If the card is to play then it goes to currentCard
-     *
-     * @param [drawAndPlay] if Ai wants to draw a card to play it
-     * @return if it was possible to draw a card
-     */
-    private fun draw(drawAndPlay: Boolean):Boolean = with(rootService.cableCar.currentState){
-        if (drawPile.isEmpty()){
-            activePlayer.currentTile = activePlayer.handTile
-            activePlayer.handTile=null
-            return false
-        }
-        if (drawAndPlay){
-            activePlayer.currentTile = activePlayer.handTile
-            activePlayer.handTile = drawPile.removeFirst()
-            return true
-        }
-        activePlayer.currentTile = drawPile.removeFirst()
-        return false
-
     }
 
     /**
@@ -122,17 +100,17 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         if (!isOnePointPosition(posX,posY)){
             return true
         }
-        return only1PointPositionsWithCurrentTile()
+        return only1PointPositions()
     }
 
     /**
-     * checks if [only1PointPositionsWithCurrentTile] are available
+     * checks if [only1PointPositions] are available
      *
      * @return Boolean whether it is so
      */
-    fun only1PointPositionsWithCurrentTile():Boolean = with(rootService.cableCar.currentState.activePlayer){
+    fun only1PointPositions():Boolean = with(rootService.cableCar.currentState.activePlayer){
         val legalPos =  legalPositions()
-        val tileToTest = currentTile!!.deepCopy()
+        val tileToTest = checkNotNull(currentTile ?: handTile).deepCopy()
         for (i in 1..4){
             legalPos.forEach {
                 if(!isOnePointPosition(it.first,it.second)){
@@ -143,7 +121,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             if (!rootService.cableCar.allowTileRotation){
                 break
             }
-            rotateCurrentTileClockwise()
+            rootService.playerActionService.rotateTileRight()
         }
         return true
     }
@@ -157,7 +135,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * @param posY
      * @return Boolean whether 1 point
      */
-     fun isOnePointPosition(posX: Int, posY: Int):Boolean = with(rootService.cableCar.currentState.activePlayer.currentTile!!) {
+     fun isOnePointPosition(posX: Int, posY: Int):Boolean = with(rootService.cableCar.currentState.activePlayer) {
         if (posX !in 1..8 || posY !in 1..8) {
             throw IllegalArgumentException()
         }
@@ -165,70 +143,59 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         if ((posX in 2..7) && (posY in 2..7)) {
             return false
         }
+        val tileToTest = checkNotNull(currentTile ?: handTile)
         //checks if border of board position and connection would result in 1 Point
         when (posX) {
             1 -> {
-                if (connections[6] == 7) {
+                if (tileToTest.connections[6] == 7) {
                     return true
                 }
             }
 
             8 -> {
-                if (connections[2] == 3) {
+                if (tileToTest.connections[2] == 3) {
                     return true
                 }
             }
         }
         when (posY) {
             1 -> {
-                if (connections[0] == 1) {
+                if (tileToTest.connections[0] == 1) {
                     return true
                 }
-                if (connections[0] == 7) {
+                if (tileToTest.connections[0] == 7) {
                     return true
                 }
-                if (connections[0] == 3) {
+                if (tileToTest.connections[0] == 3) {
                     return true
                 }
-                if (connections[1] == 6) {
+                if (tileToTest.connections[1] == 6) {
                     return true
                 }
-                if (connections[1] == 2) {
+                if (tileToTest.connections[1] == 2) {
                     return true
                 }
 
             }
             8 -> {
-                if (connections[4] == 5) {
+                if (tileToTest.connections[4] == 5) {
                     return true
                 }
-                if (connections[4] == 3) {
+                if (tileToTest.connections[4] == 3) {
                     return true
                 }
-                if (connections[4] == 7) {
+                if (tileToTest.connections[4] == 7) {
                     return true
                 }
-                if (connections[5] == 6) {
+                if (tileToTest.connections[5] == 6) {
                     return true
                 }
-                if (connections[5] == 2) {
+                if (tileToTest.connections[5] == 2) {
                     return true
                 }
             }
         }
         return false
-    }
-
-
-    /**
-     * [rotateCurrentTileClockwise] rotate a current Tile clockwise
-     *
-     */
-    fun rotateCurrentTileClockwise() = with(rootService.cableCar.currentState.activePlayer.currentTile!!){
-        //With the following formular we can rotate the tile by 90° to the right
-        connections = connections.map { (it + 2) % connections.size }
-        connections = List(connections.size) {index -> connections[(8+index-2)%8] }
-        rotation = (rotation +90)%360
     }
 
 
@@ -244,23 +211,10 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
     }
 
     /**
-     * [actualGameStateVerificationInfo] constructs a GameStateVerificationInfo
-     *
-     * @return [GameStateVerificationInfo]
-     */
-    private fun actualGameStateVerificationInfo() = GameStateVerificationInfo(rootService.cableCar.currentState.placedTiles,
-        List(rootService.cableCar.currentState.drawPile.size)
-        {index -> rootService.cableCar.currentState.drawPile[index].id  },
-        List(rootService.cableCar.currentState.players.size)
-        {index -> rootService.cableCar.currentState.players[index].score })
-
-    /**
      * to find good tile for HARD AI that is allowed
      */
-    private fun hardTurn(): TurnMessage{
-        return TurnMessage(0, 0, true, 0, GameStateVerificationInfo(rootService.cableCar.currentState.placedTiles,
-            List(rootService.cableCar.currentState.drawPile.size){index -> rootService.cableCar.currentState.drawPile[index].id  },List(rootService.cableCar.currentState.players.size){index -> rootService.cableCar.currentState.players[index].score }))
-
+    private fun hardTurn(){
+        easyTurn()
     }
 
 
@@ -269,17 +223,6 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      */
     private fun calculateTileScore(posX: Int, posY: Int){
 
-    }
-
-    /**
-     * to places the current Tile
-     */
-    private fun placeCurrentTile(posX: Int, posY: Int, fromSupply:Boolean) : TurnMessage = with(rootService.cableCar.currentState){
-        val latestRotation=activePlayer.currentTile!!.rotation
-        placedTiles.add(TileInfo(posX,posY,activePlayer.currentTile!!.id,activePlayer.currentTile!!.rotation))
-        board[posX][posY]=activePlayer.currentTile
-        activePlayer.currentTile=null
-        return TurnMessage(posX, posY, fromSupply,latestRotation , actualGameStateVerificationInfo())
     }
 
     /**

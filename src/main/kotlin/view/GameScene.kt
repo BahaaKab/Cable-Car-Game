@@ -2,6 +2,7 @@ package view
 
 import entity.GameMode
 import entity.GameTile
+import entity.PlayerType
 import entity.StationTile
 import service.RootService
 import tools.aqua.bgw.animation.FadeAnimation
@@ -195,10 +196,9 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             }
         } else connectionStatusLabel.isVisible = false
 
-        activePlayerPane.refreshActivePlayer()
-        otherPlayersPane.refreshAfterStartGame()
-
         CableCarApplication.showGameScene(this)
+
+        refreshAfterNextTurn()
     }
 
     /**
@@ -270,5 +270,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         else activePlayerPane.enableDrawTileButton()
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
+        BoardGameApplication.runOnGUIThread { rootService.aIService.makeAIMove() }
     }
 }

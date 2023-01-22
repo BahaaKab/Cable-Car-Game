@@ -55,10 +55,6 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
                 // TODO
                 return
             }
-            if(playerType == PlayerType.AI_EASY || playerType == PlayerType.AI_HARD) {
-                rootService.aIService.doTurn()
-                return
-            }
         }
 
     }
