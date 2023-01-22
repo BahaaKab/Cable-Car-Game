@@ -1,13 +1,6 @@
 package service
-/*
- * A [TurnMessage] expects the following parameter on a [0..9][0..9] board:
- * @param posX: Int as x-coordinate
- * @param posY: Int as y-coordinate
- * @param fromSupply: Boolean if a card was drawn
- * @param rotation: Int in degree for 0°, 90°, 180° and 270° clockwise rotation
- */
+
 import entity.*
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -110,20 +103,20 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      */
     fun only1PointPositions():Boolean = with(rootService.cableCar.currentState.activePlayer){
         val legalPos =  legalPositions()
-        val tileToTest = checkNotNull(currentTile ?: handTile).deepCopy()
+        var allIllegal = true
         for (i in 1..4){
-            legalPos.forEach {
+            run legalfound@ {legalPos.forEach {
                 if(!isOnePointPosition(it.first,it.second)){
-                    currentTile=tileToTest
-                    return false
-                }
+                    allIllegal=false
+                    return@legalfound
+                } }
             }
             if (!rootService.cableCar.allowTileRotation){
                 break
             }
             rootService.playerActionService.rotateTileRight()
         }
-        return true
+        return allIllegal
     }
 
 
