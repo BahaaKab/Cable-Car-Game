@@ -21,6 +21,10 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
 
     init {
         rootService.addRefreshables(this, gameScene, endScene, lobbyScene, connectingScene, connectionScene)
+        onWindowClosed = {
+            rootService.networkService.disconnect()
+        }
         showMenuScene(chooseModeScene)
     }
+
 }

@@ -50,10 +50,7 @@ class CableCarNetworkClient(
             CreateGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterHostGame() }
             }
-            CreateGameResponseStatus.ALREADY_ASSOCIATED_WITH_GAME -> { }
-            CreateGameResponseStatus.SESSION_WITH_ID_ALREADY_EXISTS -> { }
-            CreateGameResponseStatus.GAME_ID_DOES_NOT_EXIST -> { }
-            CreateGameResponseStatus.SERVER_ERROR -> { }
+            else -> networkService.disconnect()
         }
     }
 
@@ -68,10 +65,7 @@ class CableCarNetworkClient(
             JoinGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterJoinGame(response.opponents) }
             }
-            JoinGameResponseStatus.ALREADY_ASSOCIATED_WITH_GAME -> { }
-            JoinGameResponseStatus.INVALID_SESSION_ID -> { }
-            JoinGameResponseStatus.PLAYER_NAME_ALREADY_TAKEN -> { }
-            JoinGameResponseStatus.SERVER_ERROR -> { }
+            else -> networkService.disconnect()
         }
     }
 
@@ -84,7 +78,6 @@ class CableCarNetworkClient(
         networkService.onAllRefreshables { refreshAfterNetworkNotification(notification) }
         check(!networkService.rootService.isGameInitialized())
         networkService.onAllRefreshables { refreshAfterGuestJoined(notification.sender) }
-
     }
 
     /**

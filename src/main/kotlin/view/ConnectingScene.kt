@@ -52,9 +52,8 @@ class ConnectingScene(private val rootService: RootService) : MenuScene(1920, 10
     }
 
     /** A Method to set all sessionID */
-    fun setData(sessionID : String, secret : String) {
+    fun setData(sessionID : String) {
         connectingDataPane.setSessionID(sessionID)
-        connectingDataPane.setSecret(secret)
     }
 }
 
