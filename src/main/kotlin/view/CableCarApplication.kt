@@ -16,11 +16,10 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
     val chooseModeScene = ChooseModeScene(rootService)
     var lobbyScene = LobbyScene(rootService)
     val connectionScene = ConnectionScene(rootService)
-    val connectingScene = ConnectingScene(rootService)
 
 
     init {
-        rootService.addRefreshables(this, gameScene, endScene, lobbyScene, connectingScene, connectionScene)
+        rootService.addRefreshables(this, gameScene, endScene, lobbyScene, connectionScene)
         onWindowClosed = {
             rootService.networkService.disconnect()
         }

@@ -26,7 +26,7 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
     background = ColorVisual(247, 247, 247)
 ), Refreshable {
     private val logoPane = CableCarLogo(posX = 841, posY = 104)
-    private val somethingPane = ConnectionPane(0, 0)
+    private val connectionPane = ConnectionPane(0, 0)
     private val playerTypeButton = PlayerTypeButton(posX = 1200, posY = 365)
     private val menuVisual = ImageVisual(ImageIO.read(ConnectionScene::class.java.getResource("/arrow.png")))
 
@@ -54,12 +54,13 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: 20px"
         onMouseClicked = {
             val hostPlayerInfo = PlayerInfo(
-                name = somethingPane.getPlayerName(),
+                name = connectionPane.getPlayerName(),
                 playerType = playerTypeButton.getPlayerType(),
                 color = entity.Color.YELLOW,
                 isNetworkPlayer = false
             )
-            rootService.networkService.hostGame(hostPlayerInfo, somethingPane.getSessionID())
+            rootService.networkService.hostGame(hostPlayerInfo, connectionPane.getSessionID())
+
         }
     }
 
@@ -74,12 +75,12 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: 20px"
         onMouseClicked = {
             val guestPlayerInfo = PlayerInfo(
-                name = somethingPane.getPlayerName(),
+                name = connectionPane.getPlayerName(),
                 playerType = playerTypeButton.getPlayerType(),
                 color = entity.Color.YELLOW,
                 isNetworkPlayer = false
             )
-            rootService.networkService.joinGame(guestPlayerInfo, somethingPane.getSessionID())
+            rootService.networkService.joinGame(guestPlayerInfo, connectionPane.getSessionID())
         }
     }
 
@@ -87,7 +88,7 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
         opacity = 1.0
         addComponents(
             logoPane,
-            somethingPane,
+            connectionPane,
             hostGameButton,
             joinGameButton,
             playerTypeButton,
@@ -99,5 +100,25 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
             ).apply { onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) } }
         )
 
+    }
+
+    override fun refreshAfterHostGame() {
+        CableCarApplication.lobbyScene = LobbyScene(
+            rootService,
+            isNetworkMode = true,
+            isHost = true,
+            yourName = connectionPane.getPlayerName()
+        )
+        CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
+    }
+
+    override fun refreshAfterJoinGame(names: List<String>) {
+        CableCarApplication.lobbyScene = LobbyScene(
+            rootService,
+            isNetworkMode = true,
+            isHost = false,
+            yourName = connectionPane.getPlayerName()
+        )
+        CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
     }
 }

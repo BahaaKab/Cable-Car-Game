@@ -50,7 +50,7 @@ class CableCarNetworkClient(
             CreateGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterHostGame() }
             }
-            else -> networkService.disconnect()
+            else -> {}
         }
     }
 
@@ -65,7 +65,7 @@ class CableCarNetworkClient(
             JoinGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterJoinGame(response.opponents) }
             }
-            else -> networkService.disconnect()
+            else -> {}
         }
     }
 

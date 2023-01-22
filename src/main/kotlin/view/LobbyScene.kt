@@ -28,9 +28,12 @@ import kotlin.random.Random
  * @param yourName The name of the hostPlayer if the scene shows a Multiplayer-Lobby
  * @param isHost A Boolean that shows if the local Player is the Host of a Network-Game
  * */
-class LobbyScene(private val rootService: RootService, private val isNetworkMode : Boolean = false,
-                 private val yourName: String = "", isHost : Boolean = false)
-            : MenuScene(1920, 1080), Refreshable {
+class LobbyScene(
+    private val rootService: RootService,
+    private val isNetworkMode: Boolean = false,
+    private val yourName: String = "",
+    val isHost: Boolean = false
+) : MenuScene(1920, 1080), Refreshable {
 
     private var tileRotation = false
     private var playerNumber = 2
@@ -38,7 +41,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
 
     private val cableCarLogo = CableCarLogo(810, 50).apply { scale = 1.1 }
     private val refreshArrowVisual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.png")))
-    private val refreshArrowBlue = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh_blue.png")))
+    private val refreshArrowBlue =
+        ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh_blue.png")))
 
     private val backArrow = Label(
         posX = 544, posY = 215,
@@ -58,7 +62,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         ),
         alignment = Alignment.CENTER_RIGHT,
         visual = ColorVisual(249, 249, 250)
-    ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+    ).apply {
+        componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
         onMouseClicked = { randomOrder() }
     }
 
@@ -78,7 +83,8 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         ),
         alignment = Alignment.CENTER_RIGHT,
         visual = ColorVisual(249, 249, 250)
-    ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+    ).apply {
+        componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
         onMouseClicked = {
 
             if (tileRotation) {
@@ -119,7 +125,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         posX = 1315, posY = 210,
         width = 100, height = 40,
         font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),
-        items = listOf(0,1,2,3,4,5)
+        items = listOf(0, 1, 2, 3, 4, 5)
     )
 
     private val playerDisplay = playerDisplay()
@@ -148,8 +154,11 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             if (playerNumber >= 2) {
                 if (isNetworkMode) {
                     rootService.setupService.startNetworkGame(
-                        true, createPlayerInfos(true).subList(0, playerNumber),
-                        tileRotation, null, getAISpeed()
+                        isHost,
+                        createPlayerInfos(true).subList(0, playerNumber),
+                        tileRotation,
+                        null,
+                        getAISpeed()
                     )
                 } else {
                     rootService.setupService.startLocalGame(
@@ -163,9 +172,9 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
 
     private val sesIDReal = Label(
         posX = 710, posY = 280,
-       width = 240, height = 40,
+        width = 240, height = 40,
         alignment = Alignment.CENTER_LEFT,
-        font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
+        font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
         text = "thisIsOurFavouriteGame"
     )
 
@@ -173,7 +182,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         posX = 1060, posY = 280,
         width = 270, height = 40,
         alignment = Alignment.CENTER_LEFT,
-        font = Font(size = 21, color = DEFAULT_BLUE , family = DEFAULT_FONT_MEDIUM),
+        font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
         text = "AMIN4PRESIDENT"
     )
 
@@ -187,7 +196,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             backArrow, cubePicture, refreshArrow, aISpeedBackground, aISpeedLabel, aISpeedSetting
         )
 
-        for (i in playerIndicators.indices){
+        for (i in playerIndicators.indices) {
             addComponents(playerIndicators[i], orderButtons[i])
         }
 
@@ -196,14 +205,14 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
             for (input in playerInputs) {
                 addComponents(input)
             }
-            if(isHost) {
+            if (isHost) {
                 playerInputs[0].changePlayerName(yourName)
                 playerNumber = 1
             } else {
                 startButton.isDisabled = true
                 tileRotationButton.isDisabled = true
                 playerOrderButton.isDisabled = true
-                for(playerInput in playerInputs){
+                for (playerInput in playerInputs) {
                     playerInput.deactivateKick()
                 }
             }
@@ -230,18 +239,19 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
         backArrow.posX = (backArrow.posX - i)
 
         return Button(
-                posX = (535-i), posY = 210,
-                width = (110+i), height = 30,
-                text = name,
-                font = Font(
-                    size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
-                    fontWeight = Font.FontWeight.BOLD
-                ),
-                alignment = Alignment.CENTER_RIGHT,
-                visual = ColorVisual(249, 249, 250)
-            ).apply { componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
-                    onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) }
-            }
+            posX = (535 - i), posY = 210,
+            width = (110 + i), height = 30,
+            text = name,
+            font = Font(
+                size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
+                fontWeight = Font.FontWeight.BOLD
+            ),
+            alignment = Alignment.CENTER_RIGHT,
+            visual = ColorVisual(249, 249, 250)
+        ).apply {
+            componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+            onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) }
+        }
     }
 
     /** In single-player this method creates the display in which you can choose the number of players.*/
@@ -254,39 +264,39 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     /** A Method which creates the "playerX:" and colorX labels.*/
-    private fun playerIndicator(): List<PlayerIndicatorPane>{
+    private fun playerIndicator(): List<PlayerIndicatorPane> {
         val mutList = mutableListOf<PlayerIndicatorPane>()
-        for(i in 1 .. 6) {
-            mutList.add(PlayerIndicatorPane(554, 375 + 90 * (i-1), i, colors[i-1]))
+        for (i in 1..6) {
+            mutList.add(PlayerIndicatorPane(554, 375 + 90 * (i - 1), i, colors[i - 1]))
         }
         return mutList.toList()
     }
 
     /** This Method creates all buttons needed for switching the order of the players. */
-    private fun orderButtons(): List<Button>{
+    private fun orderButtons(): List<Button> {
         val mutList = mutableListOf<Button>()
-        for(i in 1 .. 6) {
+        for (i in 1..6) {
             mutList.add(Button(
-                posX = 1400, posY = 400 + 90 *(i-1),
+                posX = 1400, posY = 400 + 90 * (i - 1),
                 width = 40, height = 40,
                 text = "$i",
                 font = Font(size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
                 visual = Visual.EMPTY
-                ).apply {
-                    isVisible = false
-                    componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);" +
-                            "-fx-background-radius: 10"
-                    onMouseClicked = { changePlayersInput(i) }
-                }
+            ).apply {
+                isVisible = false
+                componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);" +
+                        "-fx-background-radius: 10"
+                onMouseClicked = { changePlayersInput(i) }
+            }
             )
         }
         return mutList.toList()
     }
 
     /** A method that creates the Input-Pane that displays the players names, kinds and order.*/
-    private fun playerInput(): Array<InputPlayerPane>{
+    private fun playerInput(): Array<InputPlayerPane> {
         val mutList = mutableListOf<InputPlayerPane>()
-        mutList.add(InputPlayerPane(755, 375, 1, isNetworkMode, true))
+        mutList.add(InputPlayerPane(755, 375, 1, isNetworkMode, isHost))
         for (i in 2..6) {
             mutList.add(InputPlayerPane(755, 375 + 90 * (i - 1), i, isNetworkMode))
         }
@@ -329,30 +339,30 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     /** A Method that checks if a player-name is not empty. */
-    private fun checkPlayerName(name : String, i : Int) : String {
-        return if(name == ""){
+    private fun checkPlayerName(name: String, i: Int): String {
+        return if (name == "") {
             "Player $i"
-        }else{
+        } else {
             name
         }
     }
 
     /** A Method that changes the number of visible Input-Fields for players.*/
-    fun displayPlayers(i : Int) {
-        for (display in playerDisplay){
-            if(display.playerNumber in 3.. i){
+    fun displayPlayers(i: Int) {
+        for (display in playerDisplay) {
+            if (display.playerNumber in 3..i) {
                 display.blueLine()
-            }else{
+            } else {
                 display.greyLine()
             }
         }
 
-        for (k in playerInputs.indices){
-            playerInputs[k].isVisible = (k <= (i-1))
-            playerIndicators[k].isVisible = (k <= (i-1))
+        for (k in playerInputs.indices) {
+            playerInputs[k].isVisible = (k <= (i - 1))
+            playerIndicators[k].isVisible = (k <= (i - 1))
 
-            if(changingPosition != -1){
-                orderButtons[k].isVisible = (k <= (i-1))
+            if (changingPosition != -1) {
+                orderButtons[k].isVisible = (k <= (i - 1))
             }
         }
 
@@ -360,47 +370,47 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     /** This Method shows the Buttons that are able to push in the next move. */
-    fun playerOrderOptions(paneNumber : Int) {
-        if (paneNumber > playerNumber){
+    fun playerOrderOptions(paneNumber: Int) {
+        if (paneNumber > playerNumber) {
             return
         }
 
-        if(changingPosition == paneNumber){
+        if (changingPosition == paneNumber) {
             changingPosition = -1
 
-            for(buttons in orderButtons){
+            for (buttons in orderButtons) {
                 buttons.isVisible = false
             }
             return
         }
 
         changingPosition = paneNumber
-        for (i in orderButtons.indices){
+        for (i in orderButtons.indices) {
             orderButtons[i].isVisible = (i < playerNumber)
             orderButtons[i].apply {
                 componentStyle = "-fx-background-color: rgba(5, 24, 156, 1);-fx-background-radius: 10"
             }
         }
-        orderButtons[(paneNumber-1)].apply {
+        orderButtons[(paneNumber - 1)].apply {
             componentStyle = "-fx-background-color: rgba($DEFAULT_GREY_STRING, 1);-fx-background-radius: 10"
         }
     }
 
     /** A Method that changes two selected InputPanes. */
-    private fun changePlayersInput(newPos : Int){
+    private fun changePlayersInput(newPos: Int) {
 
-        for (button in orderButtons){
+        for (button in orderButtons) {
             button.isVisible = false
         }
 
-        if(newPos == changingPosition){
+        if (newPos == changingPosition) {
             changingPosition = -1
             return
         }
 
-        changePanes(newPos-1 , changingPosition-1)
+        changePanes(newPos - 1, changingPosition - 1)
 
-        if(!isNetworkMode) {
+        if (!isNetworkMode) {
             for (i in playerInputs.indices) {
                 playerInputs[i].isVisible = (i < playerNumber)
             }
@@ -409,9 +419,9 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     /** A Method that shuffles all InputPanes.*/
-    private fun randomOrder(){
+    private fun randomOrder() {
 
-        for(i in 0 until playerNumber){
+        for (i in 0 until playerNumber) {
             changePanes(i, Random.nextInt(i, playerNumber))
         }
     }
@@ -421,11 +431,11 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
      * @param pos1Pane Indicates the position of the first InputPlane (1.Pane = 1)
      * @param pos2Pane Indicates the position of the second InputPlane (2.Pane = 2)
      * */
-    private fun changePanes(pos1Pane : Int, pos2Pane : Int){
+    private fun changePanes(pos1Pane: Int, pos2Pane: Int) {
         playerInputs[pos1Pane].posY = (375 + 90 * (pos2Pane)) * 1.0
-        playerInputs[pos1Pane].setOrderNumber(pos2Pane+1)
+        playerInputs[pos1Pane].setOrderNumber(pos2Pane + 1)
         playerInputs[pos2Pane].posY = (375 + 90 * (pos1Pane)) * 1.0
-        playerInputs[pos2Pane].setOrderNumber(pos1Pane+1)
+        playerInputs[pos2Pane].setOrderNumber(pos1Pane + 1)
 
         val tmpInputPlayer = playerInputs[pos1Pane]
         playerInputs[pos1Pane] = playerInputs[pos2Pane]
@@ -433,7 +443,7 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     /** Create a list of playerInfos for all possible Players to give it the setup Service */
-    private fun createPlayerInfos(isNetwork : Boolean) : List<PlayerInfo> {
+    private fun createPlayerInfos(isNetwork: Boolean): List<PlayerInfo> {
         val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
             val name = checkPlayerName(playerInputPane.getTextFieldInput(), i)
             val playerType = playerInputPane.getPlayerType()
@@ -444,21 +454,21 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
     }
 
     /** This gets the selected AI-Speed. */
-    private fun getAISpeed() : Int {
-        return if(aISpeedSetting.selectedItem == null){
+    private fun getAISpeed(): Int {
+        return if (aISpeedSetting.selectedItem == null) {
             1
-        }else{
+        } else {
             aISpeedSetting.selectedItem!!
         }
     }
 
     /** Sets a new SessionID. */
-    fun setSessionID(session : String){
+    fun setSessionID(session: String) {
         sesIDReal.text = session
     }
 
     /** Sets a new secret. */
-    fun setSecret(secret : String){
+    fun setSecret(secret: String) {
         secretReal.text = secret
     }
 
@@ -478,16 +488,16 @@ class LobbyScene(private val rootService: RootService, private val isNetworkMode
 
     /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.*/
     override fun refreshAfterJoinGame(names: List<String>) {
-        for(i in names.indices){
+        for (i in names.indices) {
             playerInputs[i].changePlayerName(names[i])
         }
         playerInputs[names.size].changePlayerName(yourName)
-        playerNumber = names.size+1
+        playerNumber = names.size + 1
     }
 
     /** After someone joined, his/her name will be added as new name to the showed list. */
     override fun refreshAfterGuestJoined(name: String) {
         playerInputs[playerNumber].changePlayerName(name)
-        playerNumber+1
+        playerNumber + 1
     }
 }
