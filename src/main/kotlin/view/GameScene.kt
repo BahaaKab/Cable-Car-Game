@@ -204,6 +204,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             }
         } else connectionStatusLabel.isVisible = false
 
+        otherPlayersPane.refreshAfterStartGame()
         refreshAfterNextTurn()
     }
 

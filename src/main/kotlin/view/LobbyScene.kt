@@ -1,5 +1,6 @@
 package view
 
+import entity.PlayerType
 import tools.aqua.bgw.core.MenuScene
 import service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
@@ -457,20 +458,27 @@ class LobbyScene(
     }
 
     /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.*/
-    override fun refreshAfterJoinGame(names: List<String>) {
+    fun setAllPlayerNames(names: List<String>, localPlayerType: PlayerType) {
         for (i in names.indices) {
             playerInputs[i].changePlayerName(names[i])
             playerInputs[i].changeNetworkMode(true)
         }
         playerInputs[names.size].changePlayerName(yourName)
+        playerInputs[names.size].setPlayerType(localPlayerType)
         playerInputs[names.size].changeNetworkMode(false)
         playerNumber = names.size + 1
+
     }
 
     /** After someone joined, his/her name will be added as new name to the showed list. */
     override fun refreshAfterGuestJoined(name: String) {
         playerInputs[playerNumber].changePlayerName(name)
         playerNumber++
+    }
+
+    fun setLocalPlayerName(name : String, localPlayerType: PlayerType) {
+        playerInputs[0].playerName.text = name
+        playerInputs[0].setPlayerType(localPlayerType)
     }
 
 }

@@ -102,13 +102,14 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
     }
 
     override fun refreshAfterHostGame() {
-        CableCarApplication.hostLobbyScene.yourName = connectionPane.getPlayerName()
+        CableCarApplication.hostLobbyScene.setLocalPlayerName(connectionPane.getPlayerName(), playerTypeButton.getPlayerType())
         CableCarApplication.hostLobbyScene.setSessionID(connectionPane.getSessionID())
         CableCarApplication.showMenuScene(CableCarApplication.hostLobbyScene)
     }
 
     override fun refreshAfterJoinGame(names: List<String>) {
         CableCarApplication.guestLobbyScene.yourName = connectionPane.getPlayerName()
+        CableCarApplication.guestLobbyScene.setAllPlayerNames(names, playerTypeButton.getPlayerType())
         CableCarApplication.guestLobbyScene.setSessionID(connectionPane.getSessionID())
         CableCarApplication.showMenuScene(CableCarApplication.guestLobbyScene)
     }

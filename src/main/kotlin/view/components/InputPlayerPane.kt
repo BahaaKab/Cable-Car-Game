@@ -51,7 +51,7 @@ class InputPlayerPane(
         }
     }
 
-    private val playerName = Label(
+    val playerName = Label(
         posX = 50, posY = 38,
         width = 300, height = 30,
         alignment = Alignment.CENTER_LEFT,
@@ -150,5 +150,9 @@ class InputPlayerPane(
             PLAYER_ORDER_COLORS[orderNumber - 1],
             isNetwork
         )
+    }
+
+    fun setPlayerType(playerType: PlayerType) {
+        typeCounter = playerTypes.indexOf(playerType)
     }
 }

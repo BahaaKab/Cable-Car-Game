@@ -31,6 +31,7 @@ import tools.aqua.bgw.net.common.response.GameActionResponse
 class CableCarNetworkClient(
     private val networkService: NetworkService,
     playerName: String,
+    val playerType: PlayerType,
     host: String,
     secret: String
 ) : BoardGameClient(
@@ -112,7 +113,7 @@ class CableCarNetworkClient(
         val playerInfos = message.players.mapIndexed { index, info ->
             val name = info.name
             val color = PLAYER_ORDER_COLORS[index]
-            val playerType = PlayerType.HUMAN
+            val playerType = if (name!= playerName) PlayerType.HUMAN else this.playerType
             val isNetworkPlayer = name != playerName
             PlayerInfo(name, playerType, color, isNetworkPlayer)
         }

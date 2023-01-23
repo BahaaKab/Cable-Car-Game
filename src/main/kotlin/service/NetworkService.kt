@@ -39,6 +39,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
         val client = CableCarNetworkClient(
             this,
             playerName = player.name,
+            player.playerType,
             host = host,
             secret = secret
         )
@@ -64,6 +65,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
         val client = CableCarNetworkClient(
             this,
             playerName = player.name,
+            playerType = player.playerType,
             host = host,
             secret = secret
         )
