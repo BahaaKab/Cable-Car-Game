@@ -41,7 +41,6 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         legalPosArray.shuffle()
         // Does the randomized draw. For a turn and AI it is no difference when the card is drawn
         if (Random.nextBoolean()) {
-            Thread.sleep(rootService.cableCar.AISpeed*aiSpeedFactor)
             rootService.playerActionService.drawTile()
         }
 
@@ -49,7 +48,6 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             val (thisPosX, thisPosY) = legalPosArray.removeFirst()
             for (i in 1..4) {
                 if (placeableTile(thisPosX, thisPosY)) {
-                    Thread.sleep(rootService.cableCar.AISpeed*aiSpeedFactor)
                     return rootService.playerActionService.placeTile(thisPosX, thisPosY)
                 }
                 if (!rootService.cableCar.allowTileRotation) {

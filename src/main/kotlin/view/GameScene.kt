@@ -6,6 +6,7 @@ import entity.GameTile
 import entity.PlayerType
 import entity.StationTile
 import service.RootService
+import tools.aqua.bgw.animation.DelayAnimation
 import tools.aqua.bgw.animation.FadeAnimation
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.layoutviews.GridPane
@@ -26,13 +27,13 @@ import javax.imageio.ImageIO
 
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {
-    for(i in 0..59) {
+    for (i in 0..59) {
         add(i, CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
     }
 }
 
 val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
-    for(i in 0..59) {
+    for (i in 0..59) {
         add(i, CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
     }
 }
@@ -69,7 +70,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     private val emptyTilesCardViews = List(8) { column ->
         List(8) { row ->
             CardView(width = 100, height = 100, front = Visual.EMPTY).apply {
-                onMouseClicked = { rootService.playerActionService.placeTile(posX = column+1, posY = row+1) }
+                onMouseClicked = { rootService.playerActionService.placeTile(posX = column + 1, posY = row + 1) }
             }
         }
     }
@@ -89,12 +90,11 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 // We don't want to place empty tiles where the power stations are
                 if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
 
-                set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i-1][j-1])
+                set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i - 1][j - 1])
             }
         }
     }
 
-    val aiWorker = AIWorker(rootService)
 
     init {
         background = ColorVisual(247, 247, 247)
@@ -106,7 +106,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             connectionStatusLabel,
             board
         )
-        aiWorker.start()
     }
 
     private fun initializeStationTileMap() = with(rootService.cableCar.currentState) {
@@ -134,7 +133,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 try {
                     board.set(columnIndex = 9, rowIndex = i,
                         component = stationTileMap.forward(this[9][i] as StationTile).apply { rotate(90) })
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
 
                 // on the top side
                 board.set(
@@ -145,26 +145,27 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 try {
                     board.set(columnIndex = i, rowIndex = 9,
                         component = stationTileMap.forward(this[i][9] as StationTile).apply { rotate(180) })
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
             }
         }
     }
 
-    private fun refreshBoard(oldState : entity.State) {
+    private fun refreshBoard(oldState: entity.State) {
         val tilesToChange = mutableListOf<TileInfo>()
         val currentStateCopy = rootService.cableCar.currentState.deepCopy()
-        var posX : Int
-        var posY : Int
+        var posX: Int
+        var posY: Int
 
         // We are doing an undo
-        if(oldState.placedTiles.size > currentStateCopy.placedTiles.size) {
+        if (oldState.placedTiles.size > currentStateCopy.placedTiles.size) {
             repeat(oldState.players.size) {
                 tilesToChange.add(oldState.placedTiles.removeLast())
             }
-            for(tileInfo in tilesToChange) {
+            for (tileInfo in tilesToChange) {
                 posX = tileInfo.x
                 posY = tileInfo.y
-                board.set(columnIndex = posX, rowIndex = posY, component = emptyTilesCardViews[posX-1][posY-1])
+                board.set(columnIndex = posX, rowIndex = posY, component = emptyTilesCardViews[posX - 1][posY - 1])
             }
         }
 
@@ -173,7 +174,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             repeat(oldState.players.size) {
                 tilesToChange.add(currentStateCopy.placedTiles.removeLast())
             }
-            for(tileInfo in tilesToChange) {
+            for (tileInfo in tilesToChange) {
                 posX = tileInfo.x
                 posY = tileInfo.y
                 board.set(columnIndex = posX, rowIndex = posY, component = tileMapSmall.forward(tileInfo.id))
@@ -191,7 +192,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
         // Only show the connectionStatusLabel when Network Mode was chosen
         // Also show it for only 5 seconds
-        if(rootService.cableCar.gameMode == GameMode.NETWORK) {
+        if (rootService.cableCar.gameMode == GameMode.NETWORK) {
             BoardGameApplication.runOnGUIThread {
                 playAnimation(
                     FadeAnimation(
@@ -225,7 +226,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterUndo
      */
-    override fun refreshAfterUndo(oldState : entity.State) {
+    override fun refreshAfterUndo(oldState: entity.State) {
         refreshBoard(oldState)
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
@@ -234,7 +235,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterRedo
      */
-    override fun refreshAfterRedo(oldState : entity.State) = refreshAfterUndo(oldState)
+    override fun refreshAfterRedo(oldState: entity.State) = refreshAfterUndo(oldState)
 
     /**
      * @see view.Refreshable.refreshAfterPlaceTile
@@ -273,13 +274,39 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * @see view.Refreshable.refreshAfterNextTurn
      */
     override fun refreshAfterNextTurn() {
-        if (rootService.cableCar.currentState.drawPile.isEmpty()) activePlayerPane.disableDrawTileButton()
-        else activePlayerPane.enableDrawTileButton()
+        if (rootService.cableCar.currentState.drawPile.isEmpty()) {
+            activePlayerPane.disableDrawTileButton()
+        } else {
+            activePlayerPane.enableDrawTileButton()
+        }
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
-        aiWorker.isAIPlayer = (rootService.cableCar.currentState.activePlayer.playerType != PlayerType.HUMAN)
+        startAIHandler()
     }
 
-    override fun refreshAfterEndGame(){
+    override fun refreshAfterEndGame() {
+    }
+
+
+    private fun startAIHandler() {
+        if (rootService.cableCar.currentState.activePlayer.playerType in listOf(
+                PlayerType.AI_EASY,
+                PlayerType.AI_HARD
+            )
+        ) {
+            activePlayerPane.disableDrawTileButton()
+            // TODO: disable undo and redo button
+
+            playAnimation(
+                DelayAnimation(rootService.cableCar.AISpeed * 200).apply {
+                    onFinished = {
+                        BoardGameApplication.runOnGUIThread {
+                            rootService.aIService.makeAIMove()
+                        }
+                    }
+                }
+            )
+
+        }
     }
 }
