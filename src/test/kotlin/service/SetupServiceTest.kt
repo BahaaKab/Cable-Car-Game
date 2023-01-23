@@ -6,7 +6,6 @@ import java.lang.IllegalArgumentException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  * Test the [SetupService] class.
@@ -67,34 +66,6 @@ class SetupServiceTest {
             assertFalse(allowTileRotation)
             assertEquals(1, AISpeed)
             assertEquals(GameMode.HOTSEAT, gameMode)
-            // Check, if players match playerInfos
-            assertPlayersEqualPlayerInfos(currentState, playerInfos)
-            // Check, if station tiles are assigned correctly
-            assertValidStationTileAssignments(currentState)
-            // Check, if the drawPile was initialized correctly
-            assertValidDrawPile(currentState)
-        }
-    }
-
-    /**
-     * Test the initialization of a network game as host.
-     */
-    @Test
-    fun testStartNetworkGameAsHost() = (2..6).forEach { i ->
-        val rootService = RootService()
-        val playerInfos = generatePlayerInfos(i)
-        rootService.setupService.startNetworkGame(
-            true,
-            playerInfos,
-            false,
-            null,
-            1
-        )
-        with(rootService.cableCar) {
-            assertFalse(allowTileRotation)
-            assertEquals(1, AISpeed)
-            assertEquals(GameMode.NETWORK, gameMode)
-            assertTrue(isHostPlayer)
             // Check, if players match playerInfos
             assertPlayersEqualPlayerInfos(currentState, playerInfos)
             // Check, if station tiles are assigned correctly

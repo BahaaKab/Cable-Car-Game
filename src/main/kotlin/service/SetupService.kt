@@ -34,7 +34,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             AISpeed = AISpeed,
             isHostPlayer = false,
             gameMode = GameMode.HOTSEAT,
-            history = History(),
+            history = History().apply { undoStates.push(initialState.deepCopy()) },
             currentState = initialState
         )
 
@@ -65,13 +65,11 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             requireNotNull(tileIDs)
             require(tileIDs.size == 60)
             val gameTiles = rootService.ioService.getTilesFromCSV().sortedBy { it.id }
-            tileIDs.map{ gameTiles[it] }
+            tileIDs.map { gameTiles[it] }
         }.toMutableList()
 
         val board = createBoard()
         val players = createPlayers(playerInfos, board)
-        // Give each player a game tile from the draw pile
-        players.forEach { it.handTile = drawPile.removeFirst() }
 
         val initialState = State(
             drawPile = drawPile,
@@ -85,13 +83,19 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             AISpeed = AISpeed,
             isHostPlayer = isHostPlayer,
             gameMode = GameMode.NETWORK,
-            history = History(),
+            history = History().apply { undoStates.push(initialState.deepCopy()) },
             currentState = initialState
         )
 
         if (isHostPlayer) {
-            // TODO: sendGameInitMessage()
+            rootService.networkService.sendGameInitMessage(playerInfos)
         }
+
+        // Give each player a game tile from the draw pile. This needs to be done after the GameInitMessage
+        rootService.cableCar.currentState.players.forEach {
+            it.handTile = rootService.cableCar.currentState.drawPile.removeFirst()
+        }
+
         onAllRefreshables { refreshAfterStartGame() }
     }
 
@@ -104,7 +108,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
      *
      * @return The Players respective their [StationTile]s
      */
-    private fun createPlayers(playerInfos: List<PlayerInfo>, board: Array<Array<Tile?>>) : List<Player> {
+    private fun createPlayers(playerInfos: List<PlayerInfo>, board: Array<Array<Tile?>>): List<Player> {
         val stationTileAssignments = getStationTileAssignments(playerInfos.size)
         return playerInfos.mapIndexed { i, playerInfo ->
             val stationTiles = stationTileAssignments[i].map { getStationTileFromId(it, board) }
@@ -136,8 +140,8 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
      * @throws IllegalStateException If the stationTiles are not properly set up on the board
      * @return The station tile that corresponds to the given id
      */
-    private fun getStationTileFromId(id: Int, board: Array<Array<Tile?>>) : StationTile {
-        val stationTile = when(id) {
+    private fun getStationTileFromId(id: Int, board: Array<Array<Tile?>>): StationTile {
+        val stationTile = when (id) {
             1, 2, 3, 4, 5, 6, 7, 8 -> board[id][0]
             9, 10, 11, 12, 13, 14, 15, 16 -> board[9][id - 8]
             17, 18, 19, 20, 21, 22, 23, 24 -> board[24 - id + 1][9]
@@ -156,7 +160,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
      * @return The station Tile assignments as a List of Lists, where the nth inner List contains the station tile
      * ids for the nth player.
      */
-    private fun getStationTileAssignments(numberOfPlayers: Int) : List<List<Int>> = when(numberOfPlayers) {
+    private fun getStationTileAssignments(numberOfPlayers: Int): List<List<Int>> = when (numberOfPlayers) {
         2 -> listOf(
             (1..31 step 2).toList(),
             (2..32 step 2).toList()
@@ -200,7 +204,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
      *
      * @return The board
      */
-    private fun createBoard() : Array<Array<Tile?>> {
+    private fun createBoard(): Array<Array<Tile?>> {
         // Create an empty board
         val board = Array<Array<Tile?>>(10) {
             Array(10) { null }

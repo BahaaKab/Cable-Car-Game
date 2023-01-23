@@ -24,5 +24,5 @@ class StationTile(connectors: List<Int>): Tile(connectors, listOf(), false, true
         )
     }
 
-    override fun deepCopy() = StationTile(connectors.toList())
+    override fun deepCopy() = this
 }
