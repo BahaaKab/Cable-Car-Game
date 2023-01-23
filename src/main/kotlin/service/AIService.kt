@@ -1,6 +1,8 @@
 package service
 
-import entity.*
+import entity.GameTile
+import entity.PlayerType
+import entity.StationTile
 import kotlin.random.Random
 
 /**
@@ -46,7 +48,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         while (!legalPosArray.isEmpty()) {
             val (thisPosX, thisPosY) = legalPosArray.removeFirst()
             for (i in 1..4) {
-                if (placeablePosition(thisPosX, thisPosY)) {
+                if (placeableTile(thisPosX, thisPosY)) {
                     Thread.sleep(rootService.cableCar.AISpeed*aiSpeedFactor)
                     return rootService.playerActionService.placeTile(thisPosX, thisPosY)
                 }
@@ -56,6 +58,45 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
                 rootService.playerActionService.rotateTileRight()
             }
         }
+    }
+
+    fun placeableTile(posX: Int, posY: Int):Boolean = with(rootService) {
+        val player = cableCar.currentState.activePlayer
+        val board = cableCar.currentState.board
+
+        val tileToPlace = checkNotNull(player.currentTile ?: player.handTile)
+
+        // It is never ever allowed to place a tile somewhere without any adjacent Game or Station Tiles
+        val isValid = board[posX][posY] == null && rootService.playerActionService.isAdjacentToTiles(posX, posY)
+        if (!isValid) {
+            return false
+        }
+
+        val isAllowed: Boolean
+        if(!rootService.cableCar.allowTileRotation){
+            isAllowed = !rootService.playerActionService.positionIsIllegal(posX, posY, tileToPlace) || rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
+        }
+        else{
+            // check if all positions are illegal even with all rotation-forms
+            val b1 = rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
+            rootService.playerActionService.rotateTileRight()
+            val b2 = rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
+            rootService.playerActionService.rotateTileRight()
+            val b3 = rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
+            rootService.playerActionService.rotateTileRight()
+            val b4 = rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
+            // The Tile is now as it was before
+            rootService.playerActionService.rotateTileRight()
+
+            // placing the tile is only possible if the position is legal or if for all tile rotations every grid
+            // position is still illegal
+            isAllowed = !rootService.playerActionService.positionIsIllegal(posX, posY, tileToPlace) || (b1 && b2 && b3 && b4)
+        }
+
+        if (!isAllowed) {
+            return false
+        }
+        return true
     }
 
     /**

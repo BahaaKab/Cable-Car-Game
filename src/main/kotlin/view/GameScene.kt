@@ -95,6 +95,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    val aiWorker = AIWorker(rootService)
+
     init {
         background = ColorVisual(247, 247, 247)
         addComponents(
@@ -105,6 +107,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             connectionStatusLabel,
             board
         )
+        aiWorker.start()
     }
 
     private fun initializeStationTileMap() = with(rootService.cableCar.currentState) {
@@ -270,6 +273,9 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         else activePlayerPane.enableDrawTileButton()
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
-        BoardGameApplication.runOnGUIThread { rootService.aIService.makeAIMove() }
+        aiWorker.isAIPlayer = (rootService.cableCar.currentState.activePlayer.playerType != PlayerType.HUMAN)
+    }
+
+    override fun refreshAfterEndGame(){
     }
 }

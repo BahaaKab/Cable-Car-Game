@@ -1,7 +1,7 @@
 package view
 
-import tools.aqua.bgw.core.BoardGameApplication
 import service.RootService
+import tools.aqua.bgw.core.BoardGameApplication
 
 @Suppress("UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
 

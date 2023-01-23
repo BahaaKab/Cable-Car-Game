@@ -39,6 +39,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     fun nextTurn() = with(rootService.cableCar) {
         // Check, if the game should end with the current game state
         if (isGameEnding()) {
+            rootService.gameEnded = true
             return endGame()
         }
         // Push the current game state to the history
