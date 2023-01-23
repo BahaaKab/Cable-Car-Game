@@ -1,12 +1,13 @@
 package view.components
 
+import entity.PLAYER_ORDER_COLORS
+import entity.PlayerInfo
 import entity.PlayerType
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.components.uicomponents.*
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
-import tools.aqua.bgw.visual.Visual
 import view.CableCarApplication
 import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_BOLD
@@ -25,7 +26,7 @@ import java.awt.Color
  * */
 class InputPlayerPane(
     posX: Number = 0, posY: Number = 0, private var orderNumber: Int,
-    private val isNetwork: Boolean = false, private val isHost: Boolean = false
+    private var isNetwork: Boolean = false, private val isHost: Boolean = false
 ) : Pane<UIComponent>(posX, posY, width = 590, height = 90) {
 
     private val playerTypes = listOf(PlayerType.HUMAN, PlayerType.AI_EASY, PlayerType.AI_HARD)
@@ -136,5 +137,18 @@ class InputPlayerPane(
     /** Sets a new orderNumber. */
     fun setOrderNumber(number: Int) {
         orderNumber = number
+    }
+
+    fun changeNetworkMode(isNetworkPlayer: Boolean) {
+        isNetwork = isNetworkPlayer
+    }
+
+    fun getPlayerInfo() : PlayerInfo {
+        return PlayerInfo(
+            playerName.text,
+            getPlayerType(),
+            PLAYER_ORDER_COLORS[orderNumber - 1],
+            isNetwork
+        )
     }
 }

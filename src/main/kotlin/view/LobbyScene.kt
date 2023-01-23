@@ -1,7 +1,5 @@
 package view
 
-import entity.PlayerInfo
-import entity.PLAYER_ORDER_COLORS
 import tools.aqua.bgw.core.MenuScene
 import service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
@@ -50,18 +48,46 @@ class LobbyScene(
         visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow.PNG")))
     )
 
-    private val backButton = backButton()
+    private val backButton = Button(
+        posX = 535,
+        posY = 210,
+        width = 110,
+        height = 30,
+        text = "Menu",
+        alignment = Alignment.CENTER_RIGHT,
+        visual = ColorVisual(249, 249, 250),
+        font = Font(
+            size = 21,
+            color = Color.WHITE,
+            family = DEFAULT_FONT_BOLD,
+            fontWeight = Font.FontWeight.BOLD
+        )
+    ).apply {
+        if (isNetworkMode) {
+            posX -= 78
+            width += 78
+            text = "Leave Lobby"
+            backArrow.posX -= 78
+        }
+
+        componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+        onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) }
+    }
 
     private val playerOrderButton = Button(
-        posX = 670, posY = 210,
-        width = 264, height = 30,
+        posX = 670,
+        posY = 210,
+        width = 264,
+        height = 30,
         text = "Shuffle Player Order",
-        font = Font(
-            size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
-            fontWeight = Font.FontWeight.BOLD
-        ),
         alignment = Alignment.CENTER_RIGHT,
-        visual = ColorVisual(249, 249, 250)
+        visual = ColorVisual(249, 249, 250),
+        font = Font(
+            size = 21,
+            color = Color.WHITE,
+            family = DEFAULT_FONT_BOLD,
+            fontWeight = Font.FontWeight.BOLD
+        )
     ).apply {
         componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
         onMouseClicked = { randomOrder() }
@@ -128,16 +154,24 @@ class LobbyScene(
         items = listOf(0, 1, 2, 3, 4, 5)
     )
 
-    private val playerDisplay = playerDisplay()
-
+    // ------------------ PLAYER RELATED UI ELEMENTS -------------------
     private val colors = listOf(
         DEFAULT_YELLOW_COLOR, DEFAULT_BLUE_COLOR, DEFAULT_RED_COLOR,
         DEFAULT_GREEN_COLOR, DEFAULT_PURPLE_COLOR, DEFAULT_BLACK_COLOR
     )
 
+    /** In single-player this creates the display in which you can choose the number of players.*/
+    private val playerDisplay = List(5) { i ->
+        NumberOfPlayersPane(555 + 125 * i, 290, i + 2)
+    }
+
+
     private val playerInputs = playerInput()
 
-    private val playerIndicators = playerIndicator()
+    /* creates the "playerX:" and colorX labels. */
+    private val playerIndicators = List(6) { i ->
+        PlayerIndicatorPane(554, 375 + 90 * i, i + 1, colors[i])
+    }
 
     private val orderButtons = orderButtons()
 
@@ -151,19 +185,20 @@ class LobbyScene(
     ).apply {
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
-            println(createPlayerInfos(true).subList(0, playerNumber))
+            val playerInfos = playerInputs.map { it.getPlayerInfo() }
+            println(playerInfos.subList(0, playerNumber))
             if (playerNumber >= 2) {
                 if (isNetworkMode) {
                     rootService.setupService.startNetworkGame(
                         isHost,
-                        createPlayerInfos(true).subList(0, playerNumber),
+                        playerInfos.subList(0, playerNumber),
                         tileRotation,
                         null,
                         getAISpeed()
                     )
                 } else {
                     rootService.setupService.startLocalGame(
-                        createPlayerInfos(false).subList(0, playerNumber), tileRotation, getAISpeed()
+                        playerInfos.subList(0, playerNumber), tileRotation, getAISpeed()
                     )
                 }
             }
@@ -223,51 +258,6 @@ class LobbyScene(
             }
             displayPlayers(2)
         }
-    }
-
-    /** This method creates the button to go back to the Scene before, based on the game mode. */
-    private fun backButton(): Button {
-        var i = 0
-        var name = "Menu"
-        if (isNetworkMode) {
-            i = 78
-            name = "Leave Lobby"
-        }
-
-        backArrow.posX = (backArrow.posX - i)
-
-        return Button(
-            posX = (535 - i), posY = 210,
-            width = (110 + i), height = 30,
-            text = name,
-            font = Font(
-                size = 21, color = Color.WHITE, family = DEFAULT_FONT_BOLD,
-                fontWeight = Font.FontWeight.BOLD
-            ),
-            alignment = Alignment.CENTER_RIGHT,
-            visual = ColorVisual(249, 249, 250)
-        ).apply {
-            componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
-            onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) }
-        }
-    }
-
-    /** In single-player this method creates the display in which you can choose the number of players.*/
-    private fun playerDisplay(): List<NumberOfPlayersPane> {
-        val mutList = mutableListOf<NumberOfPlayersPane>()
-        for (i in 2..6) {
-            mutList.add(NumberOfPlayersPane(555 + 125 * (i - 2), 290, i))
-        }
-        return mutList.toList()
-    }
-
-    /** A Method which creates the "playerX:" and colorX labels.*/
-    private fun playerIndicator(): List<PlayerIndicatorPane> {
-        val mutList = mutableListOf<PlayerIndicatorPane>()
-        for (i in 1..6) {
-            mutList.add(PlayerIndicatorPane(554, 375 + 90 * (i - 1), i, colors[i - 1]))
-        }
-        return mutList.toList()
     }
 
     /** This Method creates all buttons needed for switching the order of the players. */
@@ -440,18 +430,6 @@ class LobbyScene(
         playerInputs[pos2Pane] = tmpInputPlayer
     }
 
-    /** Create a list of playerInfos for all possible Players to give it the setup Service */
-    private fun createPlayerInfos(isNetwork: Boolean): List<PlayerInfo> {
-        val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
-            val name = if (isNetwork) yourName else checkPlayerName(playerInputPane.getTextFieldInput(), i)
-            val playerType = playerInputPane.getPlayerType()
-            val color = PLAYER_ORDER_COLORS[i]
-            val isNetwork = isNetwork && yourName != name
-            PlayerInfo(name, playerType, color, isNetwork)
-        }
-        return playerInfos
-    }
-
     /** This gets the selected AI-Speed. */
     private fun getAISpeed(): Int {
         return if (aISpeedSetting.selectedItem == null) {
@@ -482,15 +460,17 @@ class LobbyScene(
     override fun refreshAfterJoinGame(names: List<String>) {
         for (i in names.indices) {
             playerInputs[i].changePlayerName(names[i])
+            playerInputs[i].changeNetworkMode(true)
         }
         playerInputs[names.size].changePlayerName(yourName)
+        playerInputs[names.size].changeNetworkMode(false)
         playerNumber = names.size + 1
     }
 
     /** After someone joined, his/her name will be added as new name to the showed list. */
     override fun refreshAfterGuestJoined(name: String) {
         playerInputs[playerNumber].changePlayerName(name)
-        playerNumber ++
+        playerNumber++
     }
 
 }

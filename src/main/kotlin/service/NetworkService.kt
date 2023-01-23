@@ -3,7 +3,6 @@ package service
 import edu.udo.cs.sopra.ntf.GameInitMessage
 import edu.udo.cs.sopra.ntf.GameStateVerificationInfo
 import edu.udo.cs.sopra.ntf.TurnMessage
-import edu.udo.cs.sopra.ntf.TileInfo
 import entity.PlayerInfo
 
 /**
@@ -29,7 +28,6 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
      * The network client instance
      */
     private lateinit var networkClient: CableCarNetworkClient
-
 
     /**
      * Connect to the SoPra-server and create a game lobby.

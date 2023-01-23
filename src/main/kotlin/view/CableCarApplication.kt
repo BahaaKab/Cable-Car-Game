@@ -36,6 +36,7 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
         onWindowClosed = {
             rootService.networkService.disconnect()
         }
+        showGameScene(gameScene)
         showMenuScene(chooseModeScene)
     }
 }
