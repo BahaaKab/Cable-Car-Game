@@ -137,6 +137,8 @@ class CableCarNetworkClient(
     fun onTurnMessageReceived(message: TurnMessage, sender: String) = with(networkService.rootService) {
         BoardGameApplication.runOnGUIThread {
             // if sender is the active player, perform his turn based on the message data
+            println("sender: $sender, activePlayer: ${cableCar.currentState.activePlayer.name}")
+
             require(sender == cableCar.currentState.activePlayer.name)
             // Draw tile, if necessary
             if (message.fromSupply) {
