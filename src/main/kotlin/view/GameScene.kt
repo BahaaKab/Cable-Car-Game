@@ -1,5 +1,6 @@
 package view
 
+import edu.udo.cs.sopra.ntf.TileInfo
 import entity.GameMode
 import entity.GameTile
 import entity.StationTile
@@ -67,7 +68,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     private val emptyTilesCardViews = List(8) { column ->
         List(8) { row ->
             CardView(width = 100, height = 100, front = Visual.EMPTY).apply {
-                onMouseClicked = { rootService.playerActionService.placeTile(posX = column, posY = row) }
+                onMouseClicked = { rootService.playerActionService.placeTile(posX = column+1, posY = row+1) }
             }
         }
     }
@@ -87,9 +88,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 // We don't want to place empty tiles where the power stations are
                 if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
 
-                set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i-1][j-1].apply {
-                    onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
-                })
+                set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i-1][j-1])
             }
         }
     }
@@ -147,28 +146,33 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
-    private fun refreshBoard() {
-        for (i in 1..8) {
-            for (j in 1..8) {
+    private fun refreshBoard(oldState : entity.State) {
+        val tilesToChange = mutableListOf<TileInfo>()
+        val currentStateCopy = rootService.cableCar.currentState.deepCopy()
+        var posX : Int
+        var posY : Int
 
-                // We don't want to place empty tiles where the power stations are
-                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+        // We are doing an undo
+        if(oldState.placedTiles.size > currentStateCopy.placedTiles.size) {
+            repeat(oldState.players.size) {
+                tilesToChange.add(oldState.placedTiles.removeLast())
+            }
+            for(tileInfo in tilesToChange) {
+                posX = tileInfo.x
+                posY = tileInfo.y
+                board.set(columnIndex = posX, rowIndex = posY, component = emptyTilesCardViews[posX-1][posY-1])
+            }
+        }
 
-                if (rootService.cableCar.currentState.board[i][j] is GameTile) {
-                    board.set(
-                        columnIndex = i, rowIndex = j,
-                        component = tileMapSmall.forward((rootService.cableCar.currentState.board[i][j] as GameTile).id)
-                            .apply {
-                                rotation =
-                                    (rootService.cableCar.currentState.board[i][j] as GameTile).rotation.toDouble()
-                            }
-                    )
-                } else {
-                    board.set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i-1][j-1].apply {
-                        onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
-                    })
-                }
-
+        // We are doing a redo
+        else {
+            repeat(oldState.players.size) {
+                tilesToChange.add(currentStateCopy.placedTiles.removeLast())
+            }
+            for(tileInfo in tilesToChange) {
+                posX = tileInfo.x
+                posY = tileInfo.y
+                board.set(columnIndex = posX, rowIndex = posY, component = tileMapSmall.forward(tileInfo.id))
             }
         }
     }
@@ -216,8 +220,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterUndo
      */
-    override fun refreshAfterUndo() {
-        refreshBoard()
+    override fun refreshAfterUndo(oldState : entity.State) {
+        refreshBoard(oldState)
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
     }
@@ -225,7 +229,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /**
      * @see view.Refreshable.refreshAfterRedo
      */
-    override fun refreshAfterRedo() = refreshAfterUndo()
+    override fun refreshAfterRedo(oldState : entity.State) = refreshAfterUndo(oldState)
 
     /**
      * @see view.Refreshable.refreshAfterPlaceTile

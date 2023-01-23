@@ -17,6 +17,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         if(gameMode == GameMode.NETWORK || history.undoStates.isEmpty() ||
             history.undoStates.size <= currentState.players.size) { return }
 
+        val oldState = currentState.deepCopy()
+
         // Undo all player actions up to the current player's last action
         repeat(currentState.players.size){
             val undoState = history.undoStates.pop()
@@ -30,7 +32,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             }
         }
 
-        onAllRefreshables { refreshAfterUndo() }
+        onAllRefreshables { refreshAfterUndo(oldState) }
     }
 
     /**
@@ -38,6 +40,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      */
     fun redo() = with(rootService.cableCar) {
         if(gameMode == GameMode.NETWORK || history.redoStates.isEmpty()) { return }
+
+
+        val oldState = currentState.deepCopy()
 
         // Redo all player actions up to the current player's previously done turn
         repeat(currentState.players.size) {
@@ -52,7 +57,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             }
         }
 
-        onAllRefreshables { refreshAfterRedo() }
+        onAllRefreshables { refreshAfterRedo(oldState) }
     }
 
     /**

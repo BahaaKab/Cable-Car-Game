@@ -52,8 +52,8 @@ class RefreshableTest : Refreshable {
     override fun refreshAfterCalculatePoints() { refreshAfterCalculatePointsCalled = true }
     override fun refreshAfterRotateTileLeft() { refreshAfterRotateTileLeftCalled = true }
     override fun refreshAfterRotateTileRight() { refreshAfterRotateTileRightCalled = true }
-    override fun refreshAfterUndo() { refreshAfterUndoCalled = true }
-    override fun refreshAfterRedo() { refreshAfterRedoCalled = true }
+    override fun refreshAfterUndo(oldState : entity.State) { refreshAfterUndoCalled = true }
+    override fun refreshAfterRedo(oldState : entity.State) { refreshAfterRedoCalled = true }
     override fun refreshAfterPlaceTile(posX: Int, posY: Int) { refreshAfterPlaceTileCalled = true }
     override fun refreshAfterDrawTile() { refreshAfterDrawTileCalled = true }
     override fun refreshAfterGetTurn() { refreshAfterGetTurnCalled = true }
@@ -67,6 +67,15 @@ class RefreshableTest : Refreshable {
      */
     @Test
     fun testRefreshables() {
+        val oldState = entity.State(
+            drawPile = mutableListOf(),
+            activePlayer = entity.Player(
+                playerType = entity.PlayerType.HUMAN, color = entity.Color.BLACK,
+                name = "Player", stationTiles = mutableListOf(), isNetworkPlayer = false
+            ),
+            board = arrayOf(arrayOf()),
+            players = mutableListOf()
+        )
         assertFalse(refreshAfterEndGameCalled)
         assertFalse(refreshAfterStartGameCalled)
         assertFalse(refreshAfterHostGameCalled)
@@ -87,8 +96,8 @@ class RefreshableTest : Refreshable {
         refreshAfterCalculatePoints()
         refreshAfterRotateTileLeft()
         refreshAfterRotateTileRight()
-        refreshAfterUndo()
-        refreshAfterRedo()
+        refreshAfterUndo(oldState)
+        refreshAfterRedo(oldState)
         refreshAfterPlaceTile(10,10)
         refreshAfterDrawTile()
         refreshAfterGetTurn()
