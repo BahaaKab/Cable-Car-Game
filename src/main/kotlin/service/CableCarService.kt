@@ -39,6 +39,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     fun nextTurn() = with(rootService.cableCar) {
         // Check, if the game should end with the current game state
         if (isGameEnding()) {
+            rootService.gameEnded = true
             return endGame()
         }
 
@@ -55,10 +56,6 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         with(currentState.activePlayer) {
             if (isNetworkPlayer) {
                 // TODO
-                return
-            }
-            if(playerType == PlayerType.AI_EASY || playerType == PlayerType.AI_HARD) {
-                rootService.aIService.doTurn()
                 return
             }
         }
