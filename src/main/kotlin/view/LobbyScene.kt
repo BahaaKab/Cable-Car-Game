@@ -30,9 +30,9 @@ import kotlin.random.Random
  * */
 class LobbyScene(
     private val rootService: RootService,
-    private val isNetworkMode: Boolean = false,
-    private val yourName: String = "",
-    val isHost: Boolean = false
+    var isNetworkMode: Boolean = false,
+    var yourName: String = "",
+    var isHost: Boolean = false
 ) : MenuScene(1920, 1080), Refreshable {
 
     private var tileRotation = false
@@ -151,6 +151,7 @@ class LobbyScene(
     ).apply {
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
+            println(createPlayerInfos(true).subList(0, playerNumber))
             if (playerNumber >= 2) {
                 if (isNetworkMode) {
                     rootService.setupService.startNetworkGame(
@@ -175,7 +176,7 @@ class LobbyScene(
         width = 240, height = 40,
         alignment = Alignment.CENTER_LEFT,
         font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
-        text = "thisIsOurFavouriteGame"
+        text = ""
     )
 
     private val secretReal = Label(
@@ -183,7 +184,7 @@ class LobbyScene(
         width = 270, height = 40,
         alignment = Alignment.CENTER_LEFT,
         font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM),
-        text = "AMIN4PRESIDENT"
+        text = rootService.networkService.secret
     )
 
 
@@ -209,12 +210,9 @@ class LobbyScene(
                 playerInputs[0].changePlayerName(yourName)
                 playerNumber = 1
             } else {
-                startButton.isDisabled = true
-                tileRotationButton.isDisabled = true
-                playerOrderButton.isDisabled = true
-                for (playerInput in playerInputs) {
-                    playerInput.deactivateKick()
-                }
+                startButton.isVisible = false
+                tileRotationButton.isVisible = false
+                playerOrderButton.isVisible = false
             }
         } else {
             for (display in playerDisplay) {
@@ -445,9 +443,10 @@ class LobbyScene(
     /** Create a list of playerInfos for all possible Players to give it the setup Service */
     private fun createPlayerInfos(isNetwork: Boolean): List<PlayerInfo> {
         val playerInfos = playerInputs.mapIndexed { i, playerInputPane ->
-            val name = checkPlayerName(playerInputPane.getTextFieldInput(), i)
+            val name = if (isNetwork) yourName else checkPlayerName(playerInputPane.getTextFieldInput(), i)
             val playerType = playerInputPane.getPlayerType()
             val color = PLAYER_ORDER_COLORS[i]
+            val isNetwork = isNetwork && yourName != name
             PlayerInfo(name, playerType, color, isNetwork)
         }
         return playerInfos
@@ -472,18 +471,11 @@ class LobbyScene(
         secretReal.text = secret
     }
 
-
     /**
      * @see view.Refreshable.refreshAfterStartGame
      */
     override fun refreshAfterStartGame() {
         CableCarApplication.hideMenuScene()
-    }
-
-    /**
-     * @see view.Refreshable.refreshAfterHostGame
-     */
-    override fun refreshAfterHostGame() {
     }
 
     /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.*/
@@ -498,6 +490,7 @@ class LobbyScene(
     /** After someone joined, his/her name will be added as new name to the showed list. */
     override fun refreshAfterGuestJoined(name: String) {
         playerInputs[playerNumber].changePlayerName(name)
-        playerNumber + 1
+        playerNumber ++
     }
+
 }

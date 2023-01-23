@@ -99,26 +99,15 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
                 visual = menuVisual
             ).apply { onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) } }
         )
-
     }
 
     override fun refreshAfterHostGame() {
-        CableCarApplication.lobbyScene = LobbyScene(
-            rootService,
-            isNetworkMode = true,
-            isHost = true,
-            yourName = connectionPane.getPlayerName()
-        )
-        CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
+        CableCarApplication.hostLobbyScene.yourName = connectionPane.getPlayerName()
+        CableCarApplication.showMenuScene(CableCarApplication.hostLobbyScene)
     }
 
     override fun refreshAfterJoinGame(names: List<String>) {
-        CableCarApplication.lobbyScene = LobbyScene(
-            rootService,
-            isNetworkMode = true,
-            isHost = false,
-            yourName = connectionPane.getPlayerName()
-        )
-        CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
+        CableCarApplication.guestLobbyScene.yourName = connectionPane.getPlayerName()
+        CableCarApplication.showMenuScene(CableCarApplication.guestLobbyScene)
     }
 }

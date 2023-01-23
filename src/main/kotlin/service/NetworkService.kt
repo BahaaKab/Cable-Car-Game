@@ -18,7 +18,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     /**
      * The global secret that is used to verify a connection with the server
      */
-    private val secret = "cable22"
+    val secret = "cable22"
 
     /**
      * The Game ID
