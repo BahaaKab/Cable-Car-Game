@@ -14,6 +14,60 @@ class PlayerActionServiceTest {
     private val players = listOf(player1, player2)
 
     /**
+     * Tests the undo function
+     *
+     * First we check that the undo stack and redo stack are empty
+     * Afterwards we do a player move and check if the undo states are not empty anymore
+     * After the undo we have to test if the undo stack is empty and the redo stack is not
+     * **/
+    @Test
+    fun testUndo(){
+        setup.startLocalGame(players, false, 0)
+        val game = rootService.cableCar.currentState
+        val history = rootService.cableCar.history
+        //Tests if the initialization works
+        assertEquals(history.redoStates.size, 0)
+        assertEquals(history.undoStates.size, 0)
+        //Executes a player action
+        rootService.playerActionService.placeTile(1,3)
+        assertNotNull(game.board[1][3])
+        //Tests the undo function
+        assertEquals(1,history.undoStates.size)
+        rootService.playerActionService.undo()
+        assertEquals(0,history.undoStates.size)
+        assertNull(game.board[1][3])
+        assertEquals(1, history.redoStates.size)
+    }
+
+    /**
+     * Tests the redo function
+     *
+     * We undo a state and then we redo it again
+     * **/
+    @Test
+    fun testRedo(){
+        setup.startLocalGame(players, false, 0)
+        val game = rootService.cableCar.currentState
+        val history = rootService.cableCar.history
+        //Tests if the initialization works
+        assertEquals(history.redoStates.size, 0)
+        assertEquals(history.undoStates.size, 0)
+        //Executes a player action
+        rootService.playerActionService.placeTile(1,3)
+        assertNotNull(game.board[1][3])
+        //Tests the undo function
+        assertEquals(history.undoStates.size,1)
+        rootService.playerActionService.undo()
+        assertNull(game.board[1][3])
+        assertEquals(history.redoStates.size, 1)
+        rootService.playerActionService.redo()
+        assertEquals(history.redoStates.size, 0)
+        assertEquals(history.undoStates.size,1)
+        assertNotNull(game.board[1][3])
+
+    }
+
+    /**
      * By creating a new game and then placing a tile we can test if the placing Method is working.
      * In this case a tile is placed on a legal position firstly and then on an invalid position because no adjacent
      * [StationTile] or [GameTile]
