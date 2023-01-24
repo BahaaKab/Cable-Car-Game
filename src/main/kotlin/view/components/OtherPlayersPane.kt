@@ -128,7 +128,6 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
                 }
             }
         }
-        refreshOtherPlayers()
     }
 
     fun refreshOtherPlayers() {
