@@ -18,6 +18,51 @@ class PlayerActionServiceTest {
 
 
 
+
+
+    /**
+     * Tests the undo redo function
+     *
+     * First we check that the undo stack and redo stack are empty
+     * Afterwards we do some player moves and check if the undo states are not empty anymore
+     * After the undo we have to test if the undo stack is empty and the redo stack is not
+     * We undo a state and then we redo it again
+     * **/
+    @Test
+    fun testUndoRedo(){
+        //Initialize new game
+        setup.startLocalGame(players, false, 0)
+        var game = rootService.cableCar.currentState
+        val history = rootService.cableCar.history
+        //Tests if the initialization works
+        assertEquals(0, history.redoStates.size)
+        assertEquals(1, history.undoStates.size)
+        //Executes a player action
+        game.activePlayer.handTile = GameTile(1, listOf(5, 4, 7, 6, 1, 0, 3, 2))
+        rootService.playerActionService.placeTile(1,3)
+        assertNotNull(game.board[1][3])
+        //Executes another player action
+        rootService.playerActionService.placeTile(2,3)
+        assertNotNull(game.board[2][3])
+        //Tests the undo function
+        assertEquals(3,history.undoStates.size)
+        //Remove 2 states from the stack (becasue we have 2 players)
+        rootService.playerActionService.undo()
+        //After calling the undo function, we have to re-set the current state
+        game = rootService.cableCar.currentState
+        assertEquals(1,history.undoStates.size)
+        assertNull(game.board[1][3])
+        assertNull(game.board[2][3])
+        assertEquals(2, history.redoStates.size)
+        //Tests if the redo function works
+        rootService.playerActionService.redo()
+        game = rootService.cableCar.currentState
+        assertEquals(0, history.redoStates.size)
+        assertEquals(3,history.undoStates.size)
+        assertNotNull(game.board[1][3])
+
+    }
+
     /**
      * By creating a new game and then placing a tile we can test if the placing Method is working.
      * In this case a tile is placed on a legal position firstly and then on an invalid position because no adjacent
