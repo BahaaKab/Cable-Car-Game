@@ -9,8 +9,17 @@ import tools.aqua.bgw.util.Font
 import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_MEDIUM
 
+/**
+ * The pane which shows the final scores and ranking of each player.
+ *
+ * Default width: 320, default height: 350.
+ *
+ * @param rootService The administration class for the entity and service layer.
+ * @param posX Horizontal coordinate for this Pane. Default: 0.
+ * @param posY Vertical coordinate for this Pane. Default: 0.
+ */
 class ScoreboardPane(private val rootService: RootService, posX: Number = 0, posY: Number = 0) :
-    Pane<LabeledUIComponent>(posX, posY, 0, 0) {
+    Pane<LabeledUIComponent>(posX, posY, 320, 350) {
 
     private val defaultFont = Font(
         size = 25,
@@ -136,7 +145,7 @@ class ScoreboardPane(private val rootService: RootService, posX: Number = 0, pos
         )
     }
 
-    fun getUsedNameLabels() = when (rootService.cableCar.currentState.players.size) {
+    internal fun getUsedNameLabels() = when (rootService.cableCar.currentState.players.size) {
         2 -> listOf(p1Label, p2Label)
         3 -> listOf(p1Label, p2Label, p3Label)
         4 -> listOf(p1Label, p2Label, p3Label, p4Label)
@@ -144,7 +153,7 @@ class ScoreboardPane(private val rootService: RootService, posX: Number = 0, pos
         else -> listOf(p1Label, p2Label, p3Label, p4Label, p5Label, p6Label)
     }
 
-    fun getUsedPointsLabels() = when (rootService.cableCar.currentState.players.size) {
+    internal fun getUsedPointsLabels() = when (rootService.cableCar.currentState.players.size) {
         2 -> listOf(p1PointsLabel, p2PointsLabel)
         3 -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel)
         4 -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel, p4PointsLabel)
@@ -152,7 +161,7 @@ class ScoreboardPane(private val rootService: RootService, posX: Number = 0, pos
         else -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel, p4PointsLabel, p5PointsLabel, p6PointsLabel)
     }
 
-    fun showOnlyRelevant() {
+    internal fun showOnlyRelevant() {
         checkNotNull(rootService.cableCar)
         with(rootService.cableCar.currentState) {
             when (players.size) {

@@ -88,7 +88,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             for (j in 1..8) {
 
                 // We don't want to place empty tiles where the power stations are
-                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+                if ( i in 4..5 && j in 4..5) continue
 
                 set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i - 1][j - 1])
             }
@@ -282,10 +282,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         otherPlayersPane.refreshOtherPlayers()
         startAIHandler()
     }
-
-    override fun refreshAfterEndGame() {
-    }
-
 
     private fun startAIHandler() {
         if (rootService.cableCar.currentState.activePlayer.playerType in listOf(

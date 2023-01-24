@@ -14,6 +14,7 @@ import view.*
  *
  * Default width: 627, default height: 149.
  *
+ * @param rootService The administration class for the entity and service layer.
  * @param posX Horizontal coordinate for this Pane. Default: 0.
  * @param posY Vertical coordinate for this Pane. Default: 0.
  */
@@ -63,7 +64,7 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
         Color.BLACK -> DEFAULT_BLUE_COLOR
     }
 
-    fun refreshAfterStartGame() {
+    internal fun refreshAfterStartGame() {
         checkNotNull(rootService.cableCar)
         with(rootService.cableCar.currentState) {
             when (players.size) {
@@ -131,7 +132,7 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
         refreshOtherPlayers()
     }
 
-    fun refreshOtherPlayers() {
+    internal fun refreshOtherPlayers() {
         checkNotNull(rootService.cableCar)
         with(rootService.cableCar.currentState) {
             var currentPlayer: Player

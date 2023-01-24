@@ -20,6 +20,7 @@ import javax.imageio.ImageIO
  *
  * Default width: 630, default height: 240.
  *
+ * @param rootService The administration class for the entity and service layer.
  * @param posX Horizontal coordinate for this Pane. Default: 0.
  * @param posY Vertical coordinate for this Pane. Default: 0.
  */
@@ -136,7 +137,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         )
     }
 
-    fun refreshActivePlayer() = with(rootService.cableCar.currentState.activePlayer) {
+    internal fun refreshActivePlayer() = with(rootService.cableCar.currentState.activePlayer) {
         activePlayerTiles.clear()
         if (handTile == null) {
             activePlayerTiles.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
@@ -158,7 +159,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         }
     }
 
-    fun disableTileRotationButtons() {
+    internal fun disableTileRotationButtons() {
         rotateLeftButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = true
@@ -169,13 +170,13 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         }
     }
 
-    fun disableDrawTileButton() = drawTileButton.apply {
+    internal fun disableDrawTileButton() = drawTileButton.apply {
         componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
         isDisabled = true
     }
 
 
-    fun enableDrawTileButton() = drawTileButton.apply {
+    internal fun enableDrawTileButton() = drawTileButton.apply {
         componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
         isDisabled = false
     }

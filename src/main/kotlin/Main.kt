@@ -3,6 +3,10 @@ import view.CableCarApplication
 import java.io.File
 import java.io.FileNotFoundException
 
+/**
+ * Main function that starts the Application
+ */
+
 fun main() {
     val uri1 = CableCarApplication::class.java.getResource("/johnston-itc-std-bold.ttf")?.toURI()
         ?: throw FileNotFoundException()

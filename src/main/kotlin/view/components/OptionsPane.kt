@@ -23,10 +23,11 @@ import javax.imageio.ImageIO
  *
  * Default width: 402, default height: 40.
  *
+ * @param rootService The administration class for the entity and service layer.
  * @param posX Horizontal coordinate for this Pane. Default: 0.
  * @param posY Vertical coordinate for this Pane. Default: 0.
  */
-class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) :
+class OptionsPane(private val rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX = posX, posY = posY, width = 402, height = 40) {
 
     private val undoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/undo.png")))
