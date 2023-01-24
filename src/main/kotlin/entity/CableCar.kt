@@ -5,7 +5,7 @@ package entity
  * It also connects the entity layer with the [service.RootService] on the service layer.
  *
  * @property allowTileRotation: true allows us to rotate tiles; false disables the tile rotation feature
- * @property AISpeed: sets the speed of the AI and is changeable during the game
+ * @property aISpeed: sets the speed of the AI and is changeable during the game
  * @property isHostPlayer: Indicates if the current player is a host player or not
  * @property gameMode: Are we playing in hot seat mode or online over the internet?
  * @property history: Saves other [State] objects
@@ -13,7 +13,7 @@ package entity
  */
 class CableCar(
     val allowTileRotation: Boolean,
-    var AISpeed: Int,
+    var aISpeed: Int,
     val isHostPlayer: Boolean,
     val gameMode: GameMode,
     var history: History,

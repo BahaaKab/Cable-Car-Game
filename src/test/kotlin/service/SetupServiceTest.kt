@@ -64,7 +64,7 @@ class SetupServiceTest {
         with(rootService.cableCar) {
             // Check general setup
             assertFalse(allowTileRotation)
-            assertEquals(1, AISpeed)
+            assertEquals(1, aISpeed)
             assertEquals(GameMode.HOTSEAT, gameMode)
             // Check, if players match playerInfos
             assertPlayersEqualPlayerInfos(currentState, playerInfos)
@@ -93,7 +93,7 @@ class SetupServiceTest {
         )
         with(rootService.cableCar) {
             assertFalse(allowTileRotation)
-            assertEquals(1, AISpeed)
+            assertEquals(1, aISpeed)
             assertEquals(GameMode.NETWORK, gameMode)
             assertFalse(isHostPlayer)
             // Check, if players match playerInfos

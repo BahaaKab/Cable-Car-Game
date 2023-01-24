@@ -11,8 +11,6 @@ import kotlin.random.Random
  * @param [rootService] Connected root service
  */
 
-@Suppress("UNUSED_PARAMETER", "UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
-
 class AIService(private val rootService: RootService) : AbstractRefreshingService() {
     // surround codes every direction of a Tile
     private val surround = listOf(-1, -2, +2, +1)

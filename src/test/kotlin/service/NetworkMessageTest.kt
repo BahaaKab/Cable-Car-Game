@@ -36,7 +36,7 @@ class NetworkMessageTest : NetworkTest() {
                 playerInfos = playerInfos,
                 tilesRotatable = false,
                 tileIDs = null,
-                AISpeed = 0
+                aISpeed = 0
             )
         }
 
@@ -82,7 +82,7 @@ class NetworkMessageTest : NetworkTest() {
                 playerInfos = playerInfos,
                 tilesRotatable = false,
                 tileIDs = null,
-                AISpeed = 0
+                aISpeed = 0
             )
         }
     }
