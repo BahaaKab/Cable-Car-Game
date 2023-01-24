@@ -31,6 +31,7 @@ import tools.aqua.bgw.net.common.response.GameActionResponse
 class CableCarNetworkClient(
     private val networkService: NetworkService,
     playerName: String,
+    val playerType: PlayerType,
     host: String,
     secret: String
 ) : BoardGameClient(
@@ -50,10 +51,7 @@ class CableCarNetworkClient(
             CreateGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterHostGame() }
             }
-            CreateGameResponseStatus.ALREADY_ASSOCIATED_WITH_GAME -> { }
-            CreateGameResponseStatus.SESSION_WITH_ID_ALREADY_EXISTS -> { }
-            CreateGameResponseStatus.GAME_ID_DOES_NOT_EXIST -> { }
-            CreateGameResponseStatus.SERVER_ERROR -> { }
+            else -> {}
         }
     }
 
@@ -68,10 +66,7 @@ class CableCarNetworkClient(
             JoinGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterJoinGame(response.opponents) }
             }
-            JoinGameResponseStatus.ALREADY_ASSOCIATED_WITH_GAME -> { }
-            JoinGameResponseStatus.INVALID_SESSION_ID -> { }
-            JoinGameResponseStatus.PLAYER_NAME_ALREADY_TAKEN -> { }
-            JoinGameResponseStatus.SERVER_ERROR -> { }
+            else -> {}
         }
     }
 
@@ -84,7 +79,6 @@ class CableCarNetworkClient(
         networkService.onAllRefreshables { refreshAfterNetworkNotification(notification) }
         check(!networkService.rootService.isGameInitialized())
         networkService.onAllRefreshables { refreshAfterGuestJoined(notification.sender) }
-
     }
 
     /**
@@ -119,8 +113,9 @@ class CableCarNetworkClient(
         val playerInfos = message.players.mapIndexed { index, info ->
             val name = info.name
             val color = PLAYER_ORDER_COLORS[index]
-            val playerType = PlayerType.HUMAN
-            PlayerInfo(name, playerType, color, isNetworkPlayer = true)
+            val playerType = if (name!= playerName) PlayerType.HUMAN else this.playerType
+            val isNetworkPlayer = name != playerName
+            PlayerInfo(name, playerType, color, isNetworkPlayer)
         }
 
         networkService.rootService.setupService.startNetworkGame(
@@ -130,8 +125,6 @@ class CableCarNetworkClient(
             tileIDs = message.tileSupply.map { it.id },
             AISpeed = 1
         )
-
-        networkService.onAllRefreshables { refreshAfterStartGame() }
     }
 
     /**
@@ -141,27 +134,30 @@ class CableCarNetworkClient(
      * @param sender The name of the sender
      */
     @GameActionReceiver
-    fun onTurnMessageReceived(message: TurnMessage, sender: String) = with(networkService.rootService){
-        // if sender is the active player, perform his turn based on the message data
-        require(sender == cableCar.currentState.activePlayer.name)
-        // Draw tile, if necessary
-        if (message.fromSupply) {
-            playerActionService.drawTile()
-        }
-        // Rotate tile
-        if (cableCar.allowTileRotation) {
-            val rotations = arrayOf(0, 90, 180, 270)
-            require(message.rotation in rotations)
-            repeat(rotations.indexOf(message.rotation) - 1) {
-                playerActionService.rotateTileRight()
-            }
-        }
-        // Place tile
-        playerActionService.placeTile(message.posX, message.posY)
-        // Validate the gameState
-        check(isValidGameState(message.gameStateVerificationInfo))
+    fun onTurnMessageReceived(message: TurnMessage, sender: String) = with(networkService.rootService) {
+        BoardGameApplication.runOnGUIThread {
+            // if sender is the active player, perform his turn based on the message data
+            println("sender: $sender, activePlayer: ${cableCar.currentState.activePlayer.name}")
 
-        networkService.onAllRefreshables { refreshAfterNextTurn() }
+            require(sender == cableCar.currentState.activePlayer.name)
+            // Draw tile, if necessary
+            if (message.fromSupply) {
+                playerActionService.drawTile()
+            }
+            // Rotate tile
+            if (cableCar.allowTileRotation) {
+                val rotations = arrayOf(0, 90, 180, 270)
+                require(message.rotation in rotations)
+                repeat(rotations.indexOf(message.rotation) - 1) {
+                    playerActionService.rotateTileRight()
+                }
+            }
+            // Place tile
+            playerActionService.placeTile(message.posX, message.posY)
+
+            // Validate the gameState
+            check(isValidGameState(message.gameStateVerificationInfo))
+        }
     }
 
     /**
