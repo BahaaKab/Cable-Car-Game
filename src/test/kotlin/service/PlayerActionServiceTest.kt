@@ -18,56 +18,47 @@ class PlayerActionServiceTest {
 
 
 
-    /**
-     * Tests the undo function
-     *
-     * First we check that the undo stack and redo stack are empty
-     * Afterwards we do a player move and check if the undo states are not empty anymore
-     * After the undo we have to test if the undo stack is empty and the redo stack is not
-     * **/
-    @Test
-    fun testUndo(){
-        setup.startLocalGame(players, false, 0)
-        val game = rootService.cableCar.currentState
-        val history = rootService.cableCar.history
-        //Tests if the initialization works
-        assertEquals(history.redoStates.size, 0)
-        assertEquals(history.undoStates.size, 0)
-        //Executes a player action
-        rootService.playerActionService.placeTile(1,3)
-        assertNotNull(game.board[1][3])
-        //Tests the undo function
-        assertEquals(1,history.undoStates.size)
-        rootService.playerActionService.undo()
-        assertEquals(0,history.undoStates.size)
-        assertNull(game.board[1][3])
-        assertEquals(1, history.redoStates.size)
-    }
+
 
     /**
-     * Tests the redo function
+     * Tests the undo redo function
      *
+     * First we check that the undo stack and redo stack are empty
+     * Afterwards we do some player moves and check if the undo states are not empty anymore
+     * After the undo we have to test if the undo stack is empty and the redo stack is not
      * We undo a state and then we redo it again
      * **/
     @Test
-    fun testRedo(){
+    fun testUndoRedo(){
+        //Initialize new game
         setup.startLocalGame(players, false, 0)
-        val game = rootService.cableCar.currentState
+        var game = rootService.cableCar.currentState
         val history = rootService.cableCar.history
         //Tests if the initialization works
-        assertEquals(history.redoStates.size, 0)
-        assertEquals(history.undoStates.size, 0)
+        assertEquals(0, history.redoStates.size)
+        assertEquals(1, history.undoStates.size)
         //Executes a player action
+        game.activePlayer.handTile = GameTile(1, listOf(5, 4, 7, 6, 1, 0, 3, 2))
         rootService.playerActionService.placeTile(1,3)
         assertNotNull(game.board[1][3])
+        //Executes another player action
+        rootService.playerActionService.placeTile(2,3)
+        assertNotNull(game.board[2][3])
         //Tests the undo function
-        assertEquals(history.undoStates.size,1)
+        assertEquals(3,history.undoStates.size)
+        //Remove 2 states from the stack (becasue we have 2 players)
         rootService.playerActionService.undo()
+        //After calling the undo function, we have to re-set the current state
+        game = rootService.cableCar.currentState
+        assertEquals(1,history.undoStates.size)
         assertNull(game.board[1][3])
-        assertEquals(history.redoStates.size, 1)
+        assertNull(game.board[2][3])
+        assertEquals(2, history.redoStates.size)
+        //Tests if the redo function works
         rootService.playerActionService.redo()
-        assertEquals(history.redoStates.size, 0)
-        assertEquals(history.undoStates.size,1)
+        game = rootService.cableCar.currentState
+        assertEquals(0, history.redoStates.size)
+        assertEquals(3,history.undoStates.size)
         assertNotNull(game.board[1][3])
 
     }
