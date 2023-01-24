@@ -75,6 +75,14 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    private val legalTilesCardViews = List(8) { column ->
+        List(8) { row ->
+            CardView(width = 100, height = 100, front = ColorVisual.GREEN).apply {
+                onMouseClicked = { rootService.playerActionService.placeTile(posX = column + 1, posY = row + 1) }
+            }
+        }
+    }
+
     private val board = GridPane<CardView>(
         posX = 850, posY = 50,
         columns = 10, rows = 10,
@@ -182,7 +190,32 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
-    /**
+    private fun refreshBoard() {
+        for (i in 1..8) {
+            for (j in 1..8) {
+
+                // We don't want to place empty tiles where the power stations are
+                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+
+                if (rootService.cableCar.currentState.board[i][j] is GameTile) {
+                    board.set(
+                        columnIndex = i, rowIndex = j,
+                        component = tileMapSmall.forward((rootService.cableCar.currentState.board[i][j] as GameTile).id)
+                            .apply {
+                                rotation =
+                                    (rootService.cableCar.currentState.board[i][j] as GameTile).rotation.toDouble()
+                            }
+                    )
+                } else {
+                    board.set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i - 1][j - 1].apply {
+                        onMouseClicked = { rootService.playerActionService.placeTile(posX = i, posY = j) }
+                    })
+                }
+            }
+        }
+    }
+
+                /**
      * @see view.Refreshable.refreshAfterStartGame
      */
     override fun refreshAfterStartGame() {
@@ -205,6 +238,11 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         } else connectionStatusLabel.isVisible = false
 
         otherPlayersPane.refreshAfterStartGame()
+
+        rootService.cableCarService.legalPositions().forEach {
+            board.set(columnIndex = it.first, rowIndex = it.second, component = legalTilesCardViews[it.first-1][it.second-1])
+        }
+
         refreshAfterNextTurn()
     }
 
@@ -273,6 +311,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * @see view.Refreshable.refreshAfterNextTurn
      */
     override fun refreshAfterNextTurn() {
+        refreshBoard()
+
         if (rootService.cableCar.currentState.drawPile.isEmpty()) {
             activePlayerPane.disableDrawTileButton()
         } else {
@@ -280,12 +320,11 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
+        rootService.cableCarService.legalPositions().forEach {
+            board.set(columnIndex = it.first, rowIndex = it.second, component = legalTilesCardViews[it.first-1][it.second-1])
+        }
         startAIHandler()
     }
-
-    override fun refreshAfterEndGame() {
-    }
-
 
     private fun startAIHandler() {
         if (rootService.cableCar.currentState.activePlayer.playerType in listOf(

@@ -197,4 +197,74 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         // This case will never happen because a searched [StationTile] will always be found
         return arrayOf()
     }
+
+    private fun checkSurrounding(posX : Int, posY : Int) : List<Pair<Int,Int>> {
+        val back = mutableListOf<Pair<Int,Int>>()
+        if(rootService.cableCar.currentState.board[posX][posY-1] == null) back.add(Pair(posX,posY-1))
+        if(rootService.cableCar.currentState.board[posX+1][posY] == null) back.add(Pair(posX+1,posY))
+        if(rootService.cableCar.currentState.board[posX][posY+1] == null) back.add(Pair(posX,posY+1))
+        if(rootService.cableCar.currentState.board[posX-1][posY] == null) back.add(Pair(posX-1,posY))
+        return back
+    }
+
+
+    private fun only1Point(posX : Int, posY : Int) : Boolean {
+        val tileToPlace = rootService.cableCar.currentState.activePlayer.currentTile ?: rootService.cableCar.currentState.activePlayer.handTile!!
+
+        val hasTopLoop = tileToPlace.connections[0] == 1
+        val hasRightLoop = tileToPlace.connections[2] == 3
+        val hasBottomLoop = tileToPlace.connections[4] == 5
+        val hasLeftLoop = tileToPlace.connections[6] == 7
+
+        val connectTopRight = tileToPlace.connections[0] == 3 || tileToPlace.connections[1] == 2
+        val connectRightBottom = tileToPlace.connections[2] == 5 || tileToPlace.connections[3] == 4
+        val connectBottomLeft = tileToPlace.connections[4] == 7 || tileToPlace.connections[5] == 6
+        val connectLeftTop = tileToPlace.connections[1] == 6 || tileToPlace.connections[0] == 7
+
+        // Tile has only 1 adjacent StationTile
+        if(rootService.cableCar.currentState.board[posX][posY-1] is StationTile && hasTopLoop) return true
+        if(rootService.cableCar.currentState.board[posX+1][posY] is StationTile && hasRightLoop) return true
+        if(rootService.cableCar.currentState.board[posX][posY+1] is StationTile && hasBottomLoop) return true
+        if(rootService.cableCar.currentState.board[posX-1][posY] is StationTile && hasLeftLoop) return true
+
+        // Tile has 2 adjacent StationTiles
+        if(rootService.cableCar.currentState.board[posX][posY-1] is StationTile &&
+            rootService.cableCar.currentState.board[posX+1][posY] is StationTile && connectTopRight) return true
+        if(rootService.cableCar.currentState.board[posX+1][posY] is StationTile &&
+            rootService.cableCar.currentState.board[posX][posY+1] is StationTile && connectRightBottom) return true
+        if(rootService.cableCar.currentState.board[posX][posY+1] is StationTile &&
+            rootService.cableCar.currentState.board[posX-1][posY] is StationTile && connectBottomLeft) return true
+        if(rootService.cableCar.currentState.board[posX-1][posY] is StationTile &&
+            rootService.cableCar.currentState.board[posX][posY-1] is StationTile && connectLeftTop) return true
+
+        return false
+    }
+
+    fun legalPositions() : Set<Pair<Int,Int>> {
+        val board = rootService.cableCar.currentState.board
+        var stationTileNeighbors = setOf<Pair<Int,Int>>()
+        var adjacents = setOf<Pair<Int,Int>>()
+        for (i in 1..8) {
+            if(board[1][i] == null) stationTileNeighbors = stationTileNeighbors.plus(Pair(1,i))
+            if(board[8][i] == null) stationTileNeighbors = stationTileNeighbors.plus(Pair(8,i))
+            if(board[i][1] == null) stationTileNeighbors = stationTileNeighbors.plus(Pair(i,1))
+            if(board[i][8] == null) stationTileNeighbors = stationTileNeighbors.plus(Pair(i,8))
+        }
+
+        rootService.cableCar.currentState.placedTiles.forEach { placedTile ->
+            checkSurrounding(placedTile.x, placedTile.y).forEach{
+                adjacents = adjacents.plus(it)
+            }
+        }
+
+        var legalPositions = setOf<Pair<Int,Int>>()
+
+        adjacents = adjacents.minus(stationTileNeighbors)
+
+        stationTileNeighbors.forEach {
+            if(!only1Point(it.first, it.second)) legalPositions = legalPositions.plus(it)
+        }
+
+        return if(legalPositions.isEmpty() && adjacents.isEmpty()) stationTileNeighbors else if(legalPositions.isEmpty()) adjacents else legalPositions.plus(adjacents)
+    }
 }
