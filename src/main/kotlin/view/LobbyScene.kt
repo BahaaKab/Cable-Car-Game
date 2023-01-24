@@ -29,9 +29,9 @@ import kotlin.random.Random
  * */
 class LobbyScene(
     private val rootService: RootService,
-    var isNetworkMode: Boolean = false,
+    private var isNetworkMode: Boolean = false,
     var yourName: String = "",
-    var isHost: Boolean = false
+    private var isHost: Boolean = false
 ) : MenuScene(1920, 1080), Refreshable {
 
     private var tileRotation = false
@@ -187,7 +187,6 @@ class LobbyScene(
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
             val playerInfos = playerInputs.map { it.getPlayerInfo() }
-            println(playerInfos.subList(0, playerNumber))
             if (playerNumber >= 2) {
                 if (isNetworkMode) {
                     rootService.setupService.startNetworkGame(
