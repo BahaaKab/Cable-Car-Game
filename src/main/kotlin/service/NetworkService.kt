@@ -122,7 +122,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     fun sendGameInitMessage(playerInfos: List<PlayerInfo>) {
         check(::networkClient.isInitialized && networkClient.isOpen)
         // If client is connected, send GameInitMessage
-        with (rootService.cableCar) {
+        with(rootService.cableCar) {
             val players = playerInfos.map { it.toNetworkPlayerInfo() }
             val gameInitMessage = GameInitMessage(
                 rotationAllowed = allowTileRotation,

@@ -19,7 +19,7 @@ import view.DEFAULT_FONT_BOLD
  * @param color The default color of the player (e.g. ColorVisual(1,1,1) )
  * */
 class PlayerIndicatorPane(posX: Number = 0, posY: Number = 0, playerNumber: Int, color: ColorVisual) :
-    Pane<UIComponent>(posX, posY, width = 190, height = 70){
+    Pane<UIComponent>(posX, posY, width = 190, height = 70) {
 
     private val colorLabel = Label(
         posX = 0, posY = 42,

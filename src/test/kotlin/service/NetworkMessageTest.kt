@@ -8,7 +8,7 @@ import kotlin.test.*
 /**
  * Test the [edu.udo.cs.sopra.ntf.GameInitMessage] and the [edu.udo.cs.sopra.ntf.TurnMessage]
  */
-class NetworkMessageTest: NetworkTest() {
+class NetworkMessageTest : NetworkTest() {
     /**
      * Send a [edu.udo.cs.sopra.ntf.GameInitMessage] as a host and expect it to successfully sync up the guests game
      */

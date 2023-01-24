@@ -14,20 +14,23 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Undo the last game [State] and move on to the nextTurn.
      */
     fun undo() = with(rootService.cableCar) {
-        if(gameMode == GameMode.NETWORK || history.undoStates.isEmpty() ||
-            history.undoStates.size <= currentState.players.size) { return }
+        if (gameMode == GameMode.NETWORK || history.undoStates.isEmpty() ||
+            history.undoStates.size <= currentState.players.size
+        ) {
+            return
+        }
 
         val oldState = currentState.deepCopy()
 
         // Undo all player actions up to the current player's last action
-        repeat(currentState.players.size){
+        repeat(currentState.players.size) {
             val undoState = history.undoStates.pop()
             history.redoStates.push(undoState)
         }
         currentState = history.undoStates.peek().deepCopy()
 
-        for(player in currentState.players) {
-            for(stationTiles in player.stationTiles) {
+        for (player in currentState.players) {
+            for (stationTiles in player.stationTiles) {
                 rootService.cableCarService.updatePath(stationTiles)
             }
         }
@@ -39,7 +42,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Redo the last undone game [State] and move on to the nextTurn.
      */
     fun redo() = with(rootService.cableCar) {
-        if(gameMode == GameMode.NETWORK || history.redoStates.isEmpty()) { return }
+        if (gameMode == GameMode.NETWORK || history.redoStates.isEmpty()) {
+            return
+        }
 
 
         val oldState = currentState.deepCopy()
@@ -51,8 +56,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
         currentState = history.undoStates.peek().deepCopy()
 
-        for(player in currentState.players) {
-            for(stationTiles in player.stationTiles) {
+        for (player in currentState.players) {
+            for (stationTiles in player.stationTiles) {
                 rootService.cableCarService.updatePath(stationTiles)
             }
         }
@@ -65,8 +70,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * without having an alternative [GameTile]
      */
     fun drawTile() = with(rootService.cableCar.currentState) {
-        if(drawPile.isEmpty()) return
-        
+        if (drawPile.isEmpty()) return
+
         if (activePlayer.handTile == null) {
             activePlayer.handTile = drawPile.removeFirst()
         } else if (activePlayer.currentTile == null) {
@@ -98,10 +103,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
 
         val isAllowed: Boolean
-        if(!rootService.cableCar.allowTileRotation){
+        if (!rootService.cableCar.allowTileRotation) {
             isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || onlyIllegalPositionsLeft(tileToPlace)
-        }
-        else{
+        } else {
             // check if all positions are illegal even with all rotation-forms
             val b1 = onlyIllegalPositionsLeft(tileToPlace)
             rotateTile(true)
@@ -133,13 +137,15 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         if (player.currentTile == null) {
             player.handTile = null
             drawTile()
-        } else { player.currentTile = null }
+        } else {
+            player.currentTile = null
+        }
         // If this is a network game, create the turn message
         if (cableCar.gameMode == GameMode.NETWORK && rootService.networkService.networkClient.playerName == cableCar.currentState.activePlayer.name) {
             networkService.sendTurnMessage(posX, posY, fromSupply, tileToPlace.rotation)
         }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
-        cableCarService.updatePaths(posX,posY)
+        cableCarService.updatePaths(posX, posY)
         cableCarService.calculatePoints()
         // Start the next turn
         cableCarService.nextTurn()
@@ -155,27 +161,27 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      *
      * @return Whether the position is illegal
      */
-    fun positionIsIllegal(posX : Int, posY : Int, gameTile : GameTile) : Boolean {
+    fun positionIsIllegal(posX: Int, posY: Int, gameTile: GameTile): Boolean {
         // Get all adjacent StationTiles
         val adjStationTiles = getAdjacentTiles(posX, posY).filterIsInstance<StationTile>()
         // A check for each adjacent [StationTile] if it forms a path of length 1
-        for(stationTile in adjStationTiles){
+        for (stationTile in adjStationTiles) {
             // A [StationTile] that can form a path of length 1 has to have an empty path at begin
-            if(stationTile.path.isNotEmpty()){
+            if (stationTile.path.isNotEmpty()) {
                 continue
             }
-            val startConnectorGameTile : Int = stationTile.OUTER_TILE_CONNECTIONS[stationTile.startPosition]
-            val endConnectorGameTile : Int = gameTile.connections[startConnectorGameTile]
-            var x : Int = posX
-            var y : Int = posY
-            when(endConnectorGameTile){
+            val startConnectorGameTile: Int = stationTile.OUTER_TILE_CONNECTIONS[stationTile.startPosition]
+            val endConnectorGameTile: Int = gameTile.connections[startConnectorGameTile]
+            var x: Int = posX
+            var y: Int = posY
+            when (endConnectorGameTile) {
                 TOP_LEFT, TOP_RIGHT -> y -= 1
                 RIGHT_TOP, RIGHT_BOT -> x += 1
                 BOT_RIGHT, BOT_LEFT -> y += 1
                 LEFT_TOP, LEFT_BOT -> x -= 1
             }
             val nextTile = rootService.cableCar.currentState.board[x][y]
-            if(nextTile != null && nextTile.isEndTile){
+            if (nextTile != null && nextTile.isEndTile) {
                 return true
             }
         }
@@ -190,20 +196,20 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * @return Whether all possible positions are illegal positions, in the sense that they would close a path of
      * length 1.
      */
-    fun onlyIllegalPositionsLeft(gameTile : GameTile) : Boolean = with(rootService.cableCar.currentState) {
-        for(y in (1..8)){
-            if(board[1][y] == null && !positionIsIllegal(1,y,gameTile)){
+    fun onlyIllegalPositionsLeft(gameTile: GameTile): Boolean = with(rootService.cableCar.currentState) {
+        for (y in (1..8)) {
+            if (board[1][y] == null && !positionIsIllegal(1, y, gameTile)) {
                 return false
             }
-            if(board[8][y] == null && !positionIsIllegal(8,y,gameTile)){
+            if (board[8][y] == null && !positionIsIllegal(8, y, gameTile)) {
                 return false
             }
         }
-        for(x in (1..8)){
-            if(board[x][1] == null && !positionIsIllegal(x,1,gameTile)){
+        for (x in (1..8)) {
+            if (board[x][1] == null && !positionIsIllegal(x, 1, gameTile)) {
                 return false
             }
-            if(board[x][8] == null && !positionIsIllegal(x,8,gameTile)){
+            if (board[x][8] == null && !positionIsIllegal(x, 8, gameTile)) {
                 return false
             }
         }
@@ -218,7 +224,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      *
      * @return Whether at least one adjacent tile is a GameTile or a StationTile.
      */
-    fun isAdjacentToTiles(posX: Int, posY : Int) =
+    fun isAdjacentToTiles(posX: Int, posY: Int) =
         getAdjacentTiles(posX, posY).any { it is GameTile || it is StationTile }
 
     /**
@@ -229,7 +235,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      *
      * @return The list of all adjacent tiles or null in case there is no adjacent Tile.
      */
-    private fun getAdjacentTiles(posX: Int, posY: Int) : List<Tile?> = with(rootService.cableCar.currentState) {
+    private fun getAdjacentTiles(posX: Int, posY: Int): List<Tile?> = with(rootService.cableCar.currentState) {
         val adjLeft: Tile? = board[posX - 1][posY]
         val adjRight: Tile? = board[posX + 1][posY]
         val adjTop: Tile? = board[posX][posY - 1]
@@ -241,7 +247,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Rotates the handTile of the current [Player] by 90° to the left-hand side.
      */
     fun rotateTileLeft() {
-        if(!rootService.cableCar.allowTileRotation) return
+        if (!rootService.cableCar.allowTileRotation) return
         rotateTile(clockwise = false)
         onAllRefreshables { refreshAfterRotateTileLeft() }
     }
@@ -250,7 +256,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Rotates the handTile of the current [Player] by 90° to the right-hand side.
      */
     fun rotateTileRight() {
-        if(!rootService.cableCar.allowTileRotation) return
+        if (!rootService.cableCar.allowTileRotation) return
         rotateTile(clockwise = true)
         onAllRefreshables { refreshAfterRotateTileRight() }
     }
@@ -267,13 +273,21 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         // Otherwise he uses the handTile.
         val tileToRotate = currentTile ?: handTile
         // The shift index is used to rotate rotate the connections on a tile.
-        with (checkNotNull(tileToRotate)) {
-            rotation = (rotation + if (clockwise) { 90 } else { 270 }) % 360
-            val indexShift = if (clockwise) { 2 } else { connections.size - 2 }
+        with(checkNotNull(tileToRotate)) {
+            rotation = (rotation + if (clockwise) {
+                90
+            } else {
+                270
+            }) % 360
+            val indexShift = if (clockwise) {
+                2
+            } else {
+                connections.size - 2
+            }
             // First set the new values
             connections = connections.map { (it + indexShift) % connections.size }
             // Then set the values to the correct indices
-            connections = List(connections.size) { connections[(it + indexShift+4) % connections.size] }
+            connections = List(connections.size) { connections[(it + indexShift + 4) % connections.size] }
         }
     }
 

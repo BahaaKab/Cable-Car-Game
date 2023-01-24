@@ -143,7 +143,7 @@ class InputPlayerPane(
         isNetwork = isNetworkPlayer
     }
 
-    fun getPlayerInfo() : PlayerInfo {
+    fun getPlayerInfo(): PlayerInfo {
         return PlayerInfo(
             playerName.text,
             getPlayerType(),

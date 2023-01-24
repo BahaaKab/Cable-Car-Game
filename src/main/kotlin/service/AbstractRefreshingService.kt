@@ -18,7 +18,9 @@ abstract class AbstractRefreshingService {
      * @param newRefreshable An unregistered [Refreshable].
      */
     fun addRefreshable(newRefreshable: Refreshable) {
-        if (newRefreshable !in refreshables) { refreshables.add(newRefreshable) }
+        if (newRefreshable !in refreshables) {
+            refreshables.add(newRefreshable)
+        }
     }
 
     /**
@@ -27,7 +29,9 @@ abstract class AbstractRefreshingService {
      * @param method The method that should be called by the refreshables.
      */
     fun onAllRefreshables(method: Refreshable.() -> Unit) {
-        for (refreshable in refreshables) { refreshable.method() }
+        for (refreshable in refreshables) {
+            refreshable.method()
+        }
     }
 
 }

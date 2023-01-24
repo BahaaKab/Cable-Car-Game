@@ -8,7 +8,7 @@ import view.DEFAULT_BLUE_VISUAL
 import view.DEFAULT_FONT_BOLD
 import java.awt.Color
 
-class PlayerTypeButton(posX: Int = 0, posY: Int = 0): Button(
+class PlayerTypeButton(posX: Int = 0, posY: Int = 0) : Button(
     posX = posX,
     posY = posY,
     width = 145,

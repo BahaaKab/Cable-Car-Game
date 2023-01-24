@@ -21,12 +21,12 @@ class TileImageLoader {
     /**
      * The full raster image containing the tile.
      */
-    private val image : BufferedImage = ImageIO.read(TileImageLoader::class.java.getResource(CARDS_FILE))
+    private val image: BufferedImage = ImageIO.read(TileImageLoader::class.java.getResource(CARDS_FILE))
 
     /**
      * Provides the tile image for the given [entity.GameTile.id]
      */
-    fun frontImageFor(id : Int) = getImageByCoordinates(id % 10, id / 10)
+    fun frontImageFor(id: Int) = getImageByCoordinates(id % 10, id / 10)
 
     /**
      * Provides the tile image for the given [entity.GameTile]
@@ -54,7 +54,7 @@ class TileImageLoader {
      * @param y row in the raster image, starting at 0
      *
      */
-    private fun getImageByCoordinates(x: Int, y: Int) : BufferedImage =
+    private fun getImageByCoordinates(x: Int, y: Int): BufferedImage =
         image.getSubimage(
             x * IMG_WIDTH,
             y * IMG_HEIGHT,

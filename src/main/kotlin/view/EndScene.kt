@@ -17,7 +17,7 @@ import java.awt.Color
  *
  * @param rootService The administration class for the entity and service layer.
  */
-class EndScene(private val rootService: RootService) : MenuScene(1920,1080), Refreshable {
+class EndScene(private val rootService: RootService) : MenuScene(1920, 1080), Refreshable {
 
     private val logoPane = CableCarLogo(posX = 817, posY = 104).apply {
         scale = 1.2
@@ -38,7 +38,7 @@ class EndScene(private val rootService: RootService) : MenuScene(1920,1080), Ref
 
     init {
         opacity = 1.0
-        background = ColorVisual(247,247,247)
+        background = ColorVisual(247, 247, 247)
         addComponents(
             logoPane, scoreboardPane, exitButton
         )
@@ -58,7 +58,7 @@ class EndScene(private val rootService: RootService) : MenuScene(1920,1080), Ref
 
             // toSet() removes duplicates, and then we need a list to iterate over
             pointsList.toSet().toList().forEachIndexed { index, int ->
-                put(int, index+1)
+                put(int, index + 1)
             }
         }
 

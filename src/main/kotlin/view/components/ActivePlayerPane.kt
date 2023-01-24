@@ -138,7 +138,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
 
     fun refreshActivePlayer() = with(rootService.cableCar.currentState.activePlayer) {
         activePlayerTiles.clear()
-        if(handTile == null) {
+        if (handTile == null) {
             activePlayerTiles.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
         } else {
             activePlayerTiles.add(tileMapBig.forward(handTile!!.id).apply {

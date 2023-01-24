@@ -56,12 +56,12 @@ class ConnectingDataPane(posX: Int, posY: Int) :
     }
 
     /** A method to set the sessionID */
-    fun setSessionID(session : String) {
+    fun setSessionID(session: String) {
         sessionID.text = session
     }
 
     /** A method to set the secret */
-    fun setSecret(secret : String) {
+    fun setSecret(secret: String) {
         secretID.text = secret
     }
 }
