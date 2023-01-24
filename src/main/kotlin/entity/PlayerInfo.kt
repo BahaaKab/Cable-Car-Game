@@ -16,5 +16,8 @@ data class PlayerInfo(
     val color: Color,
     val isNetworkPlayer: Boolean
 ) {
+    /**
+     * Convert the PlayerInfo into a Network PlayerInfo
+     * **/
     fun toNetworkPlayerInfo() = PlayerInfo(name)
 }

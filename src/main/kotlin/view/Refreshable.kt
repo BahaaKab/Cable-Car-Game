@@ -3,7 +3,6 @@ package view
 import tools.aqua.bgw.net.common.notification.Notification
 import tools.aqua.bgw.net.common.response.Response
 
-@Suppress("UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
 
 interface Refreshable {
     fun refreshAfterEndGame() {}

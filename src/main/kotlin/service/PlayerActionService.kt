@@ -2,7 +2,6 @@ package service
 
 import edu.udo.cs.sopra.ntf.TileInfo
 import entity.*
-import tools.aqua.bgw.core.BoardGameApplication
 
 
 /**
@@ -296,6 +295,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Changes the AISpeed in the [CableCar] class.
      */
     fun setAISpeed(speed: Int) {
-        rootService.cableCar.AISpeed = speed
+        rootService.cableCar.aISpeed = speed
     }
 }

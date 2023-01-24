@@ -297,7 +297,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             // TODO: disable undo and redo button
 
             playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 200).apply {
+                DelayAnimation(rootService.cableCar.aISpeed * 200).apply {
                     onFinished = {
                         BoardGameApplication.runOnGUIThread {
                             rootService.aIService.makeAIMove()

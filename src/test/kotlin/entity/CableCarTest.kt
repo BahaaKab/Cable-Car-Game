@@ -33,7 +33,7 @@ class CableCarTest {
 
         val cableCar = CableCar(allowTileRotation, AISpeed, isHostPlayer, gameMode, history, currentState)
         assertEquals(allowTileRotation, cableCar.allowTileRotation)
-        assertEquals(AISpeed, cableCar.AISpeed)
+        assertEquals(AISpeed, cableCar.aISpeed)
         assertEquals(isHostPlayer, cableCar.isHostPlayer)
         assertEquals(gameMode, cableCar.gameMode)
         assertEquals(history, cableCar.history)
