@@ -1,6 +1,7 @@
 package service
 
 import entity.*
+import tools.aqua.bgw.core.BoardGameApplication
 import kotlin.IllegalArgumentException
 
 /**
@@ -96,7 +97,9 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
             it.handTile = rootService.cableCar.currentState.drawPile.removeFirst()
         }
 
-        onAllRefreshables { refreshAfterStartGame() }
+        BoardGameApplication.runOnGUIThread {
+            onAllRefreshables { refreshAfterStartGame() }
+        }
     }
 
     /**

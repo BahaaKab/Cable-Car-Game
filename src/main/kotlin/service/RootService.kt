@@ -14,6 +14,7 @@ class RootService {
     val ioService = IOService(this)
     val aIService = AIService(this)
     val networkService = NetworkService(this)
+    var gameEnded = false
 
     /**
      * Adds the provided [newRefreshable] to all services connected

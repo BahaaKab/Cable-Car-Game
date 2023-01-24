@@ -23,7 +23,7 @@ class NumberOfPlayersPane(posX: Number = 0, posY: Number = 0, val playerNumber: 
         posX = 0, posY = 15,
         width = 100, height = 4,
         font = Font(size = 1),
-        visual = ColorVisual(233,233,236)
+        visual = ColorVisual(233, 233, 236)
     )
 
     private val playersLabel = Label(
@@ -36,11 +36,14 @@ class NumberOfPlayersPane(posX: Number = 0, posY: Number = 0, val playerNumber: 
     private val circleButton = Button(
         posX = 95, posY = 0,
         width = 35, height = 20
-    ).apply { componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
-                                "-fx-border-color: rgba(5, 24, 156, 1); -fx-border-radius: 100; -fx-border-width: 4;"
-              scale = 0.69
-              onMouseClicked = { CableCarApplication.lobbyScene.displayPlayers(playerNumber) } }
-
+    ).apply {
+        componentStyle = "-fx-background-radius: 100;-fx-background-color: rgba(255,255,255,1);" +
+                "-fx-border-color: rgba(5, 24, 156, 1); -fx-border-radius: 100; -fx-border-width: 4;"
+        scale = 0.69
+        onMouseClicked = {
+            CableCarApplication.lobbyScenes.forEach { it.displayPlayers(playerNumber) }
+        }
+    }
 
 
     init {
@@ -50,12 +53,12 @@ class NumberOfPlayersPane(posX: Number = 0, posY: Number = 0, val playerNumber: 
         addAll(lineLabel, circleButton, playersLabel)
     }
 
-    fun blueLine(){
+    fun blueLine() {
         lineLabel.visual = DEFAULT_BLUE_VISUAL
     }
 
-    fun greyLine(){
-        lineLabel.visual = ColorVisual(233,233,236)
+    fun greyLine() {
+        lineLabel.visual = ColorVisual(233, 233, 236)
     }
 
-    }
+}

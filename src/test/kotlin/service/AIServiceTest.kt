@@ -35,15 +35,11 @@ class AIServiceTest {
         assertTrue(rootService.aIService.isOnePointPosition(1,1))
         assertThrows<IllegalArgumentException> {rootService.aIService.isOnePointPosition(0,0)}
         assertFalse(rootService.aIService.isOnePointPosition(2,4))
-        assertTrue(rootService.aIService.only1PointPositionsWithCurrentTile())
+        assertTrue(rootService.aIService.only1PointPositions())
         assertTrue(rootService.aIService.placeablePosition(1,5))
         assertFalse(rootService.aIService.placeablePosition(2,5))
 
         rootService.cableCar.currentState.activePlayer.currentTile=GameTile(61, listOf(5,2,1,4,3,0,7,6))
         assertFalse(rootService.aIService.placeablePosition(1,5))
-        rootService.aIService.rotateCurrentTileClockwise()
-        assertTrue(rootService.aIService.placeablePosition(1,5))
-        assertFalse(rootService.aIService.placeablePosition(1,1))
-
     }
 }

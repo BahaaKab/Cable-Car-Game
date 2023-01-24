@@ -1,7 +1,9 @@
 package view
 
-import tools.aqua.bgw.core.BoardGameApplication
+import entity.PlayerType
 import service.RootService
+import tools.aqua.bgw.animation.DelayAnimation
+import tools.aqua.bgw.core.BoardGameApplication
 
 @Suppress("UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
 
@@ -14,13 +16,31 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
         exitButton.onMouseClicked = { exit() }
     }
     val chooseModeScene = ChooseModeScene(rootService)
-    var lobbyScene = LobbyScene(rootService)
+    val localLobbyScene = LobbyScene(rootService)
+    val hostLobbyScene = LobbyScene(rootService,true, "", true)
+    val guestLobbyScene = LobbyScene(rootService, true, "", false)
     val connectionScene = ConnectionScene(rootService)
-    val connectingScene = ConnectingScene(rootService)
+
+    val lobbyScenes = listOf(localLobbyScene, hostLobbyScene, guestLobbyScene)
+
 
 
     init {
-        rootService.addRefreshables(this, gameScene, endScene, lobbyScene, connectingScene, connectionScene)
+        rootService.addRefreshables(
+            this,
+            gameScene,
+            endScene,
+            localLobbyScene,
+            hostLobbyScene,
+            guestLobbyScene,
+            connectionScene
+        )
+        onWindowClosed = {
+            rootService.networkService.disconnect()
+        }
+        showGameScene(gameScene)
         showMenuScene(chooseModeScene)
     }
+
 }
+

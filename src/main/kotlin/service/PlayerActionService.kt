@@ -2,6 +2,7 @@ package service
 
 import edu.udo.cs.sopra.ntf.TileInfo
 import entity.*
+import tools.aqua.bgw.core.BoardGameApplication
 
 
 /**
@@ -134,7 +135,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             drawTile()
         } else { player.currentTile = null }
         // If this is a network game, create the turn message
-        if (cableCar.gameMode == GameMode.NETWORK) {
+        if (cableCar.gameMode == GameMode.NETWORK && rootService.networkService.networkClient.playerName == cableCar.currentState.activePlayer.name) {
             networkService.sendTurnMessage(posX, posY, fromSupply, tileToPlace.rotation)
         }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
