@@ -41,7 +41,8 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         visual = ColorVisual(249, 249, 250)
     ).apply {
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
-        onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.lobbyScene) }
+        onMouseClicked = { CableCarApplication.lobbyScene = LobbyScene(rootService)
+            CableCarApplication.showMenuScene(CableCarApplication.lobbyScene) }
     }
 
     private val networkButton : Button = Button(
@@ -51,7 +52,13 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
         font = Font(size = 23, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER,
         visual = ColorVisual(249, 249, 250)
-    ).apply { componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100" }
+    ).apply { componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
+        onMouseClicked = {
+            // CableCarApplication.lobbyScene = LobbyScene(rootService, true, "TestName1", true)
+            // CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
+            CableCarApplication.showMenuScene(CableCarApplication.connectionScene)
+        }
+    }
 
 // Beispiel für Hintergrundfarbe: "-fx-background-color: rgba(150,40,173,1);
     init {

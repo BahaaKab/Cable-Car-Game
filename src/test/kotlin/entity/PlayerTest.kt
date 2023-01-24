@@ -77,11 +77,11 @@ class PlayerTest {
     }
 
     /**
-     * Tests the [Player.deepCopy] function
+     * Tests the [Player.copy] function
      */
     @Test
-    fun testDeepCopy() {
-        val copiedPlayer = player2.deepCopy()
+    fun testCopy() {
+        val copiedPlayer = player2.copy()
 
         // Check that we create a new player object
         assertNotSame(player2, copiedPlayer)

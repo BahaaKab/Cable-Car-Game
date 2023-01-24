@@ -83,8 +83,8 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
     }
 
     private val rotateLeftIcon = Label(
-        posX = 10, posY = 124,
-        width = 32, height = 27,
+        posX = 15, posY = 124,
+        width = 25, height = 25,
         visual = rotateLeftVisual
     )
 
@@ -103,8 +103,8 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
     }
 
     private val rotateRightIcon = Label(
-        posX = 195, posY = 124,
-        width = 32, height = 27,
+        posX = 200, posY = 124,
+        width = 25, height = 25,
         visual = rotateRightVisual
     )
 
@@ -123,7 +123,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
     }
 
     private val drawTileIcon = Label(
-        posX = 123, posY = 183,
+        posX = 123, posY = 180,
         width = 30, height = 30,
         visual = drawTileVisual
     )
@@ -141,11 +141,14 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         if(handTile == null) {
             activePlayerTiles.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
         } else {
-            activePlayerTiles.add(tileMapBig.forward(handTile!!.id).apply { opacity = 1.0 })
+            activePlayerTiles.add(tileMapBig.forward(handTile!!.id).apply {
+                opacity = 1.0
+                rotation = handTile!!.rotation.toDouble()
+            })
         }
         activePlayerNameLabel.text = name
         activePlayerScoreLabel.text = "Score: $score"
-        activePlayerColorLabel.visual = when(color) {
+        activePlayerColorLabel.visual = when (color) {
             entity.Color.YELLOW -> DEFAULT_YELLOW_COLOR
             entity.Color.BLUE -> DEFAULT_BLUE_COLOR
             entity.Color.ORANGE -> DEFAULT_RED_COLOR
@@ -154,4 +157,27 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
             entity.Color.BLACK -> DEFAULT_BLUE_COLOR
         }
     }
+
+    fun disableTileRotationButtons() {
+        rotateLeftButton.apply {
+            componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = true
+        }
+        rotateRightButton.apply {
+            componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = true
+        }
+    }
+
+    fun disableDrawTileButton() = drawTileButton.apply {
+        componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+        isDisabled = true
+    }
+
+
+    fun enableDrawTileButton() = drawTileButton.apply {
+        componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+        isDisabled = false
+    }
+
 }

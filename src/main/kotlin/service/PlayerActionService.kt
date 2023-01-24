@@ -13,18 +13,25 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Undo the last game [State] and move on to the nextTurn.
      */
     fun undo() = with(rootService.cableCar) {
-        if(gameMode == GameMode.NETWORK || history.undoStates.isEmpty()) { return }
+        if(gameMode == GameMode.NETWORK || history.undoStates.isEmpty() ||
+            history.undoStates.size <= currentState.players.size) { return }
 
-        val players = currentState.players
+        val oldState = currentState.deepCopy()
+
         // Undo all player actions up to the current player's last action
-        repeat(players.size){
+        repeat(currentState.players.size){
             val undoState = history.undoStates.pop()
             history.redoStates.push(undoState)
         }
-        currentState = history.undoStates.peek()
+        currentState = history.undoStates.peek().deepCopy()
 
-        onAllRefreshables { refreshAfterUndo() }
+        for(player in currentState.players) {
+            for(stationTiles in player.stationTiles) {
+                rootService.cableCarService.updatePath(stationTiles)
+            }
+        }
 
+        onAllRefreshables { refreshAfterUndo(oldState) }
     }
 
     /**
@@ -33,15 +40,23 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     fun redo() = with(rootService.cableCar) {
         if(gameMode == GameMode.NETWORK || history.redoStates.isEmpty()) { return }
 
+
+        val oldState = currentState.deepCopy()
+
         // Redo all player actions up to the current player's previously done turn
-        val players = currentState.players
-        repeat(players.size) {
+        repeat(currentState.players.size) {
             val redoState = history.redoStates.pop()
             history.undoStates.push(redoState)
         }
-        currentState = history.undoStates.peek()
+        currentState = history.undoStates.peek().deepCopy()
 
-        onAllRefreshables { refreshAfterRedo() }
+        for(player in currentState.players) {
+            for(stationTiles in player.stationTiles) {
+                rootService.cableCarService.updatePath(stationTiles)
+            }
+        }
+
+        onAllRefreshables { refreshAfterRedo(oldState) }
     }
 
     /**
@@ -72,16 +87,40 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val player = cableCar.currentState.activePlayer
         val board = cableCar.currentState.board
 
+        val fromSupply = player.currentTile != null
         val tileToPlace = checkNotNull(player.currentTile ?: player.handTile)
-        // If the position for the placement is either not valid or not legal while there are still legal placements
-        // possible, return.
-        // TODO: This needs some thoughts as a tile still needs to be adjacent to some other game or station tiles,
-        //  even if no allowed position exists.
+
+        // It is never ever allowed to place a tile somewhere without any adjacent Game or Station Tiles
         val isValid = board[posX][posY] == null && isAdjacentToTiles(posX, posY)
-        val isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || onlyIllegalPositionsLeft(tileToPlace)
-        if (!isValid || !isAllowed) {
+        if (!isValid) {
             return
         }
+
+        val isAllowed: Boolean
+        if(!rootService.cableCar.allowTileRotation){
+            isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || onlyIllegalPositionsLeft(tileToPlace)
+        }
+        else{
+            // check if all positions are illegal even with all rotation-forms
+            val b1 = onlyIllegalPositionsLeft(tileToPlace)
+            rotateTile(true)
+            val b2 = onlyIllegalPositionsLeft(tileToPlace)
+            rotateTile(true)
+            val b3 = onlyIllegalPositionsLeft(tileToPlace)
+            rotateTile(true)
+            val b4 = onlyIllegalPositionsLeft(tileToPlace)
+            // The Tile is now as it was before
+            rotateTile(true)
+
+            // placing the tile is only possible if the position is legal or if for all tile rotations every grid
+            // position is still illegal
+            isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || (b1 && b2 && b3 && b4)
+        }
+
+        if (!isAllowed) {
+            return
+        }
+
         // Otherwise place the tile
         board[posX][posY] = tileToPlace
         cableCar.currentState.placedTiles.add(
@@ -96,7 +135,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         } else { player.currentTile = null }
         // If this is a network game, create the turn message
         if (cableCar.gameMode == GameMode.NETWORK) {
-            // TODO
+            networkService.sendTurnMessage(posX, posY, fromSupply, tileToPlace.rotation)
         }
         // TODO: Shouldn't this move inside cableCarService.nextTurn()?
         cableCarService.updatePaths(posX,posY)
@@ -143,26 +182,14 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     }
 
     /**
-     * Determines if on every position the [GameTile] of the [Player] cannot be placed in a regular way. That means that
-     * on every position in "the mid" (every position that isn't adjacent to a [StationTile]) is a [GameTile] and that
-     * on the adjacent positions of [StationTile]s a [GameTile] can only be placed so that it constructs a closed path
-     * of length 1.
+     * Whether there are no options to place a tile other than closing a path of length 1.
      *
      * @param gameTile The game tile that the placement is checked against
      *
-     * @return Whether all possible positions are illegal positions
+     * @return Whether all possible positions are illegal positions, in the sense that they would close a path of
+     * length 1.
      */
     fun onlyIllegalPositionsLeft(gameTile : GameTile) : Boolean = with(rootService.cableCar.currentState) {
-         // First check if any Position in the mid is free. If a position p in the mid is free it always implies that
-         // there has to be a legal position on the board even if the position p doesn't have any adjacent GameTile
-        for(y in (2..7)){
-            for(x in (2..7)){
-                if(board[x][y] == null){
-                    return false
-                }
-            }
-        }
-        // If every position in the mid isn't free try out each position that is adjacent to a StationTile
         for(y in (1..8)){
             if(board[1][y] == null && !positionIsIllegal(1,y,gameTile)){
                 return false
@@ -240,7 +267,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val tileToRotate = currentTile ?: handTile
         // The shift index is used to rotate rotate the connections on a tile.
         with (checkNotNull(tileToRotate)) {
-            rotation += if (clockwise) { 90 } else { -90 }
+            rotation = (rotation + if (clockwise) { 90 } else { 270 }) % 360
             val indexShift = if (clockwise) { 2 } else { connections.size - 2 }
             // First set the new values
             connections = connections.map { (it + indexShift) % connections.size }

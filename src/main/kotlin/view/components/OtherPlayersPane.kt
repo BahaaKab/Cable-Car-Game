@@ -3,6 +3,7 @@ package view.components
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
 import entity.Color
+import entity.Player
 import service.RootService
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.visual.Visual
@@ -45,7 +46,7 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
         )
     }
 
-    fun getUsedPanes() = when(rootService.cableCar.currentState.players.size) {
+    private fun getUsedPanes() = when(rootService.cableCar.currentState.players.size) {
         2 -> listOf(otherPlayer1Pane)
         3 -> listOf(otherPlayer1Pane, otherPlayer2Pane)
         4 -> listOf(otherPlayer1Pane, otherPlayer2Pane, otherPlayer3Pane)
@@ -133,16 +134,21 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
     fun refreshOtherPlayers() {
         checkNotNull(rootService.cableCar)
         with(rootService.cableCar.currentState) {
+            var currentPlayer : Player
             getUsedPanes().forEach { it.playerCard.clear() }
             getUsedPanes().forEachIndexed { index, pane ->
-                if(players[(players.indexOf(activePlayer) + index + 1) % players.size].handTile == null) {
+                currentPlayer = players[(players.indexOf(activePlayer) + index + 1) % players.size]
+                if(currentPlayer.handTile == null) {
                     pane.playerCard.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
                 } else {
-                    pane.playerCard.add(tileMapSmall.forward(players[(players.indexOf(activePlayer) + index + 1) % players.size].handTile!!.id).apply { opacity = 1.0 })
+                    pane.playerCard.add(tileMapSmall.forward(currentPlayer.handTile!!.id).apply {
+                        opacity = 1.0
+                        rotation = currentPlayer.handTile!!.rotation.toDouble()
+                    })
                 }
-                pane.playerNameLabel.text = players[(players.indexOf(activePlayer) + index + 1) % players.size].name
-                pane.playerScoreLabel.text = "Score: ${players[(players.indexOf(activePlayer) + index + 1) % players.size].score}"
-                pane.playerColorLabel.visual = getColorVisual(players[(players.indexOf(activePlayer) + index + 1) % players.size].color)
+                pane.playerNameLabel.text = currentPlayer.name
+                pane.playerScoreLabel.text = "Score: ${currentPlayer.score}"
+                pane.playerColorLabel.visual = getColorVisual(currentPlayer.color)
             }
         }
     }
