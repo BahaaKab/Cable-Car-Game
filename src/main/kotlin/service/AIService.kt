@@ -9,23 +9,22 @@ import kotlin.random.Random
  *
  * Service layer class that provides the logic for artificial Intelligence and how it will behave based on difficulty.
  * @param [rootService] Connected root service
-*/
+ */
 
-@Suppress("UNUSED_PARAMETER","UNUSED","UndocumentedPublicFunction","UndocumentedPublicClass","EmptyFunctionBlock")
+@Suppress("UNUSED_PARAMETER", "UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
 
 class AIService(private val rootService: RootService) : AbstractRefreshingService() {
     // surround codes every direction of a Tile
-    private val surround = listOf(-1,-2,+2,+1)
+    private val surround = listOf(-1, -2, +2, +1)
     private val aiSpeedFactor: Long = 200
-
 
 
     /**
      * to get the best calculate for AI when set Difficulty to HARD
      *
      */
-    fun makeAIMove(){
-         when (rootService.cableCar.currentState.activePlayer.playerType){
+    fun makeAIMove() {
+        when (rootService.cableCar.currentState.activePlayer.playerType) {
             PlayerType.AI_EASY -> easyTurn()
             PlayerType.AI_HARD -> hardTurn()
             PlayerType.HUMAN -> return
@@ -36,7 +35,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * checks board for random place to place a placeable tile
      *
      */
-     private fun easyTurn() = with(rootService.cableCar.currentState) {
+    private fun easyTurn() = with(rootService.cableCar.currentState) {
         val legalPosArray = legalPositions()
         legalPosArray.shuffle()
         // Does the randomized draw. For a turn and AI it is no difference when the card is drawn
@@ -58,7 +57,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }
     }
 
-    fun placeableTile(posX: Int, posY: Int):Boolean = with(rootService) {
+    fun placeableTile(posX: Int, posY: Int): Boolean = with(rootService) {
         val player = cableCar.currentState.activePlayer
         val board = cableCar.currentState.board
 
@@ -71,10 +70,13 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }
 
         val isAllowed: Boolean
-        if(!rootService.cableCar.allowTileRotation){
-            isAllowed = !rootService.playerActionService.positionIsIllegal(posX, posY, tileToPlace) || rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
-        }
-        else{
+        if (!rootService.cableCar.allowTileRotation) {
+            isAllowed = !rootService.playerActionService.positionIsIllegal(
+                posX,
+                posY,
+                tileToPlace
+            ) || rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
+        } else {
             // check if all positions are illegal even with all rotation-forms
             val b1 = rootService.playerActionService.onlyIllegalPositionsLeft(tileToPlace)
             rootService.playerActionService.rotateTileRight()
@@ -88,7 +90,8 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
 
             // placing the tile is only possible if the position is legal or if for all tile rotations every grid
             // position is still illegal
-            isAllowed = !rootService.playerActionService.positionIsIllegal(posX, posY, tileToPlace) || (b1 && b2 && b3 && b4)
+            isAllowed =
+                !rootService.playerActionService.positionIsIllegal(posX, posY, tileToPlace) || (b1 && b2 && b3 && b4)
         }
 
         if (!isAllowed) {
@@ -102,13 +105,13 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      *
      * @return [ArrayDeque<Pair<Int,Int>>] with board position of places adjacent to game/stationTiles
      */
-    private fun legalPositions():ArrayDeque<Pair<Int,Int>> = with(rootService.cableCar.currentState) {
-        val legalPos: ArrayDeque<Pair<Int,Int>> = ArrayDeque()
-        for(x in (1..8  )){
+    private fun legalPositions(): ArrayDeque<Pair<Int, Int>> = with(rootService.cableCar.currentState) {
+        val legalPos: ArrayDeque<Pair<Int, Int>> = ArrayDeque()
+        for (x in (1..8)) {
             for (y in 1..8)
-            if(board[x][y] == null && isAdjacent(x,y)){
-                legalPos.add(Pair(x,y))
-            }
+                if (board[x][y] == null && isAdjacent(x, y)) {
+                    legalPos.add(Pair(x, y))
+                }
         }
         return legalPos
     }
@@ -120,16 +123,16 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * @param posY
      * @return Boolean whether placeable
      */
-    fun placeablePosition(posX: Int, posY: Int) : Boolean = with(rootService.cableCar.currentState.activePlayer){
-        if (rootService.cableCar.currentState.board[posX][posX] != null){
+    fun placeablePosition(posX: Int, posY: Int): Boolean = with(rootService.cableCar.currentState.activePlayer) {
+        if (rootService.cableCar.currentState.board[posX][posX] != null) {
             return false
         }
 
-        if(!isAdjacent(posX,posY)) {
+        if (!isAdjacent(posX, posY)) {
             return false
         }
 
-        if (!isOnePointPosition(posX,posY)){
+        if (!isOnePointPosition(posX, posY)) {
             return true
         }
         return only1PointPositions()
@@ -140,24 +143,25 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      *
      * @return Boolean whether it is so
      */
-    fun only1PointPositions():Boolean = with(rootService.cableCar.currentState.activePlayer){
-        val legalPos =  legalPositions()
+    fun only1PointPositions(): Boolean = with(rootService.cableCar.currentState.activePlayer) {
+        val legalPos = legalPositions()
         var allIllegal = true
-        for (i in 1..4){
-            run legalfound@ {legalPos.forEach {
-                if(!isOnePointPosition(it.first,it.second)){
-                    allIllegal=false
-                    return@legalfound
-                } }
+        for (i in 1..4) {
+            run legalfound@{
+                legalPos.forEach {
+                    if (!isOnePointPosition(it.first, it.second)) {
+                        allIllegal = false
+                        return@legalfound
+                    }
+                }
             }
-            if (!rootService.cableCar.allowTileRotation){
+            if (!rootService.cableCar.allowTileRotation) {
                 break
             }
             rootService.playerActionService.rotateTileRight()
         }
         return allIllegal
     }
-
 
 
     /**
@@ -167,7 +171,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * @param posY
      * @return Boolean whether 1 point
      */
-     fun isOnePointPosition(posX: Int, posY: Int):Boolean = with(rootService.cableCar.currentState.activePlayer) {
+    fun isOnePointPosition(posX: Int, posY: Int): Boolean = with(rootService.cableCar.currentState.activePlayer) {
         if (posX !in 1..8 || posY !in 1..8) {
             throw IllegalArgumentException()
         }
@@ -238,14 +242,14 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * @param posY
      * @return Boolean whether is adjacent
      */
-    private fun isAdjacent(posX: Int, posY: Int):Boolean = with(rootService.cableCar.currentState){
-        return surround.any { board[posX+it%2][posY-it/2] is GameTile || board[posX+it%2][posY-it/2] is StationTile }
+    private fun isAdjacent(posX: Int, posY: Int): Boolean = with(rootService.cableCar.currentState) {
+        return surround.any { board[posX + it % 2][posY - it / 2] is GameTile || board[posX + it % 2][posY - it / 2] is StationTile }
     }
 
     /**
      * to find good tile for HARD AI that is allowed
      */
-    private fun hardTurn(){
+    private fun hardTurn() {
         easyTurn()
     }
 
@@ -253,14 +257,14 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
     /**
      * to find the score for each move while calculating
      */
-    private fun calculateTileScore(posX: Int, posY: Int){
+    private fun calculateTileScore(posX: Int, posY: Int) {
 
     }
 
     /**
      * decide to either place the hand's tile or draw a tile for HARD AI
      */
-    private fun placeOrDraw(){
+    private fun placeOrDraw() {
 
 
     }

@@ -47,7 +47,7 @@ class CableCarNetworkClient(
      */
     override fun onCreateGameResponse(response: CreateGameResponse) = BoardGameApplication.runOnGUIThread {
         networkService.onAllRefreshables { refreshAfterNetworkResponse(response) }
-        when(response.status) {
+        when (response.status) {
             CreateGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterHostGame() }
             }
@@ -62,7 +62,7 @@ class CableCarNetworkClient(
      */
     override fun onJoinGameResponse(response: JoinGameResponse) = BoardGameApplication.runOnGUIThread {
         networkService.onAllRefreshables { refreshAfterNetworkResponse(response) }
-        when(response.status) {
+        when (response.status) {
             JoinGameResponseStatus.SUCCESS -> {
                 networkService.onAllRefreshables { refreshAfterJoinGame(response.opponents) }
             }
@@ -113,7 +113,7 @@ class CableCarNetworkClient(
         val playerInfos = message.players.mapIndexed { index, info ->
             val name = info.name
             val color = PLAYER_ORDER_COLORS[index]
-            val playerType = if (name!= playerName) PlayerType.HUMAN else this.playerType
+            val playerType = if (name != playerName) PlayerType.HUMAN else this.playerType
             val isNetworkPlayer = name != playerName
             PlayerInfo(name, playerType, color, isNetworkPlayer)
         }
@@ -167,12 +167,13 @@ class CableCarNetworkClient(
      *
      * @returns Whether the local state matches the host player's state.
      */
-    private fun isValidGameState(gameStateVerificationInfo: GameStateVerificationInfo) : Boolean = with(gameStateVerificationInfo){
-        val currentState = networkService.rootService.cableCar.currentState
-        val drawPileIds = currentState.drawPile.map { it.id }
-        val isValidDrawPile = supply == drawPileIds
-        val isValidPlacedTiles = placedTiles.sortedBy { it.id } == currentState.placedTiles.sortedBy { it.id }
-        val isValidPlayerScores = playerScores == currentState.players.map { it.score }
-        return isValidDrawPile && isValidPlacedTiles && isValidPlayerScores
-    }
+    private fun isValidGameState(gameStateVerificationInfo: GameStateVerificationInfo): Boolean =
+        with(gameStateVerificationInfo) {
+            val currentState = networkService.rootService.cableCar.currentState
+            val drawPileIds = currentState.drawPile.map { it.id }
+            val isValidDrawPile = supply == drawPileIds
+            val isValidPlacedTiles = placedTiles.sortedBy { it.id } == currentState.placedTiles.sortedBy { it.id }
+            val isValidPlayerScores = playerScores == currentState.players.map { it.score }
+            return isValidDrawPile && isValidPlacedTiles && isValidPlayerScores
+        }
 }

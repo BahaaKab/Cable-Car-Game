@@ -11,9 +11,9 @@ package entity
  * is found.
  * @constructor Creates a station tile.
  */
-class StationTile(connectors: List<Int>): Tile(connectors, listOf(), false, true) {
+class StationTile(connectors: List<Int>) : Tile(connectors, listOf(), false, true) {
     val startPosition: Int
-    var path : MutableList<Tile> = mutableListOf<Tile>()
+    var path: MutableList<Tile> = mutableListOf<Tile>()
 
     init {
         require(connectors.size == 2)

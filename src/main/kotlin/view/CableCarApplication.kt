@@ -17,12 +17,11 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
     }
     val chooseModeScene = ChooseModeScene(rootService)
     val localLobbyScene = LobbyScene(rootService)
-    val hostLobbyScene = LobbyScene(rootService,true, "", true)
+    val hostLobbyScene = LobbyScene(rootService, true, "", true)
     val guestLobbyScene = LobbyScene(rootService, true, "", false)
     val connectionScene = ConnectionScene(rootService)
 
     val lobbyScenes = listOf(localLobbyScene, hostLobbyScene, guestLobbyScene)
-
 
 
     init {

@@ -32,7 +32,7 @@ class CableCarLogo(posX: Number = 0, posY: Number = 0) :
     }
 
     private val undergroundLabel = Label(
-        posX = 0, posY= 65,
+        posX = 0, posY = 65,
         width = 238, height = 24,
         text = "UNDERGROUND",
         font = Font(size = 27, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),

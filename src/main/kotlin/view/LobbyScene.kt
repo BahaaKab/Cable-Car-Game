@@ -475,7 +475,7 @@ class LobbyScene(
         playerNumber++
     }
 
-    fun setLocalPlayerName(name : String, localPlayerType: PlayerType) {
+    fun setLocalPlayerName(name: String, localPlayerType: PlayerType) {
         playerInputs[0].playerName.text = name
         playerInputs[0].setPlayerType(localPlayerType)
     }

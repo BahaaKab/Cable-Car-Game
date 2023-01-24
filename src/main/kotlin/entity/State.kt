@@ -10,10 +10,12 @@ import edu.udo.cs.sopra.ntf.TileInfo
  * @property board is a two-dimensional array which represents the game-board
  * @property players: Is a list that contains every Player.
  */
-class State (var drawPile : MutableList<GameTile>,
-             var activePlayer : Player,
-             val board: Array<Array<Tile?>> = arrayOf(),
-             val players: List<Player>) {
+class State(
+    var drawPile: MutableList<GameTile>,
+    var activePlayer: Player,
+    val board: Array<Array<Tile?>> = arrayOf(),
+    val players: List<Player>
+) {
 
     /**
      * Tiles that were already placed
@@ -25,7 +27,7 @@ class State (var drawPile : MutableList<GameTile>,
      *
      * @returns The copied state
      */
-    fun deepCopy() : State {
+    fun deepCopy(): State {
         val copiedDrawPile = drawPile.map { it.deepCopy() }.toMutableList()
         val copiedBoard = board.map { column -> column.map { it?.deepCopy() }.toTypedArray() }.toTypedArray()
         val copiedPlayers = players.map { it.copy() }

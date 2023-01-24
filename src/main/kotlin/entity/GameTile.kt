@@ -15,10 +15,11 @@ import edu.udo.cs.sopra.ntf.ConnectionInfo
  * @throws IllegalArgumentException If the wrong amount of connections or connectors is set.
  * @constructor Creates a game tile.
  */
-class GameTile(val id: Int, connections: List<Int>): Tile(
+class GameTile(val id: Int, connections: List<Int>) : Tile(
     List(8) { it }, connections, false, false
 ) {
-    var rotation=0
+    var rotation = 0
+
     init {
         require(connectors.size == 8)
         require(connections.size == 8)
@@ -32,19 +33,19 @@ class GameTile(val id: Int, connections: List<Int>): Tile(
     /**
      * TODO
      */
-    override fun deepCopy(): GameTile{
+    override fun deepCopy(): GameTile {
         val copiedTile = GameTile(id, connections.toList())
-        copiedTile.rotation=rotation
+        copiedTile.rotation = rotation
         return copiedTile
     }
 
     /**
      * TODO
      */
-    fun toNetworkTile() : NetworkTile {
+    fun toNetworkTile(): NetworkTile {
         // To make duplicate filtering easier, create the connection infos in a way, that the first value is always the
         // connector with the smaller value.
-        val connectionInfos = connections.mapIndexed{ index, value ->
+        val connectionInfos = connections.mapIndexed { index, value ->
             if (index <= value) {
                 ConnectionInfo(index, value)
             } else {
@@ -56,7 +57,7 @@ class GameTile(val id: Int, connections: List<Int>): Tile(
         // At that point there should be eight connection infos, where always the connection info at position index / 2
         // is identical to the connection info at position index / 2 + 1. Therefore every connection at an even index
         // can be filtered out.
-        connectionInfos.filterIndexed { index, _ -> index % 2 == 0}
+        connectionInfos.filterIndexed { index, _ -> index % 2 == 0 }
         return NetworkTile(id, connectionInfos)
     }
 

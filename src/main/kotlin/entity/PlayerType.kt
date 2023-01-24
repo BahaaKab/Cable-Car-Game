@@ -15,13 +15,13 @@ enum class PlayerType {
     /**
      * provide a string to represent the [PlayerType] of the player
      */
-    override fun toString() = when(this) {
+    override fun toString() = when (this) {
         AI_EASY -> "AI EASY"
         AI_HARD -> "AI HARD"
         HUMAN -> "HUMAN"
     }
 
-    fun toNetworkPlayerType() = when(this) {
+    fun toNetworkPlayerType() = when (this) {
         AI_EASY, AI_HARD -> PlayerType.AI
         HUMAN -> PlayerType.HUMAN
     }

@@ -9,7 +9,7 @@ import tools.aqua.bgw.util.Font
 import view.DEFAULT_BLUE
 import view.DEFAULT_FONT_MEDIUM
 
-class ScoreboardPane(private val rootService : RootService, posX: Number = 0, posY: Number = 0) :
+class ScoreboardPane(private val rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<LabeledUIComponent>(posX, posY, 0, 0) {
 
     private val defaultFont = Font(
@@ -136,7 +136,7 @@ class ScoreboardPane(private val rootService : RootService, posX: Number = 0, po
         )
     }
 
-    fun getUsedNameLabels() = when(rootService.cableCar.currentState.players.size) {
+    fun getUsedNameLabels() = when (rootService.cableCar.currentState.players.size) {
         2 -> listOf(p1Label, p2Label)
         3 -> listOf(p1Label, p2Label, p3Label)
         4 -> listOf(p1Label, p2Label, p3Label, p4Label)
@@ -144,7 +144,7 @@ class ScoreboardPane(private val rootService : RootService, posX: Number = 0, po
         else -> listOf(p1Label, p2Label, p3Label, p4Label, p5Label, p6Label)
     }
 
-    fun getUsedPointsLabels() = when(rootService.cableCar.currentState.players.size) {
+    fun getUsedPointsLabels() = when (rootService.cableCar.currentState.players.size) {
         2 -> listOf(p1PointsLabel, p2PointsLabel)
         3 -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel)
         4 -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel, p4PointsLabel)
@@ -152,7 +152,7 @@ class ScoreboardPane(private val rootService : RootService, posX: Number = 0, po
         else -> listOf(p1PointsLabel, p2PointsLabel, p3PointsLabel, p4PointsLabel, p5PointsLabel, p6PointsLabel)
     }
 
-    fun showOnlyRelevant()  {
+    fun showOnlyRelevant() {
         checkNotNull(rootService.cableCar)
         with(rootService.cableCar.currentState) {
             when (players.size) {

@@ -1,11 +1,12 @@
 package service
+
 import entity.GameTile
 import java.io.File
 
 /**
  * The absolute path pointing to the tiles.csv file in the resources directory.
  */
-val TILES_CSV_PATH : String = File("src/main/resources/tiles.csv").absolutePath
+val TILES_CSV_PATH: String = File("src/main/resources/tiles.csv").absolutePath
 
 /**
  * A service class to handle IO actions.
@@ -23,10 +24,10 @@ class IOService(private val rootService: RootService) {
      *
      * @return The [GameTile]s.
      */
-    fun getTilesFromCSV() : List<GameTile> {
+    fun getTilesFromCSV(): List<GameTile> {
         val lines = tilesCSVFile.readLines()
         return lines.mapIndexed { index, line ->
-            GameTile(id=index, connections=getConnectionsFromCSVLine(line))
+            GameTile(id = index, connections = getConnectionsFromCSVLine(line))
         }
     }
 
