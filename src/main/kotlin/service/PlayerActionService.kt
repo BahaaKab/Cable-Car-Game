@@ -2,8 +2,6 @@ package service
 
 import edu.udo.cs.sopra.ntf.TileInfo
 import entity.*
-import tools.aqua.bgw.core.BoardGameApplication
-
 
 /**
  * This class is used to manage actions of the [Player].
@@ -96,30 +94,20 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val fromSupply = player.currentTile != null
         val tileToPlace = checkNotNull(player.currentTile ?: player.handTile)
 
-        // It is never ever allowed to place a tile somewhere without any adjacent Game or Station Tiles
-        val isValid = board[posX][posY] == null && isAdjacentToTiles(posX, posY)
-        if (!isValid) {
-            return
-        }
-
-        val isAllowed: Boolean
-        if (!rootService.cableCar.allowTileRotation) {
-            isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || onlyIllegalPositionsLeft(tileToPlace)
+        val isAllowed = if (!rootService.cableCar.allowTileRotation) {
+            Pair(posX, posY) in getPlaceablePositions(tileToPlace).ifEmpty { getValidPositions() }
         } else {
-            // check if all positions are illegal even with all rotation-forms
-            val b1 = onlyIllegalPositionsLeft(tileToPlace)
-            rotateTile(true)
-            val b2 = onlyIllegalPositionsLeft(tileToPlace)
-            rotateTile(true)
-            val b3 = onlyIllegalPositionsLeft(tileToPlace)
-            rotateTile(true)
-            val b4 = onlyIllegalPositionsLeft(tileToPlace)
+            val b1 = getPlaceablePositions(tileToPlace).isEmpty()
+            tileToPlace.rotate(true)
+            val b2 = getPlaceablePositions(tileToPlace).isEmpty()
+            tileToPlace.rotate(true)
+            val b3 = getPlaceablePositions(tileToPlace).isEmpty()
+            tileToPlace.rotate(true)
+            val b4 = getPlaceablePositions(tileToPlace).isEmpty()
             // The Tile is now as it was before
-            rotateTile(true)
-
-            // placing the tile is only possible if the position is legal or if for all tile rotations every grid
-            // position is still illegal
-            isAllowed = !positionIsIllegal(posX, posY, tileToPlace) || (b1 && b2 && b3 && b4)
+            tileToPlace.rotate(true)
+            Pair(posX, posY) in getPlaceablePositions(tileToPlace) ||
+                    ( (b1 && b2 && b3 && b4) && Pair(posX, posY) in getValidPositions() )
         }
 
         if (!isAllowed) {
@@ -152,95 +140,102 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     }
 
     /**
-     * checks if it's illegal to place [GameTile] on a special Position that's null.
-     * In detail: It gets checked out if a closed path of length 1 gets constructed by placing the [GameTile]
+     * Get all positions, where it is allowed to place a given tile.
      *
-     * @param posX The x position
-     * @param posY The y position
-     * @param gameTile The tile to place
+     * @param tile The given tile
      *
-     * @return Whether the position is illegal
+     * @return All positions, where the placement is valid and would not produce a path of length one
      */
-    fun positionIsIllegal(posX: Int, posY: Int, gameTile: GameTile): Boolean {
-        // Get all adjacent StationTiles
-        val adjStationTiles = getAdjacentTiles(posX, posY).filterIsInstance<StationTile>()
-        // A check for each adjacent [StationTile] if it forms a path of length 1
-        for (stationTile in adjStationTiles) {
-            // A [StationTile] that can form a path of length 1 has to have an empty path at begin
-            if (stationTile.path.isNotEmpty()) {
-                continue
-            }
-            val startConnectorGameTile: Int = stationTile.OUTER_TILE_CONNECTIONS[stationTile.startPosition]
-            val endConnectorGameTile: Int = gameTile.connections[startConnectorGameTile]
-            var x: Int = posX
-            var y: Int = posY
-            when (endConnectorGameTile) {
-                TOP_LEFT, TOP_RIGHT -> y -= 1
-                RIGHT_TOP, RIGHT_BOT -> x += 1
-                BOT_RIGHT, BOT_LEFT -> y += 1
-                LEFT_TOP, LEFT_BOT -> x -= 1
-            }
-            val nextTile = rootService.cableCar.currentState.board[x][y]
-            if (nextTile != null && nextTile.isEndTile) {
-                return true
-            }
-        }
-        return false
+    fun getPlaceablePositions(tile: GameTile): Set<Pair<Int, Int>> {
+        val validPositions = getValidPositions()
+        val onePointPositions = getOnePointPositions(tile)
+        return validPositions.minus(onePointPositions)
     }
 
     /**
-     * Whether there are no options to place a tile other than closing a path of length 1.
+     * Get all positions, that produce a path of length one for a given tile
      *
-     * @param gameTile The game tile that the placement is checked against
+     * @param tile The given tile
      *
-     * @return Whether all possible positions are illegal positions, in the sense that they would close a path of
-     * length 1.
+     * @return All positions, that produce a  path of length one for the tile
      */
-    fun onlyIllegalPositionsLeft(gameTile: GameTile): Boolean = with(rootService.cableCar.currentState) {
-        for (y in (1..8)) {
-            if (board[1][y] == null && !positionIsIllegal(1, y, gameTile)) {
-                return false
-            }
-            if (board[8][y] == null && !positionIsIllegal(8, y, gameTile)) {
-                return false
-            }
+    fun getOnePointPositions(tile: GameTile): Set<Pair<Int, Int>> {
+        var onePointPositions = setOf<Pair<Int, Int>>()
+        // Only positions adjacent to the station tiles can build one point paths
+        val topStationTileNeighbours = List(8) { x -> Pair(x + 1, 1) }
+        val rightStationTileNeighbours = List(8) { y -> Pair(8, y + 1) }
+        val bottomStationTileNeighbours = List(8) { x -> Pair(x + 1, 8) }
+        val leftStationTileNeighbours = List(8) { y -> Pair(1, y + 1) }
+        // One way to get a one point path is to connect a station tile with itself
+        if (tile.connections[0] == 1) {
+            onePointPositions = onePointPositions.plus(topStationTileNeighbours)
         }
-        for (x in (1..8)) {
-            if (board[x][1] == null && !positionIsIllegal(x, 1, gameTile)) {
-                return false
-            }
-            if (board[x][8] == null && !positionIsIllegal(x, 8, gameTile)) {
-                return false
-            }
+        if (tile.connections[2] == 3) {
+            onePointPositions = onePointPositions.plus(rightStationTileNeighbours)
         }
-        return true
+        if (tile.connections[4] == 5) {
+            onePointPositions = onePointPositions.plus(bottomStationTileNeighbours)
+        }
+        if (tile.connections[6] == 7) {
+            onePointPositions = onePointPositions.plus(leftStationTileNeighbours)
+        }
+        // The other way to get a one point path is a edge loop
+        if (tile.connections[0] == 7 || tile.connections[1] == 6) {
+            onePointPositions = onePointPositions.plus(Pair(1, 1))
+        }
+        if (tile.connections[2] == 1 || tile.connections[3] == 0) {
+            onePointPositions = onePointPositions.plus(Pair(8, 1))
+        }
+        if (tile.connections[4] == 3 || tile.connections[5] == 2) {
+            onePointPositions = onePointPositions.plus(Pair(8, 8))
+        }
+        if (tile.connections[6] == 5 || tile.connections[7] == 4) {
+            onePointPositions = onePointPositions.plus(Pair(1, 8))
+        }
+
+        return onePointPositions
     }
 
     /**
-     * Determines if a Tile can be placed at Position (posX,posY)
+     * Get all positions, where it is valid to place a tile, meaning where a tile will have a neighbour. This does
+     * not check, if the tile placement is also allowed with respect to the one point rule.
      *
-     * @param posX The x position
-     * @param posY The y position
-     *
-     * @return Whether at least one adjacent tile is a GameTile or a StationTile.
+     * @return All positions, where placement in general is valid
      */
-    fun isAdjacentToTiles(posX: Int, posY: Int) =
-        getAdjacentTiles(posX, posY).any { it is GameTile || it is StationTile }
+    fun getValidPositions(): Set<Pair<Int, Int>> {
+        // Build a set of positions that are adjacent to a station tile
+        var validPositions = setOf<Pair<Int, Int>>()
+        // Build a set of positions that are already occupied
+        var alreadyOccupiedPositions = setOf(Pair(4, 4), Pair(4, 5), Pair(5, 4), Pair(5, 5))
 
-    /**
-     * Get the adjacent tiles to a given position.
-     *
-     * @param posX The x position
-     * @param posY The y position
-     *
-     * @return The list of all adjacent tiles or null in case there is no adjacent Tile.
-     */
-    private fun getAdjacentTiles(posX: Int, posY: Int): List<Tile?> = with(rootService.cableCar.currentState) {
-        val adjLeft: Tile? = board[posX - 1][posY]
-        val adjRight: Tile? = board[posX + 1][posY]
-        val adjTop: Tile? = board[posX][posY - 1]
-        val adjBot: Tile? = board[posX][posY + 1]
-        return listOf(adjLeft, adjRight, adjTop, adjBot)
+        // Add all positions next to a station tile to the valid positions
+        for (i in 1..8) {
+            validPositions = validPositions.plus(setOf(Pair(1, i), Pair(8, i), Pair(i, 1), Pair(i, 8)))
+        }
+        // The station tiles themself are already occupied
+        for (i in 0..9) {
+            alreadyOccupiedPositions = alreadyOccupiedPositions.plus(
+                setOf(Pair(0, i), Pair(9, i), Pair(i, 0), Pair(i, 9))
+            )
+        }
+
+        // For each placed tile
+        rootService.cableCar.currentState.placedTiles.forEach {
+            // Add its neighbour positions to the valid positions as they are adjacent to the placed tile
+            validPositions = validPositions.plus(
+                setOf(
+                    Pair(it.x + 1, it.y),
+                    Pair(it.x - 1, it.y),
+                    Pair(it.x, it.y + 1),
+                    Pair(it.x, it.y - 1)
+                )
+            )
+            // Add the positions of the placed tiles themself to the occupied positions
+            alreadyOccupiedPositions = alreadyOccupiedPositions.plusElement(Pair(it.x, it.y))
+        }
+
+        // Return only the valid positions that are not already occupied
+        return validPositions.minus(alreadyOccupiedPositions)
     }
 
     /**
@@ -273,22 +268,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         // Otherwise he uses the handTile.
         val tileToRotate = currentTile ?: handTile
         // The shift index is used to rotate rotate the connections on a tile.
-        with(checkNotNull(tileToRotate)) {
-            rotation = (rotation + if (clockwise) {
-                90
-            } else {
-                270
-            }) % 360
-            val indexShift = if (clockwise) {
-                2
-            } else {
-                connections.size - 2
-            }
-            // First set the new values
-            connections = connections.map { (it + indexShift) % connections.size }
-            // Then set the values to the correct indices
-            connections = List(connections.size) { connections[(it + indexShift + 4) % connections.size] }
-        }
+        checkNotNull(tileToRotate).rotate(clockwise)
     }
 
 
