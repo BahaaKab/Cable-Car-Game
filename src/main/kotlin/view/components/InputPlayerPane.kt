@@ -124,15 +124,29 @@ class InputPlayerPane(
     }
 
     /** A Method to get the String that players are typing in the Textfield in Hot-Seat-Mode. */
-    fun getTextFieldInput(): String {
+    private fun getTextFieldInput(): String {
         if (nameField.text.trim() == "") {
             nameField.text = "Player$orderNumber"
         }
         return nameField.text
     }
 
-    /** Returns which playerType is currently selected in the comboBox. */
-    fun getPlayerType() = playerTypes[typeCounter]
+    fun getPlayerName(): String {
+        return if(isNetwork){
+            playerName.text
+        }else{
+            getTextFieldInput()
+        }
+    }
+
+    fun getPlayerInfo(): PlayerInfo {
+        return PlayerInfo(
+            getPlayerName(),
+            playerTypes[typeCounter],
+            PLAYER_ORDER_COLORS[orderNumber - 1],
+            isNetwork
+        )
+    }
 
     /** Sets a new orderNumber. */
     fun setOrderNumber(number: Int) {
@@ -141,15 +155,6 @@ class InputPlayerPane(
 
     fun changeNetworkMode(isNetworkPlayer: Boolean) {
         isNetwork = isNetworkPlayer
-    }
-
-    fun getPlayerInfo(): PlayerInfo {
-        return PlayerInfo(
-            playerName.text,
-            getPlayerType(),
-            PLAYER_ORDER_COLORS[orderNumber - 1],
-            isNetwork
-        )
     }
 
     fun setPlayerType(playerType: PlayerType) {
