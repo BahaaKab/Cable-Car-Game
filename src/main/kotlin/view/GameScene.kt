@@ -193,6 +193,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         // Only show the connectionStatusLabel when Network Mode was chosen
         // Also show it for only 5 seconds
         if (rootService.cableCar.gameMode == GameMode.NETWORK) {
+            optionsPane.disableUndoRedo()
             BoardGameApplication.runOnGUIThread {
                 playAnimation(
                     FadeAnimation(
@@ -278,14 +279,19 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         } else {
             activePlayerPane.enableDrawTileButton()
         }
+
+        if(rootService.cableCar.gameMode == GameMode.HOTSEAT) { optionsPane.enableUndoRedo() }
+        if(rootService.cableCar.currentState.activePlayer.isNetworkPlayer) {
+            activePlayerPane.disableDrawTileButton()
+            activePlayerPane.disableTileRotationButtons()
+            lock()
+        } else { unlock() }
+
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
+
         startAIHandler()
     }
-
-    override fun refreshAfterEndGame() {
-    }
-
 
     private fun startAIHandler() {
         if (rootService.cableCar.currentState.activePlayer.playerType in listOf(
@@ -294,7 +300,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             )
         ) {
             activePlayerPane.disableDrawTileButton()
-            // TODO: disable undo and redo button
+            optionsPane.disableUndoRedo()
 
             playAnimation(
                 DelayAnimation(rootService.cableCar.AISpeed * 200).apply {

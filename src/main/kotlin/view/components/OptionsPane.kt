@@ -111,4 +111,28 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
     init {
         addAll(undoButton, undoIcon, redoButton, redoIcon, selectAISpeedLabel, speed1, speed2)
     }
+
+    fun disableUndoRedo() {
+        undoButton.apply {
+            componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = true
+        }
+        redoButton.apply {
+            componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = true
+        }
+    }
+
+    fun enableUndoRedo() {
+        undoButton.apply {
+            componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
+                    "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = false
+        }
+        redoButton.apply {
+            componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
+                    "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = false
+        }
+    }
 }
