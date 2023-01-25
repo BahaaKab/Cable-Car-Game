@@ -113,13 +113,14 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         } else {
             player.currentTile = null
         }
+
+        // TODO: Shouldn't this move inside cableCarService.nextTurn()?
+        cableCarService.updatePaths(posX, posY)
+        cableCarService.calculatePoints()
         // If this is a network game, create the turn message
         if (cableCar.gameMode == GameMode.NETWORK && rootService.networkService.networkClient.playerName == cableCar.currentState.activePlayer.name) {
             networkService.sendTurnMessage(posX, posY, fromSupply, tileToPlace.rotation)
         }
-        // TODO: Shouldn't this move inside cableCarService.nextTurn()?
-        cableCarService.updatePaths(posX, posY)
-        cableCarService.calculatePoints()
         // Start the next turn
         cableCarService.nextTurn()
     }
