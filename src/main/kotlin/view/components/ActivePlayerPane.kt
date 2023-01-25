@@ -154,7 +154,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
             entity.Color.ORANGE -> DEFAULT_RED_COLOR
             entity.Color.GREEN -> DEFAULT_GREEN_COLOR
             entity.Color.PURPLE -> DEFAULT_PURPLE_COLOR
-            entity.Color.BLACK -> DEFAULT_BLUE_COLOR
+            entity.Color.BLACK -> DEFAULT_BLACK_COLOR
         }
     }
 
