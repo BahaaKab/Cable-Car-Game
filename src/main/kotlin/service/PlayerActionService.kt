@@ -159,8 +159,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             // Otherwise return the placeable positions of the current rotation, although they might be zero
             placeablePositionsForEachRotation.first()
         }
-
-
     }
 
     /**
@@ -171,7 +169,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * @return All positions, that produce a  path of length one for the tile
      */
     fun getOnePointPositions(tile: GameTile): Set<Pair<Int, Int>> {
-        var onePointPositions = setOf<Pair<Int, Int>>()
+        val onePointPositions = mutableSetOf<Pair<Int, Int>>()
         // Only positions adjacent to the station tiles can build one point paths
         val topStationTileNeighbours = List(8) { x -> Pair(x + 1, 1) }
         val rightStationTileNeighbours = List(8) { y -> Pair(8, y + 1) }
@@ -179,29 +177,29 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val leftStationTileNeighbours = List(8) { y -> Pair(1, y + 1) }
         // One way to get a one point path is to connect a station tile with itself
         if (tile.connections[0] == 1) {
-            onePointPositions = onePointPositions.plus(topStationTileNeighbours)
+            onePointPositions += topStationTileNeighbours
         }
         if (tile.connections[2] == 3) {
-            onePointPositions = onePointPositions.plus(rightStationTileNeighbours)
+            onePointPositions += rightStationTileNeighbours
         }
         if (tile.connections[4] == 5) {
-            onePointPositions = onePointPositions.plus(bottomStationTileNeighbours)
+            onePointPositions += bottomStationTileNeighbours
         }
         if (tile.connections[6] == 7) {
-            onePointPositions = onePointPositions.plus(leftStationTileNeighbours)
+            onePointPositions += leftStationTileNeighbours
         }
         // The other way to get a one point path is a edge loop
         if (tile.connections[0] == 7 || tile.connections[1] == 6) {
-            onePointPositions = onePointPositions.plus(Pair(1, 1))
+            onePointPositions += Pair(1, 1)
         }
         if (tile.connections[2] == 1 || tile.connections[3] == 0) {
-            onePointPositions = onePointPositions.plus(Pair(8, 1))
+            onePointPositions += Pair(8, 1)
         }
         if (tile.connections[4] == 3 || tile.connections[5] == 2) {
-            onePointPositions = onePointPositions.plus(Pair(8, 8))
+            onePointPositions += Pair(8, 8)
         }
         if (tile.connections[6] == 5 || tile.connections[7] == 4) {
-            onePointPositions = onePointPositions.plus(Pair(1, 8))
+            onePointPositions += Pair(1, 8)
         }
 
         return onePointPositions
