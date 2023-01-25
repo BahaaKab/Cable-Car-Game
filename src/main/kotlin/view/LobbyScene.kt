@@ -72,7 +72,11 @@ class LobbyScene(
         }
 
         componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
-        onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) }
+        onMouseClicked = {
+            CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene)
+            this@LobbyScene.refreshAfterGuestLeft(yourName)
+            rootService.networkService.disconnect()
+        }
     }
 
     private val playerOrderButton = Button(
@@ -248,6 +252,8 @@ class LobbyScene(
                 startButton.isVisible = false
                 tileRotationButton.isVisible = false
                 playerOrderButton.isVisible = false
+                refreshArrow.isVisible = false
+                cubePicture.isVisible = false
             }
         } else {
             for (display in playerDisplay) {
@@ -416,8 +422,8 @@ class LobbyScene(
 
     /** This Method switches two InputPlanes specified by two params that indicates the postions.
      *
-     * @param pos1Pane Indicates the position of the first InputPlane (1.Pane = 1)
-     * @param pos2Pane Indicates the position of the second InputPlane (2.Pane = 2)
+     * @param pos1Pane Indicates the position of the first InputPlane (1.Pane = 0)
+     * @param pos2Pane Indicates the position of the second InputPlane (2.Pane = 1)
      * */
     private fun changePanes(pos1Pane: Int, pos2Pane: Int) {
         playerInputs[pos1Pane].posY = (375 + 90 * (pos2Pane)) * 1.0
@@ -461,6 +467,7 @@ class LobbyScene(
         for (i in names.indices) {
             playerInputs[i].changePlayerName(names[i])
             playerInputs[i].changeNetworkMode(true)
+            println(names[i])
         }
         playerInputs[names.size].changePlayerName(yourName)
         playerInputs[names.size].setPlayerType(localPlayerType)
@@ -475,9 +482,25 @@ class LobbyScene(
         playerNumber++
     }
 
+    override fun refreshAfterGuestLeft(name: String) {
+        var whichPane = -1
+        for(i in playerInputs.indices){
+            if(playerInputs[i].getPlayerName() == name){
+                whichPane = i
+            }
+        }
+        if (whichPane < 0 || whichPane > 5 ){
+            return
+        }
+        for(i in whichPane until playerNumber-1){
+            changePanes(i, i+1)
+        }
+        playerInputs[playerNumber-1].changePlayerName("Waiting for Player...")
+        playerNumber--
+    }
+
     fun setLocalPlayerName(name: String, localPlayerType: PlayerType) {
         playerInputs[0].playerName.text = name
         playerInputs[0].setPlayerType(localPlayerType)
     }
-
 }
