@@ -142,7 +142,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
         if (!rotationAllowed) {
             val onePointPositions = getOnePointPositions(tile)
-            return validPositions.minus(onePointPositions)
+            return validPositions.minus(onePointPositions).ifEmpty { validPositions }
         }
 
         val rotatedTiles = List(4) { i ->
