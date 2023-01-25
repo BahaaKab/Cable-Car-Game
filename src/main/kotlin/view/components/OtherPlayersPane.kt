@@ -60,7 +60,7 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
         Color.ORANGE -> DEFAULT_RED_COLOR
         Color.GREEN -> DEFAULT_GREEN_COLOR
         Color.PURPLE -> DEFAULT_PURPLE_COLOR
-        Color.BLACK -> DEFAULT_BLUE_COLOR
+        Color.BLACK -> DEFAULT_BLACK_COLOR
     }
 
     fun refreshAfterStartGame() {
