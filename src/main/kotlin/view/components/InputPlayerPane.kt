@@ -131,6 +131,7 @@ class InputPlayerPane(
         return nameField.text
     }
 
+    /** Returns the playerName of the input for each case (Local or Network).*/
     fun getPlayerName(): String {
         return if(isNetwork){
             playerName.text
@@ -139,6 +140,7 @@ class InputPlayerPane(
         }
     }
 
+    /** Returns the playerInfo of the player typed in, in this pane.*/
     fun getPlayerInfo(): PlayerInfo {
         return PlayerInfo(
             getPlayerName(),
@@ -153,10 +155,12 @@ class InputPlayerPane(
         orderNumber = number
     }
 
+    /** Changes the type of the player (local or network)*/
     fun changeNetworkMode(isNetworkPlayer: Boolean) {
         isNetwork = isNetworkPlayer
     }
 
+    /** Sets the playerType of the player*/
     fun setPlayerType(playerType: PlayerType) {
         typeCounter = playerTypes.indexOf(playerType)
     }

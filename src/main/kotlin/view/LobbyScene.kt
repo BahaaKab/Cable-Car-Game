@@ -455,14 +455,15 @@ class LobbyScene(
         secretReal.text = secret
     }
 
-    /**
-     * @see view.Refreshable.refreshAfterStartGame
-     */
+     /** Hides this scene at the start of the game.*/
     override fun refreshAfterStartGame() {
         CableCarApplication.hideMenuScene()
     }
 
-    /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.*/
+    /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.
+     *
+     * @param names The names of all players currently in network-lobby. Sorted by join-time.
+     * */
     fun setAllPlayerNames(names: List<String>, localPlayerType: PlayerType) {
         for (i in names.indices) {
             playerInputs[i].changePlayerName(names[i])
@@ -482,6 +483,10 @@ class LobbyScene(
         playerNumber++
     }
 
+    /** Updates this lobby if a player left in a network-lobby.
+     *
+     * @param name The name of the player that left the lobby.
+     * */
     override fun refreshAfterGuestLeft(name: String) {
         var whichPane = -1
         for(i in playerInputs.indices){
@@ -499,6 +504,7 @@ class LobbyScene(
         playerNumber--
     }
 
+    /** Sets the HostPlayer if this scene is shown in host-mode.*/
     fun setLocalPlayerName(name: String, localPlayerType: PlayerType) {
         playerInputs[0].playerName.text = name
         playerInputs[0].setPlayerType(localPlayerType)
