@@ -242,6 +242,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         refreshBoard(oldState)
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
+        showPlaceablePositions()
     }
 
     /**
@@ -311,7 +312,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             rotationAllowed
         )
         newPlaceablePositions.forEach { (x, y) ->
-            println(board[x, y])
             board[x, y]?.showBack()
         }
         (placeablePositions - newPlaceablePositions).forEach { (x, y) ->
