@@ -118,9 +118,7 @@ class InputPlayerPane(
 
     /** A Method to change the name of the displayed player name*/
     fun changePlayerName(name: String) {
-        if (isNetwork) {
             playerName.text = name
-        }
     }
 
     /** A Method to get the String that players are typing in the Textfield in Hot-Seat-Mode. */

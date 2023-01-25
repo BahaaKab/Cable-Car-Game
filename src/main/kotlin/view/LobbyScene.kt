@@ -20,11 +20,11 @@ import javax.imageio.ImageIO
 import kotlin.random.Random
 
 
-/** LobbyScene shows the settings- & Player-Lobby in HotSeat- or Multiplayer-Mode.
+/** LobbyScene shows the settings- & Player-Lobby in HotSeat- or Network-Mode.
  *
  * @param rootService A reference to the administration of the Game-State
  * @param isNetworkMode A boolean that defines which game mode the LobbyScene shows
- * @param yourName The name of the hostPlayer if the scene shows a Multiplayer-Lobby
+ * @param yourName The name of the localPlayer if the scene shows a Network-Lobby
  * @param isHost A Boolean that shows if the local Player is the Host of a Network-Game
  * */
 class LobbyScene(
@@ -468,7 +468,6 @@ class LobbyScene(
         for (i in names.indices) {
             playerInputs[i].changePlayerName(names[i])
             playerInputs[i].changeNetworkMode(true)
-            println(names[i])
         }
         playerInputs[names.size].changePlayerName(yourName)
         playerInputs[names.size].setPlayerType(localPlayerType)
@@ -479,8 +478,10 @@ class LobbyScene(
 
     /** After someone joined, his/her name will be added as new name to the showed list. */
     override fun refreshAfterGuestJoined(name: String) {
-        playerInputs[playerNumber].changePlayerName(name)
-        playerNumber++
+        if(isNetworkMode) {
+            playerInputs[playerNumber].changePlayerName(name)
+            playerNumber++
+        }
     }
 
     /** Updates this lobby if a player left in a network-lobby.
