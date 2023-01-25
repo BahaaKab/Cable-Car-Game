@@ -94,23 +94,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         val fromSupply = player.currentTile != null
         val tileToPlace = checkNotNull(player.currentTile ?: player.handTile)
 
-        val isAllowed = if (!rootService.cableCar.allowTileRotation) {
-            Pair(posX, posY) in getPlaceablePositions(tileToPlace).ifEmpty { getValidPositions() }
-        } else {
-            val b1 = getPlaceablePositions(tileToPlace).isEmpty()
-            tileToPlace.rotate(true)
-            val b2 = getPlaceablePositions(tileToPlace).isEmpty()
-            tileToPlace.rotate(true)
-            val b3 = getPlaceablePositions(tileToPlace).isEmpty()
-            tileToPlace.rotate(true)
-            val b4 = getPlaceablePositions(tileToPlace).isEmpty()
-            // The Tile is now as it was before
-            tileToPlace.rotate(true)
-            Pair(posX, posY) in getPlaceablePositions(tileToPlace) ||
-                    ( (b1 && b2 && b3 && b4) && Pair(posX, posY) in getValidPositions() )
-        }
 
-        if (!isAllowed) {
+        if (!isPlaceable(tileToPlace, posX, posY, cableCar.allowTileRotation)) {
             return
         }
 
@@ -139,6 +124,11 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         cableCarService.nextTurn()
     }
 
+
+    fun isPlaceable(tile: GameTile, x: Int, y: Int, rotationAllowed: Boolean) =
+        Pair(x, y) in getPlaceablePositions(tile, rotationAllowed)
+
+
     /**
      * Get all positions, where it is allowed to place a given tile.
      *
@@ -146,10 +136,30 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      *
      * @return All positions, where the placement is valid and would not produce a path of length one
      */
-    fun getPlaceablePositions(tile: GameTile): Set<Pair<Int, Int>> {
+    fun getPlaceablePositions(tile: GameTile, rotationAllowed: Boolean): Set<Pair<Int, Int>> {
         val validPositions = getValidPositions()
-        val onePointPositions = getOnePointPositions(tile)
-        return validPositions.minus(onePointPositions)
+
+        if (!rotationAllowed) {
+            val onePointPositions = getOnePointPositions(tile)
+            return validPositions.minus(onePointPositions)
+        }
+
+        val rotatedTiles = List(4) { i ->
+            val tileToRotate = tile.deepCopy()
+            repeat(i) { tileToRotate.rotate(true) }
+            tileToRotate
+        }
+
+        val placeablePositionsForEachRotation = rotatedTiles.map { validPositions.minus(getOnePointPositions(it)) }
+        // If there are not placeable positions at all, considering all rotations, ignore the one point rule
+        return if (placeablePositionsForEachRotation.all { it.isEmpty() }) {
+            validPositions
+        } else {
+            // Otherwise return the placeable positions of the current rotation, although they might be zero
+            placeablePositionsForEachRotation.first()
+        }
+
+
     }
 
     /**
@@ -204,38 +214,40 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      */
     fun getValidPositions(): Set<Pair<Int, Int>> {
         // Build a set of positions that are adjacent to a station tile
-        var validPositions = setOf<Pair<Int, Int>>()
+        val validPositions = mutableSetOf<Pair<Int, Int>>()
         // Build a set of positions that are already occupied
-        var alreadyOccupiedPositions = setOf(Pair(4, 4), Pair(4, 5), Pair(5, 4), Pair(5, 5))
+        val alreadyOccupiedPositions = mutableSetOf(Pair(4, 4), Pair(4, 5), Pair(5, 4), Pair(5, 5))
 
         // Add all positions next to a station tile to the valid positions
         for (i in 1..8) {
-            validPositions = validPositions.plus(setOf(Pair(1, i), Pair(8, i), Pair(i, 1), Pair(i, 8)))
+            validPositions += setOf(Pair(1, i), Pair(8, i), Pair(i, 1), Pair(i, 8))
+        }
+        // In the 3, 5 and 6 player configuration, the station tiles in the bottom right corner are left out to
+        // guarantee, that every player has the same amount of stations
+        when (rootService.cableCar.currentState.players.size) {
+            3, 5, 6 -> validPositions -= Pair(8, 8)
         }
         // The station tiles themself are already occupied
         for (i in 0..9) {
-            alreadyOccupiedPositions = alreadyOccupiedPositions.plus(
-                setOf(Pair(0, i), Pair(9, i), Pair(i, 0), Pair(i, 9))
-            )
+            alreadyOccupiedPositions += setOf(Pair(0, i), Pair(9, i), Pair(i, 0), Pair(i, 9))
         }
 
         // For each placed tile
         rootService.cableCar.currentState.placedTiles.forEach {
             // Add its neighbour positions to the valid positions as they are adjacent to the placed tile
-            validPositions = validPositions.plus(
-                setOf(
-                    Pair(it.x + 1, it.y),
-                    Pair(it.x - 1, it.y),
-                    Pair(it.x, it.y + 1),
-                    Pair(it.x, it.y - 1)
-                )
+            validPositions += setOf(
+                Pair(it.x + 1, it.y),
+                Pair(it.x - 1, it.y),
+                Pair(it.x, it.y + 1),
+                Pair(it.x, it.y - 1)
             )
+
             // Add the positions of the placed tiles themself to the occupied positions
-            alreadyOccupiedPositions = alreadyOccupiedPositions.plusElement(Pair(it.x, it.y))
+            alreadyOccupiedPositions += Pair(it.x, it.y)
         }
 
         // Return only the valid positions that are not already occupied
-        return validPositions.minus(alreadyOccupiedPositions)
+        return validPositions - alreadyOccupiedPositions
     }
 
     /**
