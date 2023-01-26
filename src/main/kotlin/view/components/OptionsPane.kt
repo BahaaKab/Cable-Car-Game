@@ -74,8 +74,8 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
 
     private val selectAISpeedLabel = Label(
         posX = 280, posY = 0,
-        width = 250, height = 40,
-        text = "    AI Speed: ",
+        width = 355, height = 40,
+        text = "   AI Speed: ",
         font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER_LEFT
     ).apply {
@@ -85,7 +85,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
 
     private val toggleGroup = ToggleGroup()
 
-    private val speed1 = RadioButton(
+    private val speed0 = RadioButton(
         posX = 400, posY = 10,
         width = 5, height = 5,
         text = "0",
@@ -96,20 +96,41 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         onMouseClicked = { rootService.playerActionService.setAISpeed(0) }
     }
 
-    private val speed2 = RadioButton(
-        posX = 470, posY = 10,
+    private val speed1 = RadioButton(
+        posX = 460, posY = 10,
         width = 5, height = 5,
-        text = "4",
+        text = "1",
         font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER_LEFT,
-        toggleGroup = toggleGroup,
-        isSelected = true
+        toggleGroup = toggleGroup
     ).apply {
-        onMouseClicked = { rootService.playerActionService.setAISpeed(4) }
+        onMouseClicked = { rootService.playerActionService.setAISpeed(1) }
+    }
+
+    private val speed2 = RadioButton(
+        posX = 520, posY = 10,
+        width = 5, height = 5,
+        text = "2",
+        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
+        alignment = Alignment.CENTER_LEFT,
+        toggleGroup = toggleGroup
+    ).apply {
+        onMouseClicked = { rootService.playerActionService.setAISpeed(2) }
+    }
+
+    private val speed3 = RadioButton(
+        posX = 580, posY = 10,
+        width = 5, height = 5,
+        text = "3",
+        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
+        alignment = Alignment.CENTER_LEFT,
+        toggleGroup = toggleGroup
+    ).apply {
+        onMouseClicked = { rootService.playerActionService.setAISpeed(3) }
     }
 
     init {
-        addAll(undoButton, undoIcon, redoButton, redoIcon, selectAISpeedLabel, speed1, speed2)
+        addAll(undoButton, undoIcon, redoButton, redoIcon, selectAISpeedLabel, speed0, speed1, speed2, speed3)
     }
 
     fun disableUndoRedo() {
@@ -133,6 +154,15 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
             componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
                     "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = false
+        }
+    }
+
+    internal fun setAISpeed(value : Int) {
+        when(value) {
+            0 -> speed0.isSelected = true
+            1 -> speed1.isSelected = true
+            2 -> speed2.isSelected = true
+            else -> speed3.isSelected = true
         }
     }
 }

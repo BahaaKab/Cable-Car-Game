@@ -156,7 +156,7 @@ class LobbyScene(
         posX = 1315, posY = 210,
         width = 100, height = 40,
         font = Font(size = 21, color = DEFAULT_BLUE, family = DEFAULT_FONT_BOLD),
-        items = listOf(0, 1, 2, 3, 4, 5)
+        items = listOf(0, 1, 2, 3)
     )
 
     // ------------------ PLAYER RELATED UI ELEMENTS -------------------
