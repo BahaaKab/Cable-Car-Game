@@ -5,5 +5,4 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.*
 
 class AIServiceTest {
-
 }

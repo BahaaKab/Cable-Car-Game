@@ -25,4 +25,15 @@ class StationTile(connectors: List<Int>) : Tile(connectors, listOf(), false, tru
     }
 
     override fun deepCopy() = this
+
+    fun getEndPathConnection() : Int {
+        var pathConnection = startPosition
+        path.forEach { tile ->
+            if (tile.isEndTile) {
+                return -1
+            }
+            pathConnection = tile.connections[OUTER_TILE_CONNECTIONS[pathConnection]]
+        }
+        return pathConnection
+    }
 }
