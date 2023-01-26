@@ -225,6 +225,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      */
     override fun refreshAfterRotateTileLeft() {
         activePlayerPane.activePlayerTiles.last().rotate(-90)
+        showPlaceablePositions()
     }
 
     /**
@@ -232,6 +233,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      */
     override fun refreshAfterRotateTileRight() {
         activePlayerPane.activePlayerTiles.last().rotate(90)
+        showPlaceablePositions()
     }
 
     /**
@@ -280,13 +282,15 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             )
             activePlayerPane.disableDrawTileButton()
         }
+        showPlaceablePositions()
     }
 
     /**
      * @see view.Refreshable.refreshAfterNextTurn
      */
     override fun refreshAfterNextTurn() {
-        showPlaceablePositions()
+        if(!rootService.cableCar.currentState.activePlayer.isNetworkPlayer) showPlaceablePositions()
+        else hidePlaceablePositions()
         if (rootService.cableCar.currentState.drawPile.isEmpty()) {
             activePlayerPane.disableDrawTileButton()
         } else {
@@ -325,6 +329,11 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         placeablePositions = newPlaceablePositions
 
     }
+
+    private fun hidePlaceablePositions() = placeablePositions.forEach { (x,y) ->
+            board[x, y]?.showFront()
+    }
+
 
     private fun startAIHandler() {
         if (rootService.cableCar.currentState.activePlayer.playerType in listOf(
