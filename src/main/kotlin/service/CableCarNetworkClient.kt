@@ -88,8 +88,8 @@ class CableCarNetworkClient(
      */
     override fun onPlayerLeft(notification: PlayerLeftNotification) = BoardGameApplication.runOnGUIThread {
         networkService.onAllRefreshables { refreshAfterNetworkNotification(notification) }
-        if(networkService.rootService.isGameInitialized()) networkService.onAllRefreshables {refreshAfterEndGame(true)}
         networkService.onAllRefreshables { refreshAfterGuestLeft(notification.sender) }
+        if (networkService.rootService.isGameInitialized()) networkService.disconnect()
     }
 
     /**

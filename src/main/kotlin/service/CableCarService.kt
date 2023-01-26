@@ -83,7 +83,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      * Trigger the [view.EndScene]
      */
     private fun endGame() {
-        onAllRefreshables { refreshAfterEndGame(false) }
+        onAllRefreshables { refreshAfterEndGame() }
     }
 
     /**

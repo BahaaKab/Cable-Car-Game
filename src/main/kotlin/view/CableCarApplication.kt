@@ -41,12 +41,5 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
         showMenuScene(chooseModeScene)
     }
 
-    override fun refreshAfterEndGame(closeApplication: Boolean) {
-        if(closeApplication && !refreshAfterEndGameTriggered) {
-            println("Someone left, closing the application.")
-            exit()
-        }
-        refreshAfterEndGameTriggered = true
-    }
 }
 

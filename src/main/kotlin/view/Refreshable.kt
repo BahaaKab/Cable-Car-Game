@@ -6,7 +6,7 @@ import tools.aqua.bgw.net.common.response.Response
 @Suppress("UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
 
 interface Refreshable {
-    fun refreshAfterEndGame(closeApplication : Boolean) {}
+    fun refreshAfterEndGame() {}
     fun refreshAfterStartGame() {}
     fun refreshAfterNetworkResponse(response: Response) {}
     fun refreshAfterNetworkNotification(notification: Notification) {}
