@@ -9,6 +9,7 @@ import tools.aqua.bgw.components.uicomponents.RadioButton
 import tools.aqua.bgw.components.uicomponents.ToggleGroup
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
+import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.DEFAULT_BORDER_RADIUS
@@ -29,8 +30,10 @@ import javax.imageio.ImageIO
 class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX = posX, posY = posY, width = 402, height = 40) {
 
-    private val undoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/undo.png")))
-    private val redoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/redo.png")))
+    //private val undoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/undo.png")))
+    private val undoVisual = ColorVisual.GRAY
+    //private val redoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/redo.png")))
+    private val redoVisual = ColorVisual.GRAY
 
     private val undoButton = Button(
         posX = 0, posY = 0,

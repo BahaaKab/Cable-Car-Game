@@ -28,8 +28,9 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
     private val logoPane = CableCarLogo(posX = 841, posY = 104)
     private val connectionPane = ConnectionPane(0, 0)
     private val playerTypeButton = PlayerTypeButton(posX = 1200, posY = 365)
-    private val menuVisual = ImageVisual(ImageIO.read(ConnectionScene::class.java.getResource("/arrow.png")))
-
+    // TODO: load via AssetImageLoader
+    //private val menuVisual = ImageVisual(ImageIO.read(ConnectionScene::class.java.getResource("/arrow.png")))
+    private val menuVisual = ColorVisual.BLACK
 
     private val menuButton = Button(
         posX = 535, posY = 256,

@@ -9,6 +9,7 @@ import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
+import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.*
@@ -25,14 +26,13 @@ import javax.imageio.ImageIO
  */
 class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX = posX, posY = posY, width = 630, height = 240) {
-
-    private val rotateLeftVisual = ImageVisual(
-        ImageIO.read(GameScene::class.java.getResource("/rotateLeft.png"))
-    )
-    private val rotateRightVisual = ImageVisual(
-        ImageIO.read(GameScene::class.java.getResource("/rotateRight.png"))
-    )
-    private val drawTileVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/drawTile.png")))
+    // TODO: load via AssetImageLoader
+    //private val rotateLeftVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/rotateLeft.png")))
+    private val rotateLeftVisual = ColorVisual.ORANGE
+    //private val rotateRightVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/rotateRight.png")))
+    private val rotateRightVisual = ColorVisual.ORANGE
+    //private val drawTileVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/drawTile.png")))
+    private val drawTileVisual = ColorVisual.GRAY
 
     val activePlayerTiles = LinearLayout<CardView>(
         posX = 390, posY = 0,

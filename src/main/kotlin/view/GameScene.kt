@@ -44,8 +44,9 @@ val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
  * @param rootService The administration class for the entity and service layer.
  */
 class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
-
-    private val boardVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/board.png")))
+    // TODO: load via AssetImageLoader
+    //private val boardVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/board.png")))
+    private val boardVisual = ColorVisual.WHITE
 
     private val stationTileMap = BidirectionalMap<StationTile, CardView>()
 

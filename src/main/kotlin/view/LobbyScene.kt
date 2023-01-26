@@ -39,14 +39,18 @@ class LobbyScene(
     private var changingPosition = -1
 
     private val cableCarLogo = CableCarLogo(810, 50).apply { scale = 1.1 }
-    private val refreshArrowVisual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.png")))
-    private val refreshArrowBlue =
-        ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh_blue.png")))
+    // TODO: load via AssetImageLoader
+    //private val refreshArrowVisual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.png")))
+    //private val refreshArrowBlue = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh_blue.png")))
+    private val refreshArrowVisual = ColorVisual.BLUE
+    private val refreshArrowBlue = ColorVisual.GREEN
 
     private val backArrow = Label(
         posX = 544, posY = 215,
         width = 30, height = 30,
-        visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow.PNG")))
+        // TODO: load via AssetImageLoader
+        //visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow.PNG")))
+        visual = ColorVisual.BLUE
     )
 
     private val backButton = Button(
@@ -97,7 +101,9 @@ class LobbyScene(
     private val cubePicture = Label(
         posX = 681, posY = 216,
         width = 28, height = 28,
-        visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/cube.png")))
+        // TODO: load via AssetImageLoader
+        //visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/cube.png")))
+        visual = ColorVisual.CYAN
     )
 
     private val tileRotationButton = Button(
