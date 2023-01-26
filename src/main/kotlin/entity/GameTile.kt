@@ -30,6 +30,16 @@ class GameTile(val id: Int, connections: List<Int>) : Tile(
      */
     override fun updatePoints(points: Int) = points + 1
 
+    fun rotate(clockwise: Boolean) {
+        val connectionsSize = connections.size
+        rotation = (rotation + if (clockwise) { 90 } else { 270 }) % 360
+        val indexShift = if (clockwise) { 2 } else { connectionsSize - 2 }
+        // First set the new values
+        connections = connections.map { (it + indexShift) % connectionsSize }
+        // Then set the values to the correct indices
+        connections = List(connectionsSize) { connections[(it + indexShift + 4) % connectionsSize] }
+    }
+
     /**
      * TODO
      */

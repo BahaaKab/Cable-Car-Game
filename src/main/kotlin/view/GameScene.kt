@@ -67,10 +67,21 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     private val otherPlayersPane = OtherPlayersPane(rootService = rootService, posX = 100, posY = 648)
 
+    private var placeablePositions: Set<Pair<Int, Int>> = setOf()
+
     private val emptyTilesCardViews = List(8) { column ->
         List(8) { row ->
-            CardView(width = 100, height = 100, front = Visual.EMPTY).apply {
+            CardView(
+                width = 100,
+                height = 100,
+                front = Visual.EMPTY,
+                back = ColorVisual(247, 247, 247).apply {
+                    style = """-fx-border-width: 2px; -fx-border-color: rgba(0,0,0,0.1);
+                         -fx-effect:innershadow(one-pass-box, rgba(0,0,0,0.1), 30, 0.2, 0, 0);"""
+                }
+            ).apply {
                 onMouseClicked = { rootService.playerActionService.placeTile(posX = column + 1, posY = row + 1) }
+                showFront()
             }
         }
     }
@@ -230,6 +241,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         refreshBoard(oldState)
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
+        showPlaceablePositions()
     }
 
     /**
@@ -274,6 +286,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * @see view.Refreshable.refreshAfterNextTurn
      */
     override fun refreshAfterNextTurn() {
+        showPlaceablePositions()
         if (rootService.cableCar.currentState.drawPile.isEmpty()) {
             activePlayerPane.disableDrawTileButton()
         } else {
@@ -291,6 +304,26 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         otherPlayersPane.refreshOtherPlayers()
 
         startAIHandler()
+    }
+
+    private fun showPlaceablePositions() {
+        val currentTile = with(rootService.cableCar.currentState.activePlayer) {
+            checkNotNull(currentTile ?: handTile)
+        }
+        val rotationAllowed = rootService.cableCar.allowTileRotation
+        val newPlaceablePositions = rootService.playerActionService.getPlaceablePositions(
+            currentTile,
+            rotationAllowed
+        )
+
+        newPlaceablePositions.forEach { (x, y) ->
+            board[x, y]?.showBack()
+        }
+        (placeablePositions - newPlaceablePositions).forEach { (x, y) ->
+            board[x, y]?.showFront()
+        }
+        placeablePositions = newPlaceablePositions
+
     }
 
     private fun startAIHandler() {
