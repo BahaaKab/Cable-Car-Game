@@ -55,7 +55,7 @@ class EndScene(private val rootService: RootService) : MenuScene(1920, 1080), Re
     }
 
     override fun refreshAfterGuestLeft(name: String) {
-        val irregularEnding = rootService.isGameInitialized()
+        val irregularEnding = rootService.isGameInitialized() && rootService.cableCar.currentState.drawPile.isNotEmpty()
         playerLeftMessage.text = "$name has left the game."
         scoreboardPane.isVisible = !irregularEnding
         playerLeftMessage.isVisible = irregularEnding
