@@ -1,8 +1,6 @@
 package view
 
-import entity.PlayerType
 import service.RootService
-import tools.aqua.bgw.animation.DelayAnimation
 import tools.aqua.bgw.core.BoardGameApplication
 
 @Suppress("UNUSED", "UndocumentedPublicFunction", "UndocumentedPublicClass", "EmptyFunctionBlock")
@@ -23,6 +21,8 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
 
     val lobbyScenes = listOf(localLobbyScene, hostLobbyScene, guestLobbyScene)
 
+    private var refreshAfterEndGameTriggered = false
+
 
     init {
         rootService.addRefreshables(
@@ -41,5 +41,12 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
         showMenuScene(chooseModeScene)
     }
 
+    override fun refreshAfterEndGame(closeApplication: Boolean) {
+        if(closeApplication && !refreshAfterEndGameTriggered) {
+            println("Someone left, closing the application.")
+            exit()
+        }
+        refreshAfterEndGameTriggered = true
+    }
 }
 

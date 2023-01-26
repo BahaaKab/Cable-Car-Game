@@ -43,7 +43,7 @@ class RefreshableTest : Refreshable {
         refreshAfterNextTurnCalled = false
     }
 
-    override fun refreshAfterEndGame() {
+    override fun refreshAfterEndGame(closeApplication : Boolean) {
         refreshAfterEndGameCalled = true
     }
 
@@ -133,7 +133,7 @@ class RefreshableTest : Refreshable {
         assertFalse(refreshAfterDrawTileCalled)
         assertFalse(refreshAfterGetTurnCalled)
         assertFalse(refreshAfterNextTurnCalled)
-        refreshAfterEndGame()
+        refreshAfterEndGame(false)
         refreshAfterStartGame()
         refreshAfterHostGame()
         refreshAfterJoinGame(listOf<String>())

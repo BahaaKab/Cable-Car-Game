@@ -44,7 +44,7 @@ class EndScene(private val rootService: RootService) : MenuScene(1920, 1080), Re
         )
     }
 
-    override fun refreshAfterEndGame() {
+    override fun refreshAfterEndGame(closeApplication : Boolean) {
         scoreboardPane.showOnlyRelevant()
         CableCarApplication.showMenuScene(this)
 
