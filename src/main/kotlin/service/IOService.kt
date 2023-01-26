@@ -6,7 +6,7 @@ import java.io.FileNotFoundException
 /**
  * The absolute path pointing to the tiles.csv file in the resources directory.
  */
-val TILES_CSV_PATH : String = File("src/main/resources/tiles.csv").absolutePath
+const val TILES_CSV_PATH : String = "/tiles.csv"
 
 /**
  * A service class to handle IO actions.
@@ -17,7 +17,6 @@ val TILES_CSV_PATH : String = File("src/main/resources/tiles.csv").absolutePath
  * @constructor Creates an [IOService].
  */
 class IOService(private val rootService: RootService) {
-    //private val tilesCSVFile = File(TILES_CSV_PATH)
     private val tilesCSVFile = IOService::class.java.getResource(TILES_CSV_PATH) ?: throw FileNotFoundException()
 
     /**
