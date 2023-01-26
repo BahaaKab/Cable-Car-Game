@@ -118,40 +118,47 @@ class InputPlayerPane(
 
     /** A Method to change the name of the displayed player name*/
     fun changePlayerName(name: String) {
-        if (isNetwork) {
             playerName.text = name
-        }
     }
 
     /** A Method to get the String that players are typing in the Textfield in Hot-Seat-Mode. */
-    fun getTextFieldInput(): String {
+    private fun getTextFieldInput(): String {
         if (nameField.text.trim() == "") {
             nameField.text = "Player$orderNumber"
         }
         return nameField.text
     }
 
-    /** Returns which playerType is currently selected in the comboBox. */
-    fun getPlayerType() = playerTypes[typeCounter]
+    /** Returns the playerName of the input for each case (Local or Network).*/
+    fun getPlayerName(): String {
+        return if(isNetwork){
+            playerName.text
+        }else{
+            getTextFieldInput()
+        }
+    }
+
+    /** Returns the playerInfo of the player typed in, in this pane.*/
+    fun getPlayerInfo(): PlayerInfo {
+        return PlayerInfo(
+            getPlayerName(),
+            playerTypes[typeCounter],
+            PLAYER_ORDER_COLORS[orderNumber - 1],
+            isNetwork
+        )
+    }
 
     /** Sets a new orderNumber. */
     fun setOrderNumber(number: Int) {
         orderNumber = number
     }
 
+    /** Changes the type of the player (local or network)*/
     fun changeNetworkMode(isNetworkPlayer: Boolean) {
         isNetwork = isNetworkPlayer
     }
 
-    fun getPlayerInfo(): PlayerInfo {
-        return PlayerInfo(
-            playerName.text,
-            getPlayerType(),
-            PLAYER_ORDER_COLORS[orderNumber - 1],
-            isNetwork
-        )
-    }
-
+    /** Sets the playerType of the player*/
     fun setPlayerType(playerType: PlayerType) {
         typeCounter = playerTypes.indexOf(playerType)
     }

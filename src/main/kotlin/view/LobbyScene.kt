@@ -20,11 +20,11 @@ import javax.imageio.ImageIO
 import kotlin.random.Random
 
 
-/** LobbyScene shows the settings- & Player-Lobby in HotSeat- or Multiplayer-Mode.
+/** LobbyScene shows the settings- & Player-Lobby in HotSeat- or Network-Mode.
  *
  * @param rootService A reference to the administration of the Game-State
  * @param isNetworkMode A boolean that defines which game mode the LobbyScene shows
- * @param yourName The name of the hostPlayer if the scene shows a Multiplayer-Lobby
+ * @param yourName The name of the localPlayer if the scene shows a Network-Lobby
  * @param isHost A Boolean that shows if the local Player is the Host of a Network-Game
  * */
 class LobbyScene(
@@ -72,7 +72,11 @@ class LobbyScene(
         }
 
         componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
-        onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) }
+        onMouseClicked = {
+            CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene)
+            this@LobbyScene.refreshAfterGuestLeft(yourName)
+            rootService.networkService.disconnect()
+        }
     }
 
     private val playerOrderButton = Button(
@@ -248,6 +252,8 @@ class LobbyScene(
                 startButton.isVisible = false
                 tileRotationButton.isVisible = false
                 playerOrderButton.isVisible = false
+                refreshArrow.isVisible = false
+                cubePicture.isVisible = false
             }
         } else {
             for (display in playerDisplay) {
@@ -416,8 +422,8 @@ class LobbyScene(
 
     /** This Method switches two InputPlanes specified by two params that indicates the postions.
      *
-     * @param pos1Pane Indicates the position of the first InputPlane (1.Pane = 1)
-     * @param pos2Pane Indicates the position of the second InputPlane (2.Pane = 2)
+     * @param pos1Pane Indicates the position of the first InputPlane (1.Pane = 0)
+     * @param pos2Pane Indicates the position of the second InputPlane (2.Pane = 1)
      * */
     private fun changePanes(pos1Pane: Int, pos2Pane: Int) {
         playerInputs[pos1Pane].posY = (375 + 90 * (pos2Pane)) * 1.0
@@ -449,14 +455,15 @@ class LobbyScene(
         secretReal.text = secret
     }
 
-    /**
-     * @see view.Refreshable.refreshAfterStartGame
-     */
+     /** Hides this scene at the start of the game.*/
     override fun refreshAfterStartGame() {
         CableCarApplication.hideMenuScene()
     }
 
-    /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.*/
+    /** After joining a Game the lobby refreshes all "Waiting..."-Labels with player-names.
+     *
+     * @param names The names of all players currently in network-lobby. Sorted by join-time.
+     * */
     fun setAllPlayerNames(names: List<String>, localPlayerType: PlayerType) {
         for (i in names.indices) {
             playerInputs[i].changePlayerName(names[i])
@@ -471,14 +478,37 @@ class LobbyScene(
 
     /** After someone joined, his/her name will be added as new name to the showed list. */
     override fun refreshAfterGuestJoined(name: String) {
-        playerInputs[playerNumber].changePlayerName(name)
-        playerNumber++
+        if(isNetworkMode) {
+            playerInputs[playerNumber].changePlayerName(name)
+            playerNumber++
+        }
     }
 
+    /** Updates this lobby if a player left in a network-lobby.
+     *
+     * @param name The name of the player that left the lobby.
+     * */
+    override fun refreshAfterGuestLeft(name: String) {
+        var whichPane = -1
+        for(i in playerInputs.indices){
+            if(playerInputs[i].getPlayerName() == name){
+                whichPane = i
+            }
+        }
+        if (whichPane < 0 || whichPane > 5 ){
+            return
+        }
+        for(i in whichPane until playerNumber-1){
+            changePanes(i, i+1)
+        }
+        playerInputs[playerNumber-1].changePlayerName("Waiting for Player...")
+        playerNumber--
+    }
+
+    /** Sets the HostPlayer if this scene is shown in host-mode.*/
     fun setLocalPlayerName(name: String, localPlayerType: PlayerType) {
         playerInputs[0].playerName.text = name
         playerInputs[0].setPlayerType(localPlayerType)
         playerInputs[0].changeNetworkMode(false)
     }
-
 }
