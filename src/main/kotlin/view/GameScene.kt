@@ -331,7 +331,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     private fun hidePlaceablePositions() = placeablePositions.forEach { (x,y) ->
-            board[x, y]?.showFront()
+        board[x, y]?.showFront()
     }
 
 
@@ -343,6 +343,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         ) {
             activePlayerPane.disableDrawTileButton()
             optionsPane.disableUndoRedo()
+            hidePlaceablePositions()
 
             playAnimation(
                 DelayAnimation(rootService.cableCar.AISpeed * 200).apply {
