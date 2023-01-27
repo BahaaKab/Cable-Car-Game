@@ -51,7 +51,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     private val logoPane = CableCarLogo(posX = 270, posY = 104)
 
-    private val optionsPane = OptionsPane(rootService = rootService, posX = 100, posY = 256)
+    private val optionsPane = OptionsPane(rootService = rootService, posX = 90, posY = 256)
 
     private val connectionStatusLabel = Label(
         posX = 50, posY = 950,
@@ -217,6 +217,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         } else connectionStatusLabel.isVisible = false
 
         otherPlayersPane.refreshAfterStartGame()
+        optionsPane.setAISpeed(rootService.cableCar.AISpeed)
         refreshAfterNextTurn()
     }
 
@@ -225,6 +226,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      */
     override fun refreshAfterRotateTileLeft() {
         activePlayerPane.activePlayerTiles.last().rotate(-90)
+        showPlaceablePositions()
     }
 
     /**
@@ -232,6 +234,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      */
     override fun refreshAfterRotateTileRight() {
         activePlayerPane.activePlayerTiles.last().rotate(90)
+        showPlaceablePositions()
     }
 
     /**
@@ -280,13 +283,15 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             )
             activePlayerPane.disableDrawTileButton()
         }
+        showPlaceablePositions()
     }
 
     /**
      * @see view.Refreshable.refreshAfterNextTurn
      */
     override fun refreshAfterNextTurn() {
-        showPlaceablePositions()
+        if(!rootService.cableCar.currentState.activePlayer.isNetworkPlayer) showPlaceablePositions()
+        else hidePlaceablePositions()
         if (rootService.cableCar.currentState.drawPile.isEmpty()) {
             activePlayerPane.disableDrawTileButton()
         } else {
@@ -326,6 +331,11 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     }
 
+    private fun hidePlaceablePositions() = placeablePositions.forEach { (x,y) ->
+        board[x, y]?.showFront()
+    }
+
+
     private fun startAIHandler() {
         if (rootService.cableCar.currentState.activePlayer.playerType in listOf(
                 PlayerType.AI_EASY,
@@ -334,9 +344,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         ) {
             activePlayerPane.disableDrawTileButton()
             optionsPane.disableUndoRedo()
+            hidePlaceablePositions()
 
             playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 200).apply {
+                DelayAnimation(rootService.cableCar.AISpeed * 1000).apply {
                     onFinished = {
                         BoardGameApplication.runOnGUIThread {
                             rootService.aIService.makeAIMove()
