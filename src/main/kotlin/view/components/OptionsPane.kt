@@ -128,11 +128,6 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
     }
 
     internal fun setAISpeed(value : Int) {
-        when(value) {
-            0 -> speed0.isSelected = true
-            1 -> speed1.isSelected = true
-            2 -> speed2.isSelected = true
-            else -> speed3.isSelected = true
-        }
+        speedRadioButtons[value].isSelected = true
     }
 }
