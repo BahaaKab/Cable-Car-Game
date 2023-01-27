@@ -85,48 +85,17 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
 
     private val toggleGroup = ToggleGroup()
 
-    private val speed0 = RadioButton(
-        posX = 400, posY = 10,
-        width = 5, height = 5,
-        text = "0",
-        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
-        alignment = Alignment.CENTER_LEFT,
-        toggleGroup = toggleGroup
-    ).apply {
-        onMouseClicked = { rootService.playerActionService.setAISpeed(0) }
-    }
-
-    private val speed1 = RadioButton(
-        posX = 460, posY = 10,
-        width = 5, height = 5,
-        text = "1",
-        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
-        alignment = Alignment.CENTER_LEFT,
-        toggleGroup = toggleGroup
-    ).apply {
-        onMouseClicked = { rootService.playerActionService.setAISpeed(1) }
-    }
-
-    private val speed2 = RadioButton(
-        posX = 520, posY = 10,
-        width = 5, height = 5,
-        text = "2",
-        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
-        alignment = Alignment.CENTER_LEFT,
-        toggleGroup = toggleGroup
-    ).apply {
-        onMouseClicked = { rootService.playerActionService.setAISpeed(2) }
-    }
-
-    private val speed3 = RadioButton(
-        posX = 580, posY = 10,
-        width = 5, height = 5,
-        text = "3",
-        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
-        alignment = Alignment.CENTER_LEFT,
-        toggleGroup = toggleGroup
-    ).apply {
-        onMouseClicked = { rootService.playerActionService.setAISpeed(3) }
+    private val speedRadioButtons = List(4) { i ->
+        RadioButton(
+            posX = 400 + i * 60, posY = 10,
+            width = 5, height = 5,
+            text = i.toString(),
+            font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
+            alignment = Alignment.CENTER_LEFT,
+            toggleGroup = toggleGroup
+        ).apply {
+            onMouseClicked = { rootService.playerActionService.setAISpeed(i) }
+        }
     }
 
     init {
