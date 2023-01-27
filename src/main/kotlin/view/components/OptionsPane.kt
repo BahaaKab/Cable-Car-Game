@@ -74,8 +74,8 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
 
     private val selectAISpeedLabel = Label(
         posX = 280, posY = 0,
-        width = 250, height = 40,
-        text = "    AI Speed: ",
+        width = 355, height = 40,
+        text = "   AI Speed: ",
         font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
         alignment = Alignment.CENTER_LEFT
     ).apply {
@@ -85,31 +85,22 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
 
     private val toggleGroup = ToggleGroup()
 
-    private val speed1 = RadioButton(
-        posX = 400, posY = 10,
-        width = 5, height = 5,
-        text = "0",
-        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
-        alignment = Alignment.CENTER_LEFT,
-        toggleGroup = toggleGroup
-    ).apply {
-        onMouseClicked = { rootService.playerActionService.setAISpeed(0) }
-    }
-
-    private val speed2 = RadioButton(
-        posX = 470, posY = 10,
-        width = 5, height = 5,
-        text = "4",
-        font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
-        alignment = Alignment.CENTER_LEFT,
-        toggleGroup = toggleGroup,
-        isSelected = true
-    ).apply {
-        onMouseClicked = { rootService.playerActionService.setAISpeed(4) }
+    private val speedRadioButtons = List(4) { i ->
+        RadioButton(
+            posX = 400 + i * 60, posY = 10,
+            width = 5, height = 5,
+            text = i.toString(),
+            font = Font(size = 20, color = Color.WHITE, family = DEFAULT_FONT_BOLD),
+            alignment = Alignment.CENTER_LEFT,
+            toggleGroup = toggleGroup
+        ).apply {
+            onMouseClicked = { rootService.playerActionService.setAISpeed(i) }
+        }
     }
 
     init {
-        addAll(undoButton, undoIcon, redoButton, redoIcon, selectAISpeedLabel, speed1, speed2)
+        addAll(undoButton, undoIcon, redoButton, redoIcon, selectAISpeedLabel)
+        addAll(speedRadioButtons)
     }
 
     fun disableUndoRedo() {
@@ -134,5 +125,9 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
                     "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = false
         }
+    }
+
+    internal fun setAISpeed(value : Int) {
+        speedRadioButtons[value].isSelected = true
     }
 }
