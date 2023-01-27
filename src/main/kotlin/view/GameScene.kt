@@ -161,6 +161,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    /** Initializes the Station Tiles as graphics. */
     private fun initializeStationTileMap() = with(rootService.cableCar.currentState) {
         players.forEach {
             it.stationTiles.forEach { station ->
@@ -400,32 +401,15 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
-    private fun getPosition(i: Int): IntArray{
-        when(i){
-            0 -> return intArrayOf(1, 0)
-            1 -> return intArrayOf(2, 0)
-            2 -> return intArrayOf(3, 1)
-            3 -> return intArrayOf(3, 2)
-            4 -> return intArrayOf(2, 3)
-            5 -> return intArrayOf(1, 3)
-            6 -> return intArrayOf(0, 2)
-            7 -> return intArrayOf(0, 1)
-        }
-        return intArrayOf(-1, -1)
+    fun resetImage(){
+        paintBrush.clearRect(0,0, drawImage.width, drawImage.height)
     }
 
     override fun refreshAfterPathElementUpdated(x: Int, y: Int, connectionA: Int,
                                                 connectionB: Int, color: entity.Color) {
 
         // Set color of the connection:
-        when (color) {
-            entity.Color.YELLOW -> paintBrush.color = Color(253, 211, 41)
-            entity.Color.BLUE -> paintBrush.color = Color(17, 139, 206)
-            entity.Color.ORANGE -> paintBrush.color = Color(213, 41, 39)
-            entity.Color.GREEN -> paintBrush.color = Color(12, 111, 47)
-            entity.Color.PURPLE -> paintBrush.color = Color(142, 13, 78)
-            entity.Color.BLACK -> paintBrush.color = Color(2, 2, 2)
-        }
+        setPaintBrush(color)
 
         val cornerTileFactor = (0.166 * 100).toInt()
         if(connectionA == 0 && connectionB == 1){
@@ -466,5 +450,67 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
 
         pathImage.visual = ImageVisual(drawImage)
+    }
+
+    override fun refreshPathAfterEndTile(x: Int, y: Int, connector: Int, color: entity.Color) {
+        setPaintBrush(color)
+
+        if( x == 0 ){
+            paintBrush.drawLine(42, y * 101 + 33, 101, y * 101 + 33)
+            paintBrush.drawLine(41, y * 101 + 22, 41 , y * 101 + 44)
+        }else if( y == 0 ){
+            paintBrush.drawLine(x * 101 + 66, 42, x * 101 + 66, 101)
+            paintBrush.drawLine(x * 101 + 55, 41, x * 101 + 77, 41)
+        }else if( x == 9 ){
+            paintBrush.drawLine(909, y * 101 + 66, 966,y * 101 + 66)
+            paintBrush.drawLine(967, y * 101 + 55, 967, y * 101 + 77)
+        }else if( y == 9 ){
+            paintBrush.drawLine(x * 101 + 33, 909, x * 101 + 33, 966 )
+            paintBrush.drawLine(x * 101 + 22, 967, x * 101 + 44, 967)
+        }else if( (x == 5 || x == 4) && (y == 4 || y == 5)){
+            val conPos = getPosition(connector)
+
+            // inverted Position because of the power Tile modeling
+            if(conPos[0] == 0){
+                paintBrush.drawLine((x+1) * 101 - 20, y * 101 + conPos[1] * 33,
+                    (x+1) * 101, y * 101 + conPos[1] * 33)
+            }else if (conPos[0] == 3){
+                paintBrush.drawLine(x * 101, y * 101 + conPos[1] * 33,
+                    x * 101 + 20, y * 101 + conPos[1] * 33)
+            }else if(conPos[1] == 0){
+                paintBrush.drawLine(x * 101 + conPos[0] * 33, (y+1) * 101 - 20,
+                    x * 101 + conPos[0] * 33, (y+1) * 101)
+            }else if(conPos[1] == 3){
+                paintBrush.drawLine(x * 101 + conPos[0] * 33, y * 101 ,
+                    x * 101 + conPos[0] * 33, y * 101 + 20)
+            }
+        }
+
+        pathImage.visual = ImageVisual(drawImage)
+    }
+
+    private fun setPaintBrush(color: entity.Color){
+        when (color) {
+            entity.Color.YELLOW -> paintBrush.color = Color(253, 211, 41)
+            entity.Color.BLUE -> paintBrush.color = Color(17, 139, 206)
+            entity.Color.ORANGE -> paintBrush.color = Color(213, 41, 39)
+            entity.Color.GREEN -> paintBrush.color = Color(12, 111, 47)
+            entity.Color.PURPLE -> paintBrush.color = Color(142, 13, 78)
+            entity.Color.BLACK -> paintBrush.color = Color(2, 2, 2)
+        }
+    }
+
+    private fun getPosition(i: Int): IntArray{
+        when(i){
+            0 -> return intArrayOf(1, 0)
+            1 -> return intArrayOf(2, 0)
+            2 -> return intArrayOf(3, 1)
+            3 -> return intArrayOf(3, 2)
+            4 -> return intArrayOf(2, 3)
+            5 -> return intArrayOf(1, 3)
+            6 -> return intArrayOf(0, 2)
+            7 -> return intArrayOf(0, 1)
+        }
+        return intArrayOf(-1, -1)
     }
 }

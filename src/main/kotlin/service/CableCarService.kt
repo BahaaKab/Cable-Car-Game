@@ -161,6 +161,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
             stationTile.path.add(nextTile)
             // Updating where the next starting connector is
             if (nextTile.isEndTile) {
+                onAllRefreshables { refreshPathAfterEndTile(posX, posY, connector, playerColor) }
                 return
             }
             // the connector is firstly set on the beginning of the connection

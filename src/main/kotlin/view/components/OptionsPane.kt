@@ -11,10 +11,7 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
-import view.DEFAULT_BORDER_RADIUS
-import view.DEFAULT_FONT_BOLD
-import view.DEFAULT_GREY_STRING
-import view.GameScene
+import view.*
 import java.awt.Color
 import javax.imageio.ImageIO
 
@@ -43,6 +40,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
                 "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
         onMouseClicked = {
+            CableCarApplication.gameScene.resetImage()
             rootService.playerActionService.undo()
         }
     }
