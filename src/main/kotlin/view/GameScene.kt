@@ -118,10 +118,9 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 height = 100,
                 visual = Visual.EMPTY
             ).apply {
-                if(!((column == 4 || column == 5) && (row == 4 || row == 5))) {
-                    onMouseClicked = { rootService.playerActionService.placeTile(posX = column + 1, posY = row + 1) }
-                } else {
-                    println("Ola, ich bin eine Bug.")
+                if(!((column == 3 || column == 4) && (row == 3 || row == 4))) {
+                    onMouseClicked = {
+                        rootService.playerActionService.placeTile(posX = column + 1, posY = row + 1) }
                 }
             }
         }
