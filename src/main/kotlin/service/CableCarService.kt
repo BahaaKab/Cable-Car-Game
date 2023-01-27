@@ -128,9 +128,9 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         for (player in playerList) {
             for (stationTiles in player.stationTiles) {
                 if (stationTiles in adjacentTiles) {
-                    updatePath(stationTiles)
+                    updatePath(stationTiles, player.color)
                 } else if (stationTiles.path.isNotEmpty() && stationTiles.path.last() in adjacentTiles) {
-                    updatePath(stationTiles)
+                    updatePath(stationTiles, player.color)
                 }
             }
         }
@@ -141,7 +141,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      *
      * @param stationTile where the path begins
      */
-    fun updatePath(stationTile: StationTile) {
+    fun updatePath(stationTile: StationTile, playerColor: Color) {
         val currentState: State = rootService.cableCar.currentState
         stationTile.path = mutableListOf()
         val gridPosition: Array<Int> = getPosition(stationTile)
@@ -165,6 +165,10 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
             }
             // the connector is firstly set on the beginning of the connection
             connector = nextTile.OUTER_TILE_CONNECTIONS[connector]
+            // refresh colored paths in GameScene
+            onAllRefreshables {
+                refreshAfterPathElementUpdated(posX, posY, connector, nextTile.connections[connector],playerColor )
+            }
             // Updating the next connector which directs to another possible [Tile]
             connector = nextTile.connections[connector]
         }

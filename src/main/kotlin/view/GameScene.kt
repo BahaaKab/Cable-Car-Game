@@ -9,6 +9,7 @@ import service.RootService
 import tools.aqua.bgw.animation.DelayAnimation
 import tools.aqua.bgw.animation.FadeAnimation
 import tools.aqua.bgw.components.gamecomponentviews.CardView
+import tools.aqua.bgw.components.gamecomponentviews.TokenView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.BoardGameApplication
@@ -22,7 +23,9 @@ import view.components.ActivePlayerPane
 import view.components.CableCarLogo
 import view.components.OptionsPane
 import view.components.OtherPlayersPane
+import java.awt.BasicStroke
 import java.awt.Color
+import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
 
@@ -106,6 +109,40 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    private val dummyTiles = List(8) { column ->
+        List(8) { row ->
+            TokenView(
+                posX = board.posX + 100 * (column + 1),
+                posY = board.posY + 100 * (row + 1),
+                width = 100,
+                height = 100,
+                visual = Visual.EMPTY
+            ).apply {
+                if(!((column == 4 || column == 5) && (row == 4 || row == 5))) {
+                    onMouseClicked = { rootService.playerActionService.placeTile(posX = column + 1, posY = row + 1) }
+                } else {
+                    println("Ola, ich bin eine Bug.")
+                }
+            }
+        }
+    }
+
+    private val drawImage = BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB)
+
+    private val paintBrush = drawImage.createGraphics().apply {
+        background = Color(0,0,0,0)
+        color = Color.BLACK
+        stroke = BasicStroke(5.0f)
+    }
+
+    private val pathImage = TokenView(
+        posX = board.posX,
+        posY = board.posY,
+        width = board.width,
+        height = board.height,
+        visual = ImageVisual(drawImage)
+    )
+
 
     init {
         background = ColorVisual(247, 247, 247)
@@ -115,8 +152,14 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             activePlayerPane,
             otherPlayersPane,
             connectionStatusLabel,
-            board
+            board,
+            pathImage
         )
+        for (tileColumn in dummyTiles){
+            for(tile in tileColumn) {
+                addComponents(tile)
+            }
+        }
     }
 
     private fun initializeStationTileMap() = with(rootService.cableCar.currentState) {
@@ -356,5 +399,73 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             )
 
         }
+    }
+
+    private fun getPosition(i: Int): IntArray{
+        when(i){
+            0 -> return intArrayOf(1, 0)
+            1 -> return intArrayOf(2, 0)
+            2 -> return intArrayOf(3, 1)
+            3 -> return intArrayOf(3, 2)
+            4 -> return intArrayOf(2, 3)
+            5 -> return intArrayOf(1, 3)
+            6 -> return intArrayOf(0, 2)
+            7 -> return intArrayOf(0, 1)
+        }
+        return intArrayOf(-1, -1)
+    }
+
+    override fun refreshAfterPathElementUpdated(x: Int, y: Int, connectionA: Int,
+                                                connectionB: Int, color: entity.Color) {
+
+        // Set color of the connection:
+        when (color) {
+            entity.Color.YELLOW -> paintBrush.color = Color(253, 211, 41)
+            entity.Color.BLUE -> paintBrush.color = Color(17, 139, 206)
+            entity.Color.ORANGE -> paintBrush.color = Color(213, 41, 39)
+            entity.Color.GREEN -> paintBrush.color = Color(12, 111, 47)
+            entity.Color.PURPLE -> paintBrush.color = Color(142, 13, 78)
+            entity.Color.BLACK -> paintBrush.color = Color(2, 2, 2)
+        }
+
+        val cornerTileFactor = (0.166 * 100).toInt()
+        if(connectionA == 0 && connectionB == 1){
+           // paintBrush.drawLine(conAPos[0],conAPos[1],conAPos[0], conAPos[1] + ((0.166 * 100)).toInt())
+           paintBrush.drawLine(x * 101 + 33,y * 101, x * 101 + 33,y * 101 + cornerTileFactor)
+           paintBrush.drawLine(x * 101 + 66,y * 101, x * 101 + 66,y * 101 + cornerTileFactor)
+           paintBrush.drawLine(x * 101 + 33,y * 101 + cornerTileFactor, x * 101 + 66,y * 101 + cornerTileFactor)
+        } else if(connectionA == 2 && connectionB == 3){
+            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 33, (x+1) * 101 ,y * 101 + 33)
+            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 66, (x+1) * 101 ,y * 101 + 66)
+            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 33, (x+1) * 101 - cornerTileFactor,y * 101 + 66)
+        } else if(connectionA == 4 && connectionB == 5){
+            paintBrush.drawLine(x * 101 + 33,(y+1) * 101, x * 101 + 33,(y+1) * 101 - cornerTileFactor)
+            paintBrush.drawLine(x * 101 + 66,(y+1) * 101, x * 101 + 66,(y+1) * 101 - cornerTileFactor)
+            paintBrush.drawLine(x * 101 + 33,(y+1) * 101 - cornerTileFactor, x * 101 + 66,(y+1) * 101 - cornerTileFactor)
+        } else if(connectionA == 6 && connectionB == 7){
+            paintBrush.drawLine(x * 101,y * 101 + 33, x * 101 + cornerTileFactor,y * 101 + 33)
+            paintBrush.drawLine(x * 101,y * 101 + 66, x * 101 + cornerTileFactor,y * 101 + 66)
+            paintBrush.drawLine(x * 101 + cornerTileFactor,y * 101 + 33, x * 101 + cornerTileFactor,y * 101 + 66)
+        }else{
+            val conAPos = getPosition(connectionA)
+            val conBPos = getPosition(connectionB)
+
+            val failurePos = intArrayOf(-1,-1)
+            if(conAPos.contentEquals(failurePos) || conBPos.contentEquals(failurePos)){
+                println("ERROR: could not identify Connections")
+                return
+            }
+
+            conAPos[0] = conAPos[0] * 33
+            conAPos[1] = conAPos[1] * 33
+
+            conBPos[0] = conBPos[0] * 33
+            conBPos[1] = conBPos[1] * 33
+
+            paintBrush.drawLine(x * 101 + conAPos[0],y * 101 + conAPos[1],
+                                x * 101 + conBPos[0],y * 101 + conBPos[1])
+        }
+
+        pathImage.visual = ImageVisual(drawImage)
     }
 }

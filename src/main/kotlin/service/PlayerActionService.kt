@@ -29,7 +29,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
         for (player in currentState.players) {
             for (stationTiles in player.stationTiles) {
-                rootService.cableCarService.updatePath(stationTiles)
+                rootService.cableCarService.updatePath(stationTiles, player.color)
             }
         }
 
@@ -56,7 +56,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
         for (player in currentState.players) {
             for (stationTiles in player.stationTiles) {
-                rootService.cableCarService.updatePath(stationTiles)
+                rootService.cableCarService.updatePath(stationTiles, player.color)
             }
         }
 

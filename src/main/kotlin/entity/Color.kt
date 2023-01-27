@@ -24,5 +24,4 @@ enum class Color {
         PURPLE -> "purple"
         BLACK -> "black"
     }
-
 }
