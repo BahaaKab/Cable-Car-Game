@@ -24,8 +24,8 @@ class AIServiceTest {
 
     @Test
     fun benchmarkHardAIPVP() {
-        benchmarkHardAI(5000, 1, false)
-        benchmarkHardAI(5000, 1, true)
+        benchmarkHardAI(1000, 1, false)
+        benchmarkHardAI(1000, 1, true)
     }
 
     private fun benchmarkHardAI(numberOfRuns: Int, numberOfEasyEnemies: Int, allowRotation: Boolean) {
@@ -35,7 +35,6 @@ class AIServiceTest {
             PlayerInfo("Easy AI$i", PlayerType.AI_EASY, PLAYER_ORDER_COLORS[i], false)
         }
         val playerInfos = listOf(hardAI) + enemies
-
         var hardAIWins = 0f
         var totalActions = 0
         var totalTime = 0L

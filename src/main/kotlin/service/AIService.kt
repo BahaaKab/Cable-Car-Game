@@ -5,11 +5,10 @@ import entity.PlayerType
 import entity.StationTile
 import entity.Tile
 import java.lang.IllegalStateException
-import java.nio.file.Path
 import kotlin.random.Random
 
 
-class WeightedPosition(x: Int, y: Int, var weight: Float = 0f) {
+data class WeightedPosition(val x: Int, val y: Int, var weight: Float = 0f) {
     val position = Pair(x, y)
 }
 
@@ -32,7 +31,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
     fun makeAIMove() {
         when (rootService.cableCar.currentState.activePlayer.playerType) {
             PlayerType.AI_EASY -> easyTurn()
-            PlayerType.AI_HARD -> hardTurn(::enhancesAIPaths)
+            PlayerType.AI_HARD -> hardTurn(::enhancesAIPaths, ::closesOwnPath)
             PlayerType.HUMAN -> return
         }
     }
@@ -162,9 +161,18 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
                 (totalPathLengthsBeforePlacement + 1)
     }
 
-//    private fun closesOwnPath(position: Pair<Int, Int>, tile: GameTile): Float {
-//        rootService.cableCar.currentState.activePlayer.stationTiles.map { }
-//    }
+    private fun closesOwnPath(position: Pair<Int, Int>, tile: GameTile) : Float {
+        val threshold = 4
+        val (x, y) = position
+        return rootService.cableCar.currentState.activePlayer.stationTiles.map { stationTile ->
+            val path = stationTile.getEnhancedPathWith(tile, x, y)
+            if (path.isEmpty() || path.last().secondConnector != -1) {
+                0
+            } else {
+                path.size - threshold
+            }
+        }.sumOf { it } / threshold.toFloat()
+    }
 
 //    private fun closePathWithPowerStation(position: Pair<Int, Int>, tile: GameTile): Float {
 //    }
@@ -250,13 +258,15 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
                 else -> throw IllegalStateException()
             }
             val nextConnectionA = OUTER_TILE_CONNECTIONS[lastPathSegment.connection.second]
-            val nextConnectionB = nextTile!!.connections[nextConnectionA]
+            val nextConnectionB = if ((nextTile as Tile).isEndTile) {
+                -1
+            } else {
+                nextTile.connections[nextConnectionA]
+            }
             lastPathSegment = PathSegment(nextPosition.first, nextPosition.second, nextConnectionA, nextConnectionB)
             path.add(lastPathSegment)
             nextTile = rootService.cableCar.currentState.board[nextPosition.first][nextPosition.second]
-
-
-        } while (nextTile != null && !nextTile.isEndTile)
+        } while (nextTile != null || lastPathSegment.secondConnector == -1)
         return path
     }
 
