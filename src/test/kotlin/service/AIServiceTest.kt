@@ -12,7 +12,6 @@ class AIServiceTest {
         repeat(5) { i ->
             benchmarkHardAI(1000, i + 1, false)
         }
-
     }
 
     @Test
@@ -20,6 +19,13 @@ class AIServiceTest {
         repeat(5) { i ->
             benchmarkHardAI(1000, i + 1, true)
         }
+    }
+
+
+    @Test
+    fun benchmarkHardAIPVP() {
+        benchmarkHardAI(5000, 1, false)
+        benchmarkHardAI(5000, 1, true)
     }
 
     private fun benchmarkHardAI(numberOfRuns: Int, numberOfEasyEnemies: Int, allowRotation: Boolean) {
