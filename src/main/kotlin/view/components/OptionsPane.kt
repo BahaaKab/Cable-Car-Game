@@ -99,7 +99,8 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
     }
 
     init {
-        addAll(undoButton, undoIcon, redoButton, redoIcon, selectAISpeedLabel, speed0, speed1, speed2, speed3)
+        addAll(undoButton, undoIcon, redoButton, redoIcon, selectAISpeedLabel)
+        addAll(speedRadioButtons)
     }
 
     fun disableUndoRedo() {
