@@ -132,6 +132,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         )
     }
 
+    /** Refreshes the display of the active Player. */
     fun refreshActivePlayer() = with(rootService.cableCar.currentState.activePlayer) {
         activePlayerTiles.clear()
         if (handTile == null) {
@@ -154,6 +155,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         }
     }
 
+    /** Disables the rotate functionality. */
     fun disableTileRotationButtons() {
         rotateLeftButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
@@ -168,6 +170,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         rotateLeftIcon.apply { isDisabled = true }
     }
 
+    /** Disables the draw Tile functionality. */
     fun disableDrawTileButton() {
         drawTileButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
@@ -176,7 +179,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         drawTileIcon.apply { isDisabled = true }
     }
 
-
+    /** Enables the draw Tile functionality. */
     fun enableDrawTileButton() {
         drawTileButton.apply {
             componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"

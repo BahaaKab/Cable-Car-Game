@@ -102,6 +102,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         addAll(speedRadioButtons)
     }
 
+    /** Disables the Undo and Redo functionality */
     fun disableUndoRedo() {
         undoButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
@@ -116,6 +117,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         redoIcon.apply { isDisabled = true }
     }
 
+    /** Enables the Undo and Redo functionality */
     fun enableUndoRedo() {
         undoButton.apply {
             componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
@@ -132,6 +134,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         redoIcon.apply { isDisabled = false }
     }
 
+    /** Sets the AISpeed in the Data-Layer */
     internal fun setAISpeed(value : Int) {
         speedRadioButtons[value].isSelected = true
     }
