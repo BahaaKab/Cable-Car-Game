@@ -17,7 +17,6 @@ import tools.aqua.bgw.core.BoardGameApplication
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.components.ActivePlayerPane
@@ -27,7 +26,6 @@ import view.components.OtherPlayersPane
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
 
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {
