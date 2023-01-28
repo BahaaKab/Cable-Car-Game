@@ -253,7 +253,6 @@ class LobbyScene(
                 tileRotationButton.isVisible = false
                 playerOrderButton.isVisible = false
                 refreshArrow.isVisible = false
-
                 cubePicture.isVisible = false
                 for (input in playerInputs){
                     input.deactivateSwitching()
