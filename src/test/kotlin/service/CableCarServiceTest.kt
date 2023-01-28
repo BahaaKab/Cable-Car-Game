@@ -1,7 +1,6 @@
 package service
 
 import entity.*
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.*
 
 class CableCarServiceTest {
@@ -152,8 +151,8 @@ class CableCarServiceTest {
         assertEquals(0, beginStationTile.path.size)
         assertEquals(0, endStationTile.path.size)
 
-        rootService.cableCarService.updatePath(beginStationTile)
-        rootService.cableCarService.updatePath(endStationTile)
+        rootService.cableCarService.updatePath(beginStationTile, p1.color)
+        rootService.cableCarService.updatePath(endStationTile, p1.color)
         // After the update the two [StationTiles] are connected by two different paths
         assertEquals(gameTile1, beginStationTile.path[0])
         assertEquals(gameTile2, beginStationTile.path[1])
