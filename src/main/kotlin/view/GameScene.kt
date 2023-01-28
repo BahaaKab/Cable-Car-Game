@@ -202,6 +202,18 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 }
             }
         }
+
+        val playerNumber = rootService.cableCar.currentState.players.size
+        if( playerNumber in 5..6 || playerNumber == 3){
+            paintBrush.color = Color(230, 230, 233)
+
+            paintBrush.drawLine(909, 874, 966, 874)
+            paintBrush.drawLine(967, 863, 967, 885)
+            paintBrush.drawLine(841, 909, 841, 966)
+            paintBrush.drawLine(830, 967, 852, 967)
+
+            pathImage.visual = ImageVisual(drawImage)
+        }
     }
 
     /** Refreshes the board after Undo/Redo. */
