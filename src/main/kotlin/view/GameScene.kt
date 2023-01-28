@@ -173,6 +173,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    /** Initializes a Station Tile as graphic. */
     private fun initializeStationTiles() {
         checkNotNull(rootService.cableCar)
 
@@ -205,6 +206,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    /** Refreshes the board after Undo/Redo. */
     private fun refreshBoard(oldState: entity.State) {
         val tilesToChange = mutableListOf<TileInfo>()
         val currentStateCopy = rootService.cableCar.currentState.deepCopy()
@@ -237,7 +239,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterStartGame
+     * Configure the board after the start of the Game.
      */
     override fun refreshAfterStartGame() {
         initializeStationTileMap()
@@ -264,7 +266,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterRotateTileLeft
+     * Rotates a Tile leftwards.
      */
     override fun refreshAfterRotateTileLeft() {
         activePlayerPane.activePlayerTiles.last().rotate(-90)
@@ -272,7 +274,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterRotateTileRight
+     * Rotates a Tile rightwards.
      */
     override fun refreshAfterRotateTileRight() {
         activePlayerPane.activePlayerTiles.last().rotate(90)
@@ -280,7 +282,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterUndo
+     * Refreshes the boards and Panes after Undo.
      */
     override fun refreshAfterUndo(oldState: entity.State) {
         refreshBoard(oldState)
@@ -290,12 +292,12 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterRedo
+     * Refreshes the boards and Panes after Redo.
      */
     override fun refreshAfterRedo(oldState: entity.State) = refreshAfterUndo(oldState)
 
     /**
-     * @see view.Refreshable.refreshAfterPlaceTile
+     * Places a tile on the board.
      */
     override fun refreshAfterPlaceTile(posX: Int, posY: Int) {
         activePlayerPane.activePlayerTiles.remove(activePlayerPane.activePlayerTiles.last())
@@ -308,7 +310,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
 
     /**
-     * @see view.Refreshable.refreshAfterDrawTile
+     * Refreshes the shown handcards after drawing a tile.
      */
     override fun refreshAfterDrawTile() {
         if (rootService.cableCar.currentState.activePlayer.currentTile == null) {
@@ -329,7 +331,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterNextTurn
+     * Refreshes after a Turn.
      */
     override fun refreshAfterNextTurn() {
         if(!rootService.cableCar.currentState.activePlayer.isNetworkPlayer) showPlaceablePositions()
@@ -353,6 +355,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         startAIHandler()
     }
 
+    /** Shows all placeable position for the currentTile.*/
     private fun showPlaceablePositions() {
         val currentTile = with(rootService.cableCar.currentState.activePlayer) {
             checkNotNull(currentTile ?: handTile)
@@ -373,11 +376,12 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     }
 
+    /** Hides Alle placeable Positions.*/
     private fun hidePlaceablePositions() = placeablePositions.forEach { (x,y) ->
         board[x, y]?.showFront()
     }
 
-
+    /** Starts the AI Handler if needed.*/
     private fun startAIHandler() {
         if (rootService.cableCar.currentState.activePlayer.playerType in listOf(
                 PlayerType.AI_EASY,
@@ -401,10 +405,12 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    /** Resets the image in which the paths are drawn.*/
     fun resetImage(){
         paintBrush.clearRect(0,0, drawImage.width, drawImage.height)
     }
 
+    /** After a Tile is placed all paths related to this Tile are drawn. */
     override fun refreshAfterPathElementUpdated(x: Int, y: Int, connectionA: Int,
                                                 connectionB: Int, color: entity.Color) {
 
@@ -452,6 +458,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         pathImage.visual = ImageVisual(drawImage)
     }
 
+    /** If the last Tile of the path is a power-station or normal station-Tile
+     *  this method draws it.*/
     override fun refreshPathAfterEndTile(x: Int, y: Int, connector: Int, color: entity.Color) {
         setPaintBrush(color)
 
@@ -489,6 +497,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         pathImage.visual = ImageVisual(drawImage)
     }
 
+    /** Sets the color of the drawing paint brush.*/
     private fun setPaintBrush(color: entity.Color){
         when (color) {
             entity.Color.YELLOW -> paintBrush.color = Color(253, 211, 41)
@@ -500,6 +509,8 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    /** Returns the position of a given connector / ConnectionPoint.
+     * @return [-1,-1] if the connector is not valid.*/
     private fun getPosition(i: Int): IntArray{
         when(i){
             0 -> return intArrayOf(1, 0)
