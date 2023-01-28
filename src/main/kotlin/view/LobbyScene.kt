@@ -191,6 +191,7 @@ class LobbyScene(
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
             val playerInfos = playerInputs.map { it.getPlayerInfo() }
+            println(playerInfos)
             if (playerNumber >= 2) {
                 if (isNetworkMode) {
                     rootService.setupService.startNetworkGame(

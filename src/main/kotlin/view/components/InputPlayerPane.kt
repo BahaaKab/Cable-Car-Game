@@ -131,7 +131,7 @@ class InputPlayerPane(
 
     /** Returns the playerName of the input for each case (Local or Network).*/
     fun getPlayerName(): String {
-        return if(isNetwork){
+        return if(isNetwork || isHost){
             playerName.text
         }else{
             getTextFieldInput()
