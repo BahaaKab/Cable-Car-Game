@@ -1,5 +1,6 @@
 package view.components
 
+import service.AssetsLoader
 import service.RootService
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
@@ -30,10 +31,8 @@ import javax.imageio.ImageIO
 class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX = posX, posY = posY, width = 402, height = 40) {
 
-    //private val undoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/undo.png")))
-    private val undoVisual = ColorVisual.GRAY
-    //private val redoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/redo.png")))
-    private val redoVisual = ColorVisual.GRAY
+    private val undoVisual = ImageVisual(AssetsLoader.undoImage)
+    private val redoVisual = ImageVisual(AssetsLoader.redoImage)
 
     private val undoButton = Button(
         posX = 0, posY = 0,

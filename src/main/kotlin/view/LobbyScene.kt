@@ -1,6 +1,7 @@
 package view
 
 import entity.PlayerType
+import service.AssetsLoader
 import tools.aqua.bgw.core.MenuScene
 import service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
@@ -16,7 +17,6 @@ import view.components.InputPlayerPane
 import view.components.NumberOfPlayersPane
 import view.components.PlayerIndicatorPane
 import java.awt.Color
-import javax.imageio.ImageIO
 import kotlin.random.Random
 
 
@@ -39,18 +39,14 @@ class LobbyScene(
     private var changingPosition = -1
 
     private val cableCarLogo = CableCarLogo(810, 50).apply { scale = 1.1 }
-    // TODO: load via AssetImageLoader
-    //private val refreshArrowVisual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh.png")))
-    //private val refreshArrowBlue = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow_refresh_blue.png")))
-    private val refreshArrowVisual = ColorVisual.BLUE
-    private val refreshArrowBlue = ColorVisual.GREEN
+    private val refreshArrowVisual = ImageVisual(AssetsLoader.refreshArrowGreyImage)
+    private val refreshArrowBlue = ImageVisual(AssetsLoader.refreshArrowBlueImage)
+
 
     private val backArrow = Label(
         posX = 544, posY = 215,
         width = 30, height = 30,
-        // TODO: load via AssetImageLoader
-        //visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/arrow.PNG")))
-        visual = ColorVisual.BLUE
+        visual = ImageVisual(AssetsLoader.backArrowImage)
     )
 
     private val backButton = Button(
@@ -101,9 +97,7 @@ class LobbyScene(
     private val cubePicture = Label(
         posX = 681, posY = 216,
         width = 28, height = 28,
-        // TODO: load via AssetImageLoader
-        //visual = ImageVisual(ImageIO.read(LobbyScene::class.java.getResource("/cube.png")))
-        visual = ColorVisual.CYAN
+        visual = ImageVisual(AssetsLoader.cubeImage)
     )
 
     private val tileRotationButton = Button(

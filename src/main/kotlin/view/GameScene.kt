@@ -23,7 +23,6 @@ import view.components.CableCarLogo
 import view.components.OptionsPane
 import view.components.OtherPlayersPane
 import java.awt.Color
-import javax.imageio.ImageIO
 
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {

@@ -1,5 +1,6 @@
 package view
 
+import service.AssetsLoader
 import service.TileImageLoader
 import tools.aqua.bgw.visual.ColorVisual
 import java.awt.Color
