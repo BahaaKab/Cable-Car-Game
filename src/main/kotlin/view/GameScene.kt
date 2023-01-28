@@ -5,6 +5,7 @@ import entity.GameMode
 import entity.GameTile
 import entity.PlayerType
 import entity.StationTile
+import service.AssetsLoader
 import service.RootService
 import tools.aqua.bgw.animation.DelayAnimation
 import tools.aqua.bgw.animation.FadeAnimation
@@ -16,6 +17,7 @@ import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
+import tools.aqua.bgw.visual.CompoundVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.components.ActivePlayerPane
@@ -43,9 +45,7 @@ val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
  * @param rootService The administration class for the entity and service layer.
  */
 class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
-    // TODO: load via AssetImageLoader
-    //private val boardVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/board.png")))
-    private val boardVisual = ColorVisual.WHITE
+    private val boardVisual = ImageVisual(AssetsLoader.boardImage)
 
     private val stationTileMap = BidirectionalMap<StationTile, CardView>()
 
@@ -75,7 +75,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 width = 100,
                 height = 100,
                 front = Visual.EMPTY,
-                back = ColorVisual(247, 247, 247).apply {
+                back = DEFAULT_BACKGROUND_COLOR.copy().apply {
                     style = """-fx-border-width: 2px; -fx-border-color: rgba(0,0,0,0.1);
                          -fx-effect:innershadow(one-pass-box, rgba(0,0,0,0.1), 30, 0.2, 0, 0);"""
                 }
@@ -108,7 +108,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
 
     init {
-        background = ColorVisual(247, 247, 247)
+        background = DEFAULT_BACKGROUND_COLOR
         addComponents(
             logoPane,
             optionsPane,

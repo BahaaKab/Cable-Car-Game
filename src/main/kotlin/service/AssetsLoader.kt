@@ -13,4 +13,5 @@ object AssetsLoader {
     val cubeImage: BufferedImage = ImageIO.read(AssetsLoader::class.java.getResource("/cube.png"))
     val undoImage: BufferedImage = ImageIO.read(AssetsLoader::class.java.getResource("/undo.png"))
     val redoImage: BufferedImage = ImageIO.read(AssetsLoader::class.java.getResource("/redo.png"))
+    val boardImage: BufferedImage = ImageIO.read(AssetsLoader::class.java.getResource("/board.png"))
 }
