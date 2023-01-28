@@ -10,12 +10,10 @@ import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.*
 import java.awt.Color
-import javax.imageio.ImageIO
 
 /**
  * The pane which contains everything relevant for the [entity.State.activePlayer].
@@ -84,7 +82,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         posX = 15, posY = 124,
         width = 25, height = 25,
         visual = rotateLeftVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.rotateTileLeft() } }
 
     private val rotateRightButton = Button(
         posX = 185, posY = 116,
@@ -104,7 +102,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         posX = 200, posY = 124,
         width = 25, height = 25,
         visual = rotateRightVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.rotateTileRight() } }
 
     private val drawTileButton = Button(
         posX = 112, posY = 176,
@@ -124,7 +122,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         posX = 123, posY = 180,
         width = 30, height = 30,
         visual = drawTileVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.drawTile() } }
 
     init {
         addAll(
@@ -161,21 +159,30 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = true
         }
+        rotateLeftIcon.apply { isDisabled = true }
+
         rotateRightButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = true
         }
+        rotateLeftIcon.apply { isDisabled = true }
     }
 
-    fun disableDrawTileButton() = drawTileButton.apply {
-        componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
-        isDisabled = true
+    fun disableDrawTileButton() {
+        drawTileButton.apply {
+            componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = true
+        }
+        drawTileIcon.apply { isDisabled = true }
     }
 
 
-    fun enableDrawTileButton() = drawTileButton.apply {
-        componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
-        isDisabled = false
+    fun enableDrawTileButton() {
+        drawTileButton.apply {
+            componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = false
+        }
+        drawTileIcon.apply { isDisabled = false }
     }
 
 }
