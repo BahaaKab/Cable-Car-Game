@@ -118,7 +118,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         cableCarService.updatePaths(posX, posY)
         cableCarService.calculatePoints()
         // If this is a network game, create the turn message
-        if (cableCar.gameMode == GameMode.NETWORK && rootService.networkService.networkClient.playerName == cableCar.currentState.activePlayer.name) {
+        if (cableCar.gameMode == GameMode.NETWORK && !cableCar.currentState.activePlayer.isNetworkPlayer) {
             networkService.sendTurnMessage(posX, posY, fromSupply, tileToPlace.rotation)
         }
         // Start the next turn
