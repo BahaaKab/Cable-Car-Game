@@ -36,7 +36,7 @@ open class NetworkTest {
      * be called automatically before each test and will set the [sessionID] with a incremented [sessionIDCounter].
      */
     private fun setUniqueSessionId() {
-        sessionID = "${coreSessionID}_${sessionIDCounter ++}"
+        sessionID = "${coreSessionID}_${sessionIDCounter++}"
     }
 
     @BeforeTest

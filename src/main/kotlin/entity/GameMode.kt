@@ -12,7 +12,7 @@ enum class GameMode {
     /**
      * Provide a string to represent the [GameMode]
      */
-    override fun toString() = when(this) {
+    override fun toString() = when (this) {
         HOTSEAT -> "Hotseat"
         NETWORK -> "Network"
     }

@@ -46,7 +46,7 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
         )
     }
 
-    private fun getUsedPanes() = when(rootService.cableCar.currentState.players.size) {
+    private fun getUsedPanes() = when (rootService.cableCar.currentState.players.size) {
         2 -> listOf(otherPlayer1Pane)
         3 -> listOf(otherPlayer1Pane, otherPlayer2Pane)
         4 -> listOf(otherPlayer1Pane, otherPlayer2Pane, otherPlayer3Pane)
@@ -60,7 +60,7 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
         Color.ORANGE -> DEFAULT_RED_COLOR
         Color.GREEN -> DEFAULT_GREEN_COLOR
         Color.PURPLE -> DEFAULT_PURPLE_COLOR
-        Color.BLACK -> DEFAULT_BLUE_COLOR
+        Color.BLACK -> DEFAULT_BLACK_COLOR
     }
 
     fun refreshAfterStartGame() {
@@ -128,17 +128,16 @@ class OtherPlayersPane(private val rootService: RootService, posX: Number = 0, p
                 }
             }
         }
-        refreshOtherPlayers()
     }
 
     fun refreshOtherPlayers() {
         checkNotNull(rootService.cableCar)
         with(rootService.cableCar.currentState) {
-            var currentPlayer : Player
+            var currentPlayer: Player
             getUsedPanes().forEach { it.playerCard.clear() }
             getUsedPanes().forEachIndexed { index, pane ->
                 currentPlayer = players[(players.indexOf(activePlayer) + index + 1) % players.size]
-                if(currentPlayer.handTile == null) {
+                if (currentPlayer.handTile == null) {
                     pane.playerCard.add(CardView(width = 100, height = 100, front = Visual.EMPTY))
                 } else {
                     pane.playerCard.add(tileMapSmall.forward(currentPlayer.handTile!!.id).apply {

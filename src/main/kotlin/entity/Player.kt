@@ -11,12 +11,14 @@ package entity
  * @property currentTile
  * @property isNetworkPlayer
  */
-data class Player(val playerType : PlayerType, val color : Color, val name : String,
-            val stationTiles : List<StationTile>, val isNetworkPlayer: Boolean = false) {
+data class Player(
+    val playerType: PlayerType, val color: Color, val name: String,
+    val stationTiles: List<StationTile>, val isNetworkPlayer: Boolean = false
+) {
 
-    var score : Int = 0
-    var handTile : GameTile? = null
-    var currentTile : GameTile? = null
+    var score: Int = 0
+    var handTile: GameTile? = null
+    var currentTile: GameTile? = null
 
     /**
      * Create a player entity from a [PlayerInfo] object.
@@ -25,14 +27,14 @@ data class Player(val playerType : PlayerType, val color : Color, val name : Str
      * @param stationTiles The players stationTiles.
      */
     constructor(playerInfo: PlayerInfo, stationTiles: List<StationTile>) :
-        this(playerInfo.playerType, playerInfo.color, playerInfo.name, stationTiles, playerInfo.isNetworkPlayer)
+            this(playerInfo.playerType, playerInfo.color, playerInfo.name, stationTiles, playerInfo.isNetworkPlayer)
 
 
     /**
      * Function that returns a deep-copy of a [Player]
      * @return deep-copy of [Player]
      */
-    fun copy() : Player {
+    fun copy(): Player {
         return Player(playerType, color, name, stationTiles, isNetworkPlayer).also {
             it.score = score
             it.handTile = handTile?.deepCopy()

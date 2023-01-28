@@ -187,16 +187,17 @@ class SetupServiceTest {
         val stationTilesFromBoard = getStationTilesFromBoard(state.board)
         state.players.forEachIndexed { i, player ->
             val expectedTileIds = getStationTilesIdConfig(state.players.size, i)
-            val currentTileIds = stationTilesFromBoard.mapIndexed{ j, tile ->
+            val currentTileIds = stationTilesFromBoard.mapIndexed { j, tile ->
                 if (tile in player.stationTiles) j + 1 else -1
             }.filter { it > 0 }
 
             assertEquals(expectedTileIds.size, currentTileIds.size)
-            expectedTileIds.zip(currentTileIds){ expectedTile, currentTile ->
+            expectedTileIds.zip(currentTileIds) { expectedTile, currentTile ->
                 assertEquals(
                     expectedTile,
                     currentTile,
-                    "Number of Players: ${state.players.size}, Player number: $i")
+                    "Number of Players: ${state.players.size}, Player number: $i"
+                )
             }
         }
     }
@@ -211,7 +212,7 @@ class SetupServiceTest {
      * the amount of players.
      * @return The station tiles assigned to the player at [playerPosition] for the configuration of [numberOfPlayers].
      */
-    private fun getStationTilesIdConfig(numberOfPlayers: Int, playerPosition: Int) : List<Int> {
+    private fun getStationTilesIdConfig(numberOfPlayers: Int, playerPosition: Int): List<Int> {
         require(numberOfPlayers in 2..6)
         require(playerPosition in 0 until numberOfPlayers)
         return stationTileConfigs[numberOfPlayers - 2][playerPosition]
@@ -225,7 +226,7 @@ class SetupServiceTest {
      * @return The station tiles ordered after their Ids, starting in the upper left corner.
      * Therefore the index of a tile equals the (id - 1).
      */
-    private fun getStationTilesFromBoard(board: Array<Array<Tile?>>) : List<StationTile> {
+    private fun getStationTilesFromBoard(board: Array<Array<Tile?>>): List<StationTile> {
         val stationTiles = mutableListOf<StationTile>()
         for (i in 1..8) {
             stationTiles.add(board[i][0] as StationTile)
@@ -250,7 +251,7 @@ class SetupServiceTest {
      * @throws IllegalArgumentException If [numberOfPlayers] is bigger than 6
      * @return The player infos
      */
-    private fun generatePlayerInfos(numberOfPlayers: Int) : List<PlayerInfo> {
+    private fun generatePlayerInfos(numberOfPlayers: Int): List<PlayerInfo> {
         val colors = arrayOf(Color.YELLOW, Color.BLUE, Color.ORANGE, Color.GREEN, Color.PURPLE, Color.BLACK)
         return List(numberOfPlayers) { i ->
             PlayerInfo("Player$i", PlayerType.HUMAN, colors[i % colors.size], false)

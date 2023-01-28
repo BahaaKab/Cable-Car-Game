@@ -12,14 +12,12 @@ class PlayerInfoTest {
      */
     @Test
     fun testConstructor() {
-        val playerInfo = PlayerInfo("TestName",PlayerType.AI_HARD , Color.BLUE, isNetworkPlayer = true)
+        val playerInfo = PlayerInfo("TestName", PlayerType.AI_HARD, Color.BLUE, isNetworkPlayer = true)
         assertEquals("TestName", playerInfo.name)
         assertEquals(Color.BLUE, playerInfo.color)
         assertEquals(PlayerType.AI_HARD, playerInfo.playerType)
         assertEquals(true, playerInfo.isNetworkPlayer)
     }
-
-
 
 
 }

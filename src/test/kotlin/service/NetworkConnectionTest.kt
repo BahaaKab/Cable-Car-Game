@@ -14,7 +14,7 @@ import kotlin.test.*
 /**
  * Tests for the [NetworkService] and the [CableCarNetworkClient].
  */
-class NetworkConnectionTest: NetworkTest() {
+class NetworkConnectionTest : NetworkTest() {
     /**
      * Connect to the server as host and expect a [CreateGameResponseStatus.SUCCESS] status
      */
@@ -114,7 +114,7 @@ class NetworkConnectionTest: NetworkTest() {
         val networkPlayerInfos = PLAYER_ORDER_COLORS.mapIndexed { i, color ->
             // The first player should be the host
             val isNetworkPlayer = i == 0
-            PlayerInfo("Player $i", PlayerType.HUMAN, color, isNetworkPlayer )
+            PlayerInfo("Player $i", PlayerType.HUMAN, color, isNetworkPlayer)
         }
 
         val hostRefreshable = NetworkRefreshable()

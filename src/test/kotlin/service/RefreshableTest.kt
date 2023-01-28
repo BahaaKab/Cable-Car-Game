@@ -27,7 +27,7 @@ class RefreshableTest : Refreshable {
     /**
      * Resets all Called properties
      */
-    private fun reset(){
+    private fun reset() {
         refreshAfterEndGameCalled = false
         refreshAfterStartGameCalled = false
         refreshAfterHostGameCalled = false
@@ -43,21 +43,65 @@ class RefreshableTest : Refreshable {
         refreshAfterNextTurnCalled = false
     }
 
-    override fun refreshAfterEndGame() { refreshAfterEndGameCalled = true }
-    override fun refreshAfterStartGame() { refreshAfterStartGameCalled = true }
-    override fun refreshAfterHostGame() { refreshAfterHostGameCalled = true }
-    override fun refreshAfterJoinGame(names: List<String>) { refreshAfterJoinGameCalled = true }
-    override fun refreshAfterGuestJoined(name: String) { refreshAfterGuestJoinedCalled = true }
-    override fun refreshAfterGuestLeft(name: String) { refreshAfterGuestLeftCalled = true }
-    override fun refreshAfterCalculatePoints() { refreshAfterCalculatePointsCalled = true }
-    override fun refreshAfterRotateTileLeft() { refreshAfterRotateTileLeftCalled = true }
-    override fun refreshAfterRotateTileRight() { refreshAfterRotateTileRightCalled = true }
-    override fun refreshAfterUndo(oldState : entity.State) { refreshAfterUndoCalled = true }
-    override fun refreshAfterRedo(oldState : entity.State) { refreshAfterRedoCalled = true }
-    override fun refreshAfterPlaceTile(posX: Int, posY: Int) { refreshAfterPlaceTileCalled = true }
-    override fun refreshAfterDrawTile() { refreshAfterDrawTileCalled = true }
-    override fun refreshAfterGetTurn() { refreshAfterGetTurnCalled = true }
-    override fun refreshAfterNextTurn() { refreshAfterNextTurnCalled = true }
+    override fun refreshAfterEndGame() {
+        refreshAfterEndGameCalled = true
+    }
+
+    override fun refreshAfterStartGame() {
+        refreshAfterStartGameCalled = true
+    }
+
+    override fun refreshAfterHostGame() {
+        refreshAfterHostGameCalled = true
+    }
+
+    override fun refreshAfterJoinGame(names: List<String>) {
+        refreshAfterJoinGameCalled = true
+    }
+
+    override fun refreshAfterGuestJoined(name: String) {
+        refreshAfterGuestJoinedCalled = true
+    }
+
+    override fun refreshAfterGuestLeft(name: String) {
+        refreshAfterGuestLeftCalled = true
+    }
+
+    override fun refreshAfterCalculatePoints() {
+        refreshAfterCalculatePointsCalled = true
+    }
+
+    override fun refreshAfterRotateTileLeft() {
+        refreshAfterRotateTileLeftCalled = true
+    }
+
+    override fun refreshAfterRotateTileRight() {
+        refreshAfterRotateTileRightCalled = true
+    }
+
+    override fun refreshAfterUndo(oldState: entity.State) {
+        refreshAfterUndoCalled = true
+    }
+
+    override fun refreshAfterRedo(oldState: entity.State) {
+        refreshAfterRedoCalled = true
+    }
+
+    override fun refreshAfterPlaceTile(posX: Int, posY: Int) {
+        refreshAfterPlaceTileCalled = true
+    }
+
+    override fun refreshAfterDrawTile() {
+        refreshAfterDrawTileCalled = true
+    }
+
+    override fun refreshAfterGetTurn() {
+        refreshAfterGetTurnCalled = true
+    }
+
+    override fun refreshAfterNextTurn() {
+        refreshAfterNextTurnCalled = true
+    }
 
     /**
      * Checks if the refreshable has been called
@@ -98,7 +142,7 @@ class RefreshableTest : Refreshable {
         refreshAfterRotateTileRight()
         refreshAfterUndo(oldState)
         refreshAfterRedo(oldState)
-        refreshAfterPlaceTile(10,10)
+        refreshAfterPlaceTile(10, 10)
         refreshAfterDrawTile()
         refreshAfterGetTurn()
         refreshAfterNextTurn()

@@ -15,7 +15,7 @@ class TileTest {
      */
     @Test
     fun testCornerTileConstructor() {
-        val cornerTile : CornerTile = CornerTile()
+        val cornerTile = CornerTile()
         assertEquals(false, cornerTile.isEndTile)
         assertEquals(true, cornerTile.isEmpty)
         assertEquals(0, cornerTile.connections.size)
@@ -27,8 +27,8 @@ class TileTest {
      */
     @Test
     fun testStationTileConstructor() {
-        val connectors : List<Int> = listOf(0,1)
-        val stationTile : StationTile = StationTile(connectors)
+        val connectors = listOf(0, 1)
+        val stationTile = StationTile(connectors)
         assertEquals(1, stationTile.startPosition)
         assertEquals(connectors, stationTile.connectors)
         assertEquals(true, stationTile.isEndTile)
@@ -41,8 +41,8 @@ class TileTest {
      */
     @Test
     fun testPowerStationTileConstructor() {
-        val connectors : List<Int> = listOf(2,3,5,4);
-        val powerStationTile : PowerStationTile = PowerStationTile(connectors)
+        val connectors = listOf(2, 3, 5, 4)
+        val powerStationTile = PowerStationTile(connectors)
         assertEquals(true, powerStationTile.isEndTile)
         assertEquals(false, powerStationTile.isEmpty)
         assertEquals(connectors, powerStationTile.connectors)
@@ -56,10 +56,10 @@ class TileTest {
      */
     @Test
     fun testGameTileConstructor() {
-        val connectors : List<Int> = listOf(0,1,2,3,4,5,6,7)
-        val connections : List<Int> = listOf(2,6,0,4,3,7,1,5)
-        val gameTileID : Int = 42
-        val gameTile : GameTile = GameTile(gameTileID, connections)
+        val connectors = listOf(0, 1, 2, 3, 4, 5, 6, 7)
+        val connections = listOf(2, 6, 0, 4, 3, 7, 1, 5)
+        val gameTileID = 42
+        val gameTile = GameTile(gameTileID, connections)
         assertEquals(connectors, gameTile.connectors)
         assertEquals(connections, gameTile.connections)
         assertEquals(gameTileID, gameTile.id)
@@ -71,9 +71,9 @@ class TileTest {
      * Tests an IllegalArgumentException for constructor of StationTile
      */
     @Test
-    fun testStationTileFail(){
-        val connectors : List<Int> = listOf(1)
-        assertThrows<IllegalArgumentException>{
+    fun testStationTileFail() {
+        val connectors = listOf(1)
+        assertThrows<IllegalArgumentException> {
             StationTile(connectors)
         }
     }
@@ -82,9 +82,9 @@ class TileTest {
      * Tests an IllegalArgumentException for constructor of PowerStationTile
      */
     @Test
-    fun testPowerStationTileFail(){
-        val connectors : List<Int> = listOf(0,1,2)
-        assertThrows<IllegalArgumentException>{
+    fun testPowerStationTileFail() {
+        val connectors = listOf(0, 1, 2)
+        assertThrows<IllegalArgumentException> {
             PowerStationTile(connectors)
         }
     }
@@ -93,10 +93,10 @@ class TileTest {
      * Tests an IllegalArgumentException for constructor of PowerStationTile
      */
     @Test
-    fun testGameTileFail(){
-        val connections : List<Int> = listOf(1,0)
-        val gameTileId : Int = 42
-        assertThrows<IllegalArgumentException>{
+    fun testGameTileFail() {
+        val connections = listOf(1, 0)
+        val gameTileId  = 42
+        assertThrows<IllegalArgumentException> {
             GameTile(gameTileId, connections)
         }
     }

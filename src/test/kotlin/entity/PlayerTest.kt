@@ -10,8 +10,8 @@ class PlayerTest {
     // The Station Tiles we give to the players
     private val stationTiles = listOf(StationTile(listOf(BOT_RIGHT, BOT_LEFT)))
 
-    private val newHandTile = GameTile(2, listOf(1,0,3,2,5,4,7,6))
-    private val newCurrentTile = GameTile(18, listOf(7,6,5,4,3,2,1,0))
+    private val newHandTile = GameTile(2, listOf(1, 0, 3, 2, 5, 4, 7, 6))
+    private val newCurrentTile = GameTile(18, listOf(7, 6, 5, 4, 3, 2, 1, 0))
 
     // Construct two players
     private val player1 = Player(
@@ -117,8 +117,8 @@ class PlayerTest {
 
         // Change the attributes in the copy
         copiedPlayer.score = 80
-        copiedPlayer.handTile = GameTile(5, listOf(4,5,3,2,0,1,7,6))
-        copiedPlayer.currentTile = GameTile(50, listOf(3,2,1,0,7,6,5,4))
+        copiedPlayer.handTile = GameTile(5, listOf(4, 5, 3, 2, 0, 1, 7, 6))
+        copiedPlayer.currentTile = GameTile(50, listOf(3, 2, 1, 0, 7, 6, 5, 4))
 
         // Check if changing attributes in the copy affects the original (it shouldn't)
         assertEquals(oldScore, player2.score)

@@ -1,4 +1,5 @@
 package service
+
 import entity.GameTile
 import java.io.File
 import java.io.FileNotFoundException
@@ -27,7 +28,7 @@ class IOService(private val rootService: RootService) {
     fun getTilesFromCSV() : List<GameTile> {
         val lines = tilesCSVFile.readText().lines()
         return lines.mapIndexed { index, line ->
-            GameTile(id=index, connections=getConnectionsFromCSVLine(line))
+            GameTile(id = index, connections = getConnectionsFromCSVLine(line))
         }
     }
 
