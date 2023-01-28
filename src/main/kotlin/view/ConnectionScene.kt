@@ -1,6 +1,7 @@
 package view
 
 import entity.PlayerInfo
+import service.AssetsLoader
 import service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
@@ -14,7 +15,6 @@ import view.components.CableCarLogo
 import view.components.ConnectionPane
 import view.components.PlayerTypeButton
 import java.awt.Color
-import javax.imageio.ImageIO
 
 /** The class which administrate all Components to show the LobbyScene for choosing the Network-Mode
  * (Host-Mode or Join-Mode)
@@ -28,7 +28,7 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
     private val logoPane = CableCarLogo(posX = 841, posY = 104)
     private val connectionPane = ConnectionPane(0, 0)
     private val playerTypeButton = PlayerTypeButton(posX = 1200, posY = 365)
-    private val menuVisual = ImageVisual(ImageIO.read(ConnectionScene::class.java.getResource("/arrow.png")))
+    private val menuVisual = ImageVisual(AssetsLoader.backArrowImage)
 
 
     private val menuButton = Button(
@@ -94,8 +94,8 @@ class ConnectionScene(private val rootService: RootService) : MenuScene(
             playerTypeButton,
             menuButton,
             Label(
-                posX = 545, posY = 272,
-                width = 22, height = 15,
+                posX = 540, posY = 262,
+                width = 30, height = 30,
                 visual = menuVisual
             ).apply { onMouseClicked = { CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene) } }
         )
