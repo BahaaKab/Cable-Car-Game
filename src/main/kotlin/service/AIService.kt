@@ -24,6 +24,9 @@ data class PathSegment(val x: Int, val y: Int, val firstConnector: Int, val seco
  * @param [rootService] Connected root service
  */
 class AIService(private val rootService: RootService) : AbstractRefreshingService() {
+
+    var hardAIRules = listOf(::enhancesAIPaths, ::closesEnemyPath, ::closesOwnPath)
+
     /**
      * to get the best calculate for AI when set Difficulty to HARD
      *
@@ -31,7 +34,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
     fun makeAIMove() {
         when (rootService.cableCar.currentState.activePlayer.playerType) {
             PlayerType.AI_EASY -> easyTurn()
-            PlayerType.AI_HARD -> hardTurn(::enhancesAIPaths, ::closesOwnPath)
+            PlayerType.AI_HARD -> hardTurn(hardAIRules)
             PlayerType.HUMAN -> return
         }
     }
@@ -80,7 +83,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * to find good tile for HARD AI that is allowed
      */
     private fun hardTurn(
-        vararg rules: (position: Pair<Int, Int>, tile: GameTile) -> Float
+        rules: List<(position: Pair<Int, Int>, tile: GameTile) -> Float>
     ): Unit = with(rootService) {
         val validPositions = playerActionService.getValidPositions()
         //
@@ -93,18 +96,18 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
                 tileToPlace.rotate(true)
                 val placeablePositions = validPositions - playerActionService.getOnePointPositions(tileToPlace)
                 if (placeablePositions.isNotEmpty()) {
-                    val (x, y) = getBestPosition(placeablePositions, tileToPlace, *rules)
+                    val (x, y) = getBestPosition(placeablePositions, tileToPlace, rules)
                     return playerActionService.placeTile(x, y)
                 }
             }
-            val (x, y) = getBestPosition(validPositions, tileToPlace, *rules)
+            val (x, y) = getBestPosition(validPositions, tileToPlace, rules)
             return playerActionService.placeTile(x, y)
         }
         // If no rotation is allowed there will be always placeable positions. Find the best position of them
         val placeablePositions = (validPositions - playerActionService.getOnePointPositions(tileToPlace)).ifEmpty {
             validPositions
         }
-        val (x, y) = getBestPosition(placeablePositions, tileToPlace, *rules)
+        val (x, y) = getBestPosition(placeablePositions, tileToPlace, rules)
         rootService.playerActionService.placeTile(x, y)
     }
 
@@ -124,15 +127,16 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
     private fun getBestPosition(
         placeablePositions: Set<Pair<Int, Int>>,
         tile: GameTile,
-        vararg rules: (position: Pair<Int, Int>, tile: GameTile) -> Float
+        rules: List<(position: Pair<Int, Int>, tile: GameTile) -> Float>
     ): Pair<Int, Int> {
         val weightedPositions = placeablePositions.map { (x, y) -> WeightedPosition(x, y) }
         // For each position calculate a weight based on a set of rules. The best position will be the one with the
         // highest weight.
-        weightedPositions.forEach { weightedPosition ->
-            rules.forEach { rule ->
+        rules.forEach { rule ->
+            weightedPositions.forEach { weightedPosition ->
                 weightedPosition.weight += rule(weightedPosition.position, tile)
             }
+            println(weightedPositions)
         }
         // It might be that multiple positions have the same weight. In that case select one of them randomly
         val maxWeightPosition = weightedPositions.maxOf { it.weight }
@@ -142,6 +146,12 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         return bestPositions.shuffled().first().position
     }
 
+
+    /**
+     * =======================
+     * ======== RULES ========
+     * =======================
+     */
 
     /**
      * How many paths of the AI will the position enhance?
@@ -161,8 +171,9 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
                 (totalPathLengthsBeforePlacement + 1)
     }
 
+
     private fun closesOwnPath(position: Pair<Int, Int>, tile: GameTile) : Float {
-        val threshold = 4
+        val threshold = 6
         val (x, y) = position
         return rootService.cableCar.currentState.activePlayer.stationTiles.map { stationTile ->
             val path = stationTile.getEnhancedPathWith(tile, x, y)
@@ -174,9 +185,32 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }.sumOf { it } / threshold.toFloat()
     }
 
+    private fun closesEnemyPath(position: Pair<Int, Int>, tile: GameTile) : Float {
+        val threshold = 4
+        val (x, y) = position
+        val enemyStations = rootService.cableCar.currentState.players.filter {
+            it.name != rootService.cableCar.currentState.activePlayer.name
+        }.flatMap { it.stationTiles }
+        return enemyStations.map { stationTile ->
+            val path = stationTile.getEnhancedPathWith(tile, x, y)
+            println(path)
+            if (path.isNotEmpty() && path.last().secondConnector == -1) {
+                threshold - path.size
+            } else {
+                0
+            }
+        }.sumOf { it } / threshold.toFloat()
+
+    }
+
 //    private fun closePathWithPowerStation(position: Pair<Int, Int>, tile: GameTile): Float {
 //    }
 
+
+    /**
+     * ======================
+     * ======================
+     */
 
     private fun StationTile.getPath(): List<PathSegment> {
         val currentPosition = rootService.cableCarService.getPosition(this)
