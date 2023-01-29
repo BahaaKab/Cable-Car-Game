@@ -148,7 +148,7 @@ class CableCarNetworkClient(
             if (cableCar.allowTileRotation) {
                 val rotations = arrayOf(0, 90, 180, 270)
                 require(message.rotation in rotations)
-                repeat(rotations.indexOf(message.rotation) - 1) {
+                repeat(rotations.indexOf(message.rotation)) {
                     playerActionService.rotateTileRight()
                 }
             }

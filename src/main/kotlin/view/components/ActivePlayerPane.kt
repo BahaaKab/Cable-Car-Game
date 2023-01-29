@@ -1,5 +1,6 @@
 package view.components
 
+import service.AssetsLoader
 import service.RootService
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.container.LinearLayout
@@ -13,7 +14,6 @@ import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.*
 import java.awt.Color
-import javax.imageio.ImageIO
 
 /**
  * The pane which contains everything relevant for the [entity.State.activePlayer].
@@ -25,14 +25,10 @@ import javax.imageio.ImageIO
  */
 class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX = posX, posY = posY, width = 630, height = 240) {
+    private val rotateLeftVisual = ImageVisual(AssetsLoader.rotateLeftImage)
+    private val rotateRightVisual = ImageVisual(AssetsLoader.rotateRightImage)
+    private val drawTileVisual = ImageVisual(AssetsLoader.drawTileImage)
 
-    private val rotateLeftVisual = ImageVisual(
-        ImageIO.read(GameScene::class.java.getResource("/rotateLeft.png"))
-    )
-    private val rotateRightVisual = ImageVisual(
-        ImageIO.read(GameScene::class.java.getResource("/rotateRight.png"))
-    )
-    private val drawTileVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/drawTile.png")))
 
     val activePlayerTiles = LinearLayout<CardView>(
         posX = 390, posY = 0,
@@ -86,7 +82,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         posX = 15, posY = 124,
         width = 25, height = 25,
         visual = rotateLeftVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.rotateTileLeft() } }
 
     private val rotateRightButton = Button(
         posX = 185, posY = 116,
@@ -106,7 +102,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         posX = 200, posY = 124,
         width = 25, height = 25,
         visual = rotateRightVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.rotateTileRight() } }
 
     private val drawTileButton = Button(
         posX = 112, posY = 176,
@@ -126,7 +122,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         posX = 123, posY = 180,
         width = 30, height = 30,
         visual = drawTileVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.drawTile() } }
 
     init {
         addAll(
@@ -136,6 +132,7 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         )
     }
 
+    /** Refreshes the display of the active Player. */
     fun refreshActivePlayer() = with(rootService.cableCar.currentState.activePlayer) {
         activePlayerTiles.clear()
         if (handTile == null) {
@@ -158,26 +155,37 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         }
     }
 
+    /** Disables the rotate functionality. */
     fun disableTileRotationButtons() {
         rotateLeftButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = true
         }
+        rotateLeftIcon.apply { isDisabled = true }
+
         rotateRightButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = true
         }
+        rotateLeftIcon.apply { isDisabled = true }
     }
 
-    fun disableDrawTileButton() = drawTileButton.apply {
-        componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
-        isDisabled = true
+    /** Disables the draw Tile functionality. */
+    fun disableDrawTileButton() {
+        drawTileButton.apply {
+            componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = true
+        }
+        drawTileIcon.apply { isDisabled = true }
     }
 
-
-    fun enableDrawTileButton() = drawTileButton.apply {
-        componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
-        isDisabled = false
+    /** Enables the draw Tile functionality. */
+    fun enableDrawTileButton() {
+        drawTileButton.apply {
+            componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = false
+        }
+        drawTileIcon.apply { isDisabled = false }
     }
 
 }

@@ -1,5 +1,6 @@
 package view.components
 
+import service.AssetsLoader
 import service.RootService
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
@@ -14,9 +15,7 @@ import tools.aqua.bgw.visual.Visual
 import view.DEFAULT_BORDER_RADIUS
 import view.DEFAULT_FONT_BOLD
 import view.DEFAULT_GREY_STRING
-import view.GameScene
 import java.awt.Color
-import javax.imageio.ImageIO
 
 /**
  * The Pane which contains buttons like undo, redo, and settings.
@@ -29,8 +28,8 @@ import javax.imageio.ImageIO
 class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) :
     Pane<ComponentView>(posX = posX, posY = posY, width = 402, height = 40) {
 
-    private val undoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/undo.png")))
-    private val redoVisual = ImageVisual(ImageIO.read(GameScene::class.java.getResource("/redo.png")))
+    private val undoVisual = ImageVisual(AssetsLoader.undoImage)
+    private val redoVisual = ImageVisual(AssetsLoader.redoImage)
 
     private val undoButton = Button(
         posX = 0, posY = 0,
@@ -51,7 +50,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         posX = 12, posY = 11,
         width = 35, height = 20,
         visual = undoVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.undo() } }
 
     private val redoButton = Button(
         posX = 135, posY = 0,
@@ -70,7 +69,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         posX = 145, posY = 11,
         width = 35, height = 20,
         visual = redoVisual
-    )
+    ).apply { onMouseClicked = { rootService.playerActionService.redo() } }
 
     private val selectAISpeedLabel = Label(
         posX = 280, posY = 0,
@@ -103,30 +102,39 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         addAll(speedRadioButtons)
     }
 
+    /** Disables the Undo and Redo functionality */
     fun disableUndoRedo() {
         undoButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = true
         }
+        undoIcon.apply { isDisabled = true }
+
         redoButton.apply {
             componentStyle = "-fx-background-color: rgb(127,127,127);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = true
         }
+        redoIcon.apply { isDisabled = true }
     }
 
+    /** Enables the Undo and Redo functionality */
     fun enableUndoRedo() {
         undoButton.apply {
             componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
                     "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = false
         }
+        undoIcon.apply { isDisabled = false }
+
         redoButton.apply {
             componentStyle = "-fx-background-color: rgb($DEFAULT_GREY_STRING);" +
                     "-fx-background-radius: $DEFAULT_BORDER_RADIUS"
             isDisabled = false
         }
+        redoIcon.apply { isDisabled = false }
     }
 
+    /** Sets the AISpeed in the Data-Layer */
     internal fun setAISpeed(value : Int) {
         speedRadioButtons[value].isSelected = true
     }
