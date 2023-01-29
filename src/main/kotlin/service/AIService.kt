@@ -1,10 +1,9 @@
 package service
 
-import entity.GameTile
-import entity.PlayerType
-import entity.StationTile
-import entity.Tile
+import entity.*
 import java.lang.IllegalStateException
+import kotlin.math.abs
+
 import kotlin.random.Random
 
 
@@ -13,8 +12,77 @@ data class WeightedPosition(val x: Int, val y: Int, var weight: Float = 0f) {
 }
 
 data class PathSegment(val x: Int, val y: Int, val firstConnector: Int, val secondConnector: Int) {
+    constructor(x: Int, y: Int, firstConnector: Int, tile: Tile) : this(
+        x,
+        y,
+        firstConnector,
+        if (tile.isEndTile) -1 else tile.connections[firstConnector]
+    )
+
     val position = Pair(x, y)
     val connection = Pair(firstConnector, secondConnector)
+}
+
+
+class Path(var segments: MutableList<PathSegment>) {
+    val size: Int
+        get() = segments.size - (if (isClosed()) 2 else 1)
+
+    init {
+        require(segments.isNotEmpty() && segments.first().firstConnector == -1)
+    }
+
+    fun isClosed() = segments.last().secondConnector == -1
+
+    fun isOpen() = !isClosed()
+
+    fun copy() = Path(segments.map { it.copy() }.toMutableList())
+
+    fun enhancedWith(tile: GameTile, x: Int, y: Int, board: Array<Array<Tile?>>): Path {
+        val path = copy()
+        var lastSegment = path.segments.last()
+        val lastConnector = lastSegment.secondConnector
+
+        val manhattanDist = abs(x - lastSegment.x) + abs(y - lastSegment.y)
+        val isAdjacent = manhattanDist == 1
+        val isConnectingToPath = (lastConnector in 0..1 && y == lastSegment.y - 1) ||
+                (lastConnector in 2..3 && x == lastSegment.x + 1) ||
+                (lastConnector in 4..5 && y == lastSegment.y + 1) ||
+                (lastConnector in 6..7 && x == lastSegment.x - 1)
+
+        // If the path is already closed or the tile is not adjacent to the last tile of the path, then the new path
+        // can't be enhanced. Also if the tiles are adjacent but the path is not connecting, the path is not enhanced
+        if (path.isClosed() || !isAdjacent || !isConnectingToPath) {
+            return path
+        }
+        // Otherwise add the path segment of the tile to the path
+        var nextSegment = PathSegment(x, y, tile.OUTER_TILE_CONNECTIONS[lastConnector], tile)
+        path.segments.add(nextSegment)
+
+        // Enhance the path with segments based on the current board state
+        var currentTile: Tile?
+        var nextX = x
+        var nextY = y
+        while (path.isOpen()) {
+            lastSegment = path.segments.last()
+            when (lastSegment.secondConnector) {
+                0, 1 -> nextY--
+                2, 3 -> nextX++
+                4, 5 -> nextY++
+                6, 7 -> nextX--
+                else -> throw IllegalStateException()
+            }
+            currentTile = board[nextX][nextY]
+            if (currentTile == null) {
+                break
+            }
+            val nextFirstConnector = currentTile.OUTER_TILE_CONNECTIONS[lastSegment.secondConnector]
+            val nextSecondConnector = if (currentTile.isEndTile) -1 else currentTile.connections[nextFirstConnector]
+            nextSegment = PathSegment(nextX, nextY, nextFirstConnector, nextSecondConnector)
+            path.segments.add(nextSegment)
+        }
+        return path
+    }
 }
 
 
@@ -24,7 +92,6 @@ data class PathSegment(val x: Int, val y: Int, val firstConnector: Int, val seco
  * @param [rootService] Connected root service
  */
 class AIService(private val rootService: RootService) : AbstractRefreshingService() {
-
     var hardAIRules = listOf(::enhancesAIPaths, ::closesEnemyPath, ::closesOwnPath)
 
     /**
@@ -136,7 +203,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             weightedPositions.forEach { weightedPosition ->
                 weightedPosition.weight += rule(weightedPosition.position, tile)
             }
-            println(weightedPositions)
+            // println(weightedPositions)
         }
         // It might be that multiple positions have the same weight. In that case select one of them randomly
         val maxWeightPosition = weightedPositions.maxOf { it.weight }
@@ -172,20 +239,23 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
     }
 
 
-    private fun closesOwnPath(position: Pair<Int, Int>, tile: GameTile) : Float {
-        val threshold = 6
+    private fun closesOwnPath(position: Pair<Int, Int>, tile: GameTile): Float {
+        val powerStationBoost = if (position in listOf(Pair(4, 4), Pair(5, 4), Pair(4, 5), Pair(5, 5))) 2 else 1
+        val threshold = 7
         val (x, y) = position
         return rootService.cableCar.currentState.activePlayer.stationTiles.map { stationTile ->
             val path = stationTile.getEnhancedPathWith(tile, x, y)
-            if (path.isEmpty() || path.last().secondConnector != -1) {
+            if (path.segments.last().secondConnector != -1) {
                 0
             } else {
-                path.size - threshold
+                path.size * powerStationBoost  - threshold
             }
         }.sumOf { it } / threshold.toFloat()
     }
 
-    private fun closesEnemyPath(position: Pair<Int, Int>, tile: GameTile) : Float {
+
+    private fun closesEnemyPath(position: Pair<Int, Int>, tile: GameTile): Float {
+        val powerStationBoost = if (position in listOf(Pair(4, 4), Pair(5, 4), Pair(4, 5), Pair(5, 5))) 2 else 1
         val threshold = 4
         val (x, y) = position
         val enemyStations = rootService.cableCar.currentState.players.filter {
@@ -193,9 +263,9 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }.flatMap { it.stationTiles }
         return enemyStations.map { stationTile ->
             val path = stationTile.getEnhancedPathWith(tile, x, y)
-            println(path)
-            if (path.isNotEmpty() && path.last().secondConnector == -1) {
-                threshold - path.size
+            // println(path)
+            if (path.segments.last().secondConnector == -1) {
+                threshold - path.size * powerStationBoost
             } else {
                 0
             }
@@ -212,10 +282,11 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
      * ======================
      */
 
-    private fun StationTile.getPath(): List<PathSegment> {
-        val currentPosition = rootService.cableCarService.getPosition(this)
+    private fun StationTile.getPath(): Path {
+        val firstPosition = rootService.cableCarService.getPosition(this)
+        val currentPosition = firstPosition.copyOf()
         var currentOuterConnector = startPosition
-        return path.map { tile ->
+        val segments = path.map { tile ->
             when (currentOuterConnector) {
                 0, 1 -> currentPosition[1]--
                 2, 3 -> currentPosition[0]++
@@ -234,82 +305,13 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             val pathSegment = PathSegment(x, y, connectorA, connectorB)
             currentOuterConnector = connectorB
             pathSegment
-        }
+        }.toMutableList()
+
+
+        segments.add(0, PathSegment(firstPosition[0], firstPosition[1], -1, startPosition))
+        return Path(segments)
     }
 
-    private fun StationTile.pathAlreadyClosed() = path.isNotEmpty() && path.last().isEndTile
-
-    private fun StationTile.getNeighbourPosition(): Pair<Int, Int> {
-        val position = rootService.cableCarService.getPosition(this)
-        when (startPosition) {
-            0, 1 -> position[1]--
-            2, 3 -> position[0]++
-            4, 5 -> position[1]++
-            6, 7 -> position[0]--
-            else -> {}
-        }
-        return Pair(position[0], position[1])
-    }
-
-    private fun StationTile.getNeighboursOfLastPathElement(): Set<Pair<Int, Int>> {
-        val path = getPath()
-        return if (path.isEmpty()) {
-            setOf(getNeighbourPosition())
-        } else {
-            setOf(
-                Pair(path.last().x - 1, path.last().y),
-                Pair(path.last().x + 1, path.last().y),
-                Pair(path.last().x, path.last().y - 1),
-                Pair(path.last().x, path.last().y + 1)
-            )
-        }
-    }
-
-    private fun StationTile.getEnhancedPathWith(
-        tile: GameTile,
-        x: Int,
-        y: Int
-    ): List<PathSegment> {
-        val path = getPath().toMutableList()
-        // If the path is already closed or if the placement position is not adjacent to the
-        // last path element, the path will not be enhanced at all.
-        if (pathAlreadyClosed() || Pair(x, y) !in getNeighboursOfLastPathElement()) {
-            return path
-        }
-        var nextTile: Tile? = tile
-        var lastPathSegment = if (path.isEmpty()) {
-            val position = rootService.cableCarService.getPosition(this)
-            PathSegment(position[0], position[1], -1, startPosition)
-        } else {
-            path.last()
-        }
-        do {
-            val nextPosition = when (lastPathSegment.connection.second) {
-                0, 1 -> Pair(lastPathSegment.x, lastPathSegment.y - 1)
-                2, 3 -> Pair(lastPathSegment.x + 1, lastPathSegment.y)
-                4, 5 -> Pair(lastPathSegment.x, lastPathSegment.y + 1)
-                6, 7 -> Pair(lastPathSegment.x - 1, lastPathSegment.y)
-                else -> throw IllegalStateException()
-            }
-            val nextConnectionA = OUTER_TILE_CONNECTIONS[lastPathSegment.connection.second]
-            val nextConnectionB = if ((nextTile as Tile).isEndTile) {
-                -1
-            } else {
-                nextTile.connections[nextConnectionA]
-            }
-            lastPathSegment = PathSegment(nextPosition.first, nextPosition.second, nextConnectionA, nextConnectionB)
-            path.add(lastPathSegment)
-            nextTile = rootService.cableCar.currentState.board[nextPosition.first][nextPosition.second]
-        } while (nextTile != null || lastPathSegment.secondConnector == -1)
-        return path
-    }
-
-    private fun StationTile.realDeepCopy(): StationTile {
-        val copiedConnectors = connectors.map { it }
-        val copiedPath = path.map { it.deepCopy() }.toMutableList()
-        return StationTile(copiedConnectors).apply { path = copiedPath }
-    }
+    private fun StationTile.getEnhancedPathWith(tile: GameTile, x: Int, y: Int) =
+        getPath().enhancedWith(tile, x, y, rootService.cableCar.currentState.board)
 }
-
-
-
