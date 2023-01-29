@@ -170,6 +170,20 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
         rotateLeftIcon.apply { isDisabled = true }
     }
 
+    fun enableTileRotationButtons() {
+        rotateLeftButton.apply {
+            componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = false
+        }
+        rotateLeftIcon.apply { isDisabled = false }
+
+        rotateRightButton.apply {
+            componentStyle = "-fx-background-color: rgb(5,24,156);-fx-background-radius: $DEFAULT_BORDER_RADIUS"
+            isDisabled = false
+        }
+        rotateLeftIcon.apply { isDisabled = false }
+    }
+
     /** Disables the draw Tile functionality. */
     fun disableDrawTileButton() {
         drawTileButton.apply {
