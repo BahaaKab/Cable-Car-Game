@@ -510,29 +510,27 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     /** Sets the color of the drawing paint brush.*/
     private fun setPaintBrush(color: entity.Color){
-        when (color) {
-            entity.Color.YELLOW -> paintBrush.color = Color(253, 211, 41)
-            entity.Color.BLUE -> paintBrush.color = Color(17, 139, 206)
-            entity.Color.ORANGE -> paintBrush.color = Color(213, 41, 39)
-            entity.Color.GREEN -> paintBrush.color = Color(12, 111, 47)
-            entity.Color.PURPLE -> paintBrush.color = Color(142, 13, 78)
-            entity.Color.BLACK -> paintBrush.color = Color(2, 2, 2)
-        }
+        paintBrush.color = when (color) {
+            entity.Color.YELLOW -> DEFAULT_YELLOW_COLOR
+            entity.Color.BLUE -> DEFAULT_BLUE_COLOR
+            entity.Color.ORANGE -> DEFAULT_RED_COLOR
+            entity.Color.GREEN -> DEFAULT_GREEN_COLOR
+            entity.Color.PURPLE -> DEFAULT_PURPLE_COLOR
+            entity.Color.BLACK -> DEFAULT_BLACK_COLOR
+        }.color
     }
 
     /** Returns the position of a given connector / ConnectionPoint.
      * @return [-1,-1] if the connector is not valid.*/
-    private fun getPosition(i: Int): IntArray{
-        when(i){
-            0 -> return intArrayOf(1, 0)
-            1 -> return intArrayOf(2, 0)
-            2 -> return intArrayOf(3, 1)
-            3 -> return intArrayOf(3, 2)
-            4 -> return intArrayOf(2, 3)
-            5 -> return intArrayOf(1, 3)
-            6 -> return intArrayOf(0, 2)
-            7 -> return intArrayOf(0, 1)
-        }
-        return intArrayOf(-1, -1)
+    private fun getPosition(i: Int)  = when (i) {
+        0 -> intArrayOf(1, 0)
+        1 -> intArrayOf(2, 0)
+        2 -> intArrayOf(3, 1)
+        3 -> intArrayOf(3, 2)
+        4 -> intArrayOf(2, 3)
+        5 -> intArrayOf(1, 3)
+        6 -> intArrayOf(0, 2)
+        7 -> intArrayOf(0, 1)
+        else -> intArrayOf(-1, -1)
     }
 }
