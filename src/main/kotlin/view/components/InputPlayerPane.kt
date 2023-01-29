@@ -165,6 +165,6 @@ class InputPlayerPane(
 
     /** Deactivates the circle Label. */
     fun deactivateSwitching(){
-        circleLabel.isDisabled = true
+        circleLabel.isVisible = false
     }
 }
