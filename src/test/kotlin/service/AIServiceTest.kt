@@ -28,6 +28,28 @@ class AIServiceTest {
         benchmarkHardAI(1000, 1, true)
     }
 
+
+    @Test
+    fun runAIClientsInAllPermutations() {
+        for(i in 2..6) {
+            for (j in 0 until i) {
+                val players = List(i) {
+                    val playerType = if(it <= j) PlayerType.AI_HARD else PlayerType.AI_EASY
+                    PlayerInfo("Player $it", playerType, PLAYER_ORDER_COLORS[it], false)
+                }
+
+                val rootService = RootService()
+                rootService.setupService.startLocalGame(players, false, 0)
+
+                while (rootService.cableCar.currentState.drawPile.isNotEmpty()) {
+                        rootService.aIService.makeAIMove()
+                }
+            }
+        }
+
+    }
+
+
     private fun benchmarkHardAI(numberOfRuns: Int, numberOfEasyEnemies: Int, allowRotation: Boolean) {
         require(numberOfEasyEnemies in 1..5)
         val hardAI = PlayerInfo("Hard AI", PlayerType.AI_HARD, Color.YELLOW, false)
@@ -67,6 +89,4 @@ class AIServiceTest {
         println("Average elapsed Time: ${totalTime / totalActions} ms. Max time elapsed for a single action: $maxTime ms.")
         println("========================================================================")
     }
-
-
 }

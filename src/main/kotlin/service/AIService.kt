@@ -300,7 +300,6 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             pathSegment
         }.toMutableList()
 
-
         segments.add(0, PathSegment(firstPosition[0], firstPosition[1], -1, startPosition))
         return Path(segments)
     }
