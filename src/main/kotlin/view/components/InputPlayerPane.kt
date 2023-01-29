@@ -162,4 +162,9 @@ class InputPlayerPane(
     fun setPlayerType(playerType: PlayerType) {
         typeCounter = playerTypes.indexOf(playerType)
     }
+
+    /** Deactivates the circle Label. */
+    fun deactivateSwitching(){
+        circleLabel.isVisible = false
+    }
 }
