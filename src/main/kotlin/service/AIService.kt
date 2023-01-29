@@ -203,7 +203,6 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
             weightedPositions.forEach { weightedPosition ->
                 weightedPosition.weight += rule(weightedPosition.position, tile)
             }
-            // println(weightedPositions)
         }
         // It might be that multiple positions have the same weight. In that case select one of them randomly
         val maxWeightPosition = weightedPositions.maxOf { it.weight }
@@ -263,19 +262,13 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }.flatMap { it.stationTiles }
         return enemyStations.map { stationTile ->
             val path = stationTile.getEnhancedPathWith(tile, x, y)
-            // println(path)
             if (path.segments.last().secondConnector == -1) {
                 threshold - path.size * powerStationBoost
             } else {
                 0
             }
         }.sumOf { it } / threshold.toFloat()
-
     }
-
-//    private fun closePathWithPowerStation(position: Pair<Int, Int>, tile: GameTile): Float {
-//    }
-
 
     /**
      * ======================
