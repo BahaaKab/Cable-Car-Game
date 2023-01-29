@@ -221,11 +221,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         for (i in 1..8) {
             validPositions += setOf(Pair(1, i), Pair(8, i), Pair(i, 1), Pair(i, 8))
         }
-        // In the 3, 5 and 6 player configuration, the station tiles in the bottom right corner are left out to
-        // guarantee, that every player has the same amount of stations
-        when (rootService.cableCar.currentState.players.size) {
-            3, 5, 6 -> validPositions -= Pair(8, 8)
-        }
+
         // The station tiles themself are already occupied
         for (i in 0..9) {
             alreadyOccupiedPositions += setOf(Pair(0, i), Pair(9, i), Pair(i, 0), Pair(i, 9))

@@ -32,8 +32,8 @@ class EndScene(private val rootService: RootService) : MenuScene(1920, 1080), Re
         width = 600,
         text = "",
         alignment = Alignment.CENTER,
-        font=Font(size=25, color= DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM)
-    ). apply { posX -= width / 2 }
+        font = Font(size = 25, color = DEFAULT_BLUE, family = DEFAULT_FONT_MEDIUM)
+    ).apply { posX -= width / 2 }
 
     val exitButton = Button(
         posX = 870, posY = 775,
@@ -59,9 +59,10 @@ class EndScene(private val rootService: RootService) : MenuScene(1920, 1080), Re
         playerLeftMessage.text = "$name has left the game."
         scoreboardPane.isVisible = !irregularEnding
         playerLeftMessage.isVisible = irregularEnding
-        CableCarApplication.showMenuScene(this)
+        if (irregularEnding) {
+            CableCarApplication.showMenuScene(this)
+        }
     }
-
 
 
     override fun refreshAfterEndGame() {

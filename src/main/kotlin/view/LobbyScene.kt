@@ -47,7 +47,7 @@ class LobbyScene(
         posX = 544, posY = 215,
         width = 30, height = 30,
         visual = ImageVisual(AssetsLoader.backArrowImage)
-    )
+    ).apply { onMouseClicked = { leaveScene() } }
 
     private val backButton = Button(
         posX = 535,
@@ -72,11 +72,7 @@ class LobbyScene(
         }
 
         componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
-        onMouseClicked = {
-            CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene)
-            this@LobbyScene.refreshAfterGuestLeft(yourName)
-            rootService.networkService.disconnect()
-        }
+        onMouseClicked = { leaveScene() }
     }
 
     private val playerOrderButton = Button(
@@ -102,7 +98,7 @@ class LobbyScene(
         posX = 681, posY = 216,
         width = 28, height = 28,
         visual = ImageVisual(AssetsLoader.cubeImage)
-    )
+    ).apply { onMouseClicked = { randomOrder() } }
 
     private val tileRotationButton = Button(
         posX = 964, posY = 210,
@@ -116,17 +112,7 @@ class LobbyScene(
         visual = ColorVisual(249, 249, 250)
     ).apply {
         componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
-        onMouseClicked = {
-
-            if (tileRotation) {
-                componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
-                refreshArrow.visual = refreshArrowVisual
-            } else {
-                componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
-                refreshArrow.visual = refreshArrowBlue
-            }
-            tileRotation = tileRotation.not()
-        }
+        onMouseClicked = { clickTileRotationButton() }
 
     }
 
@@ -134,7 +120,7 @@ class LobbyScene(
         posX = 974, posY = 216,
         width = 28, height = 28,
         visual = refreshArrowVisual
-    )
+    ).apply { onMouseClicked = { clickTileRotationButton() } }
 
     private val aISpeedBackground = Label(
         posX = 1200, posY = 210,
@@ -254,6 +240,9 @@ class LobbyScene(
                 playerOrderButton.isVisible = false
                 refreshArrow.isVisible = false
                 cubePicture.isVisible = false
+                for (input in playerInputs){
+                    input.deactivateSwitching()
+                }
             }
         } else {
             for (display in playerDisplay) {
@@ -332,15 +321,6 @@ class LobbyScene(
         addComponents(backgroundLabel, sessionID, sesIDReal, secretID, secretReal)
     }
 
-    /** A Method that checks if a player-name is not empty. */
-    private fun checkPlayerName(name: String, i: Int): String {
-        return if (name == "") {
-            "Player $i"
-        } else {
-            name
-        }
-    }
-
     /** A Method that changes the number of visible Input-Fields for players.*/
     fun displayPlayers(i: Int) {
         for (display in playerDisplay) {
@@ -412,12 +392,31 @@ class LobbyScene(
         changingPosition = -1
     }
 
+    /** If a player clicks on the leave-Button/-Label this method changes the scene. */
+    private fun leaveScene(){
+        CableCarApplication.showMenuScene(CableCarApplication.chooseModeScene)
+        this.refreshAfterGuestLeft(yourName)
+        rootService.networkService.disconnect()
+    }
+
     /** A Method that shuffles all InputPanes.*/
     private fun randomOrder() {
 
         for (i in 0 until playerNumber) {
             changePanes(i, Random.nextInt(i, playerNumber))
         }
+    }
+
+    /** If a player clicks on the Shuffle-Button/-Label this method shuffles the list of players.*/
+    private fun clickTileRotationButton(){
+        if (tileRotation) {
+            tileRotationButton.componentStyle = "-fx-background-color: rgba(233,233,236,1);-fx-background-radius: 100"
+            refreshArrow.visual = refreshArrowVisual
+        } else {
+            tileRotationButton.componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
+            refreshArrow.visual = refreshArrowBlue
+        }
+        tileRotation = tileRotation.not()
     }
 
     /** This Method switches two InputPlanes specified by two params that indicates the postions.
@@ -448,11 +447,6 @@ class LobbyScene(
     /** Sets a new SessionID. */
     fun setSessionID(session: String) {
         sesIDReal.text = session
-    }
-
-    /** Sets a new secret. */
-    fun setSecret(secret: String) {
-        secretReal.text = secret
     }
 
      /** Hides this scene at the start of the game.*/

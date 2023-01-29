@@ -358,7 +358,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             activePlayerPane.disableDrawTileButton()
             activePlayerPane.disableTileRotationButtons()
             lock()
-        } else { unlock() }
+        } else {
+            if(rootService.cableCar.allowTileRotation) activePlayerPane.enableTileRotationButtons()
+            unlock()
+        }
 
         activePlayerPane.refreshActivePlayer()
         otherPlayersPane.refreshOtherPlayers()
@@ -400,6 +403,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             )
         ) {
             activePlayerPane.disableDrawTileButton()
+            activePlayerPane.disableTileRotationButtons()
             optionsPane.disableUndoRedo()
             hidePlaceablePositions()
 
