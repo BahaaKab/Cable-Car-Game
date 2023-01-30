@@ -105,6 +105,7 @@ class CableCarNetworkClient(
      * @param message A [GameInitMessage]
      * @param sender The name of the sender
      */
+    @Suppress("UNUSED")
     @GameActionReceiver
     fun onGameInitMessageReceived(message: GameInitMessage, sender: String) {
         // If the local player is the host, throw an exception, as the sender cannot be the host
@@ -133,6 +134,7 @@ class CableCarNetworkClient(
      * @param message A [TurnMessage]
      * @param sender The name of the sender
      */
+    @Suppress("UNUSED")
     @GameActionReceiver
     fun onTurnMessageReceived(message: TurnMessage, sender: String) = with(networkService.rootService) {
         BoardGameApplication.runOnGUIThread {

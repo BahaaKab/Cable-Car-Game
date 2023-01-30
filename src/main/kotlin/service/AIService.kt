@@ -122,7 +122,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }
 
         if (rootService.cableCar.allowTileRotation) {
-            for (i in 0..3) {
+            repeat(4) {
                 tileToPlace.rotate(true)
                 val placeableTiles = validPositions.minus(
                     getOnePointPositions(tileToPlace)
@@ -159,7 +159,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }
         // If rotation is allowed, find the best position for the first rotation, that has placeable tiles.
         if (cableCar.allowTileRotation) {
-            for (i in 0..3) {
+            repeat(4) {
                 tileToPlace.rotate(true)
                 val placeablePositions = validPositions - playerActionService.getOnePointPositions(tileToPlace)
                 if (placeablePositions.isNotEmpty()) {

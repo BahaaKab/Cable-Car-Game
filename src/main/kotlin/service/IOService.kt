@@ -12,12 +12,11 @@ const val TILES_CSV_PATH : String = "/tiles.csv"
 /**
  * A service class to handle IO actions.
  *
- * @property rootService The [RootService].
  * @property tilesCSVFile The tiles.csv file containing all information to generate the [GameTile]s.
  *
  * @constructor Creates an [IOService].
  */
-class IOService(private val rootService: RootService) {
+class IOService {
     private val tilesCSVFile = IOService::class.java.getResource(TILES_CSV_PATH) ?: throw FileNotFoundException()
 
     /**

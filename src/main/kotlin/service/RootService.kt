@@ -11,7 +11,7 @@ class RootService {
     val playerActionService = PlayerActionService(this)
     val cableCarService = CableCarService(this)
     val setupService = SetupService(this)
-    val ioService = IOService(this)
+    val ioService = IOService()
     val aIService = AIService(this)
     val networkService = NetworkService(this)
     var gameEnded = false

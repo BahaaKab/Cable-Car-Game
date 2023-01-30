@@ -11,11 +11,11 @@ import view.components.CableCarLogo
 import java.awt.Color
 
 
-/** This class manages the first Scene of the application. A player can select which GameMode he wants to play.
- *
- * @param rootService gives the administration class for all classes in all layers.*/
+/**
+ * This class manages the first Scene of the application. A player can select which GameMode he wants to play.
+ */
 
-class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 1080), Refreshable {
+class ChooseModeScene : MenuScene(1920, 1080), Refreshable {
 
     // Farbe London Underground/tfl: 36, 53, 136,1
     // Farbe unsere GUI-Vorlage: 5, 24, 156, 1
