@@ -20,9 +20,4 @@ enum class PlayerType {
         AI_HARD -> "AI HARD"
         HUMAN -> "HUMAN"
     }
-
-    fun toNetworkPlayerType() = when (this) {
-        AI_EASY, AI_HARD -> PlayerType.AI
-        HUMAN -> PlayerType.HUMAN
-    }
 }
