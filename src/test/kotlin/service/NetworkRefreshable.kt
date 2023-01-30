@@ -24,12 +24,12 @@ class NetworkRefreshable : Refreshable {
     /**
      *
      */
-    var hasStartedGameInstance = false
+    private var hasStartedGameInstance = false
 
     /**
      *
      */
-    var hasReceivedTurnMessage = false
+    private var hasReceivedTurnMessage = false
 
     /**
      * Set the [NetworkRefreshable.response] property

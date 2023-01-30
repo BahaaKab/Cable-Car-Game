@@ -27,13 +27,13 @@ import java.awt.Color
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
 val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
@@ -122,7 +122,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             it.stationTiles.forEach { station ->
                 stationTileMap.add(
                     station,
-                    CardView(width = 100, height = 100, front = ImageVisual((TILEIMAGELOADER.stationTileFor(it.color))))
+                    CardView(width = 100, height = 100, front = ImageVisual((TILE_IMAGE_LOADER.stationTileFor(it.color))))
                 )
             }
         }

@@ -24,7 +24,7 @@ class RootService {
         playerActionService.addRefreshable(newRefreshable)
         cableCarService.addRefreshable(newRefreshable)
         setupService.addRefreshable(newRefreshable)
-        aIService.addRefreshable(newRefreshable) // Turnmessage based? then via regular player options
+        aIService.addRefreshable(newRefreshable)
         networkService.addRefreshable(newRefreshable)
     }
 

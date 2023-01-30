@@ -10,22 +10,22 @@ class AIServiceTest {
     @Test
     fun benchmarkHardAIWithoutRotation() {
         repeat(5) { i ->
-            benchmarkHardAI(1000, i + 1, false)
+            benchmarkHardAI(500, i + 1, false)
         }
     }
 
     @Test
     fun benchmarkHardAIWithRotation() {
         repeat(5) { i ->
-            benchmarkHardAI(1000, i + 1, true)
+            benchmarkHardAI(500, i + 1, true)
         }
     }
 
 
     @Test
     fun benchmarkHardAIPVP() {
-        benchmarkHardAI(1000, 1, false)
-        benchmarkHardAI(1000, 1, true)
+        benchmarkHardAI(2000, 1, false)
+        benchmarkHardAI(2000, 1, true)
     }
 
 

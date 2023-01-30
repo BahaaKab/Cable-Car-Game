@@ -1,7 +1,6 @@
 package service
 
 import entity.GameTile
-import java.io.File
 import java.io.FileNotFoundException
 
 /**
@@ -42,7 +41,7 @@ class IOService {
      * @return The connections as needed by a [GameTile].
      */
     private fun getConnectionsFromCSVLine(line: String): List<Int> {
-        val connections = Array<Int>(8) { -1 }
+        val connections = Array(8) { -1 }
         // Convert the String to a List of Integers, assuming that every connection point is defined through
         // a single digit.
         val parsedDigitsAsIntegers = line.filter { it.isDigit() }.map { it.digitToInt() }

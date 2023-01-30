@@ -32,11 +32,11 @@ class Path(var segments: MutableList<PathSegment>) {
         require(segments.isNotEmpty() && segments.first().firstConnector == -1)
     }
 
-    fun isClosed() = segments.last().secondConnector == -1
+    private fun isClosed() = segments.last().secondConnector == -1
 
-    fun isOpen() = !isClosed()
+    private fun isOpen() = !isClosed()
 
-    fun copy() = Path(segments.map { it.copy() }.toMutableList())
+    private fun copy() = Path(segments.map { it.copy() }.toMutableList())
 
     fun enhancedWith(tile: GameTile, x: Int, y: Int, board: Array<Array<Tile?>>): Path {
         val path = copy()
@@ -92,7 +92,7 @@ class Path(var segments: MutableList<PathSegment>) {
  * @param [rootService] Connected root service
  */
 class AIService(private val rootService: RootService) : AbstractRefreshingService() {
-    var hardAIRules = listOf(::enhancesAIPaths, ::closesEnemyPath, ::closesOwnPath)
+    private var hardAIRules = listOf(::enhancesAIPaths, ::closesEnemyPath, ::closesOwnPath)
 
     /**
      * to get the best calculate for AI when set Difficulty to HARD

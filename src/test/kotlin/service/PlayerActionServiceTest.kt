@@ -42,7 +42,7 @@ class PlayerActionServiceTest {
         assertNotNull(game.board[2][3])
         //Tests the undo function
         assertEquals(3, history.undoStates.size)
-        //Remove 2 states from the stack (becasue we have 2 players)
+        //Remove 2 states from the stack (because we have 2 players)
         rootService.playerActionService.undo()
         //After calling the undo function, we have to re-set the current state
         game = rootService.cableCar.currentState

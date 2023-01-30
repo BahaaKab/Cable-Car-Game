@@ -4,7 +4,7 @@ import kotlin.test.*
 import view.Refreshable
 
 /**
- * [Refreshable] implementation that refreshes nothing, but remembersif a refresh method has been called.
+ * [Refreshable] implementation that refreshes nothing, but remembers if a refresh method has been called.
  */
 class RefreshableTest : Refreshable {
     private var refreshAfterEndGameCalled = false
@@ -116,7 +116,7 @@ class RefreshableTest : Refreshable {
         refreshAfterEndGame()
         refreshAfterStartGame()
         refreshAfterHostGame()
-        refreshAfterJoinGame(listOf<String>())
+        refreshAfterJoinGame(listOf())
         refreshAfterCalculatePoints()
         refreshAfterRotateTileLeft()
         refreshAfterRotateTileRight()
