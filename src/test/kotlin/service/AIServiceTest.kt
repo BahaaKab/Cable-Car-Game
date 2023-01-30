@@ -49,7 +49,7 @@ class AIServiceTest {
 
     }
 
-
+    @Suppress("MaxLineLength")
     private fun benchmarkHardAI(numberOfRuns: Int, numberOfEasyEnemies: Int, allowRotation: Boolean) {
         require(numberOfEasyEnemies in 1..5)
         val hardAI = PlayerInfo("Hard AI", PlayerType.AI_HARD, Color.YELLOW, false)

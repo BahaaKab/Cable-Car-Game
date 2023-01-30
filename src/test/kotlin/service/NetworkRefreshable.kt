@@ -98,6 +98,7 @@ class NetworkRefreshable : Refreshable {
      *
      * @return Whether the connection was successful
      */
+    @Suppress("MaxLineLength")
     fun responseSuccessWithin(timeoutInMillis: Int): Boolean {
         responseWithinOrNull(timeoutInMillis)
         return (response is JoinGameResponse && (response as JoinGameResponse).status == JoinGameResponseStatus.SUCCESS) ||
