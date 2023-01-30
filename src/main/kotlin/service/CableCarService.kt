@@ -135,7 +135,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
     fun updatePath(stationTile: StationTile) {
         val currentState: State = rootService.cableCar.currentState
         stationTile.path = mutableListOf()
-        val gridPosition: Array<Int> = getPosition(stationTile)
+        val gridPosition = getPosition(stationTile)
         var connector: Int = stationTile.startPosition
         var posX: Int = gridPosition[0]
         var posY: Int = gridPosition[1]
@@ -167,26 +167,26 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
      * @param [stationTile]
      * @return Array of the position of the [StationTile]
      */
-    fun getPosition(stationTile: StationTile): Array<Int> {
+    fun getPosition(stationTile: StationTile): IntArray {
         val gameBoard: Array<Array<Tile?>> = rootService.cableCar.currentState.board
 
         for (x in (1..8)) {
             if (gameBoard[x][0] == stationTile) {
-                return arrayOf(x, 0)
+                return intArrayOf(x, 0)
             }
             if (gameBoard[x][9] == stationTile) {
-                return arrayOf(x, 9)
+                return intArrayOf(x, 9)
             }
         }
         for (y in (1..8)) {
             if (gameBoard[0][y] == stationTile) {
-                return arrayOf(0, y)
+                return intArrayOf(0, y)
             }
             if (gameBoard[9][y] == stationTile) {
-                return arrayOf(9, y)
+                return intArrayOf(9, y)
             }
         }
         // This case will never happen because a searched [StationTile] will always be found
-        return arrayOf()
+        return intArrayOf()
     }
 }
