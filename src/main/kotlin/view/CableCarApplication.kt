@@ -21,7 +21,7 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
     private val endScene = EndScene(rootService).apply {
         exitButton.onMouseClicked = { exit() }
     }
-    val chooseModeScene = ChooseModeScene(rootService)
+    val chooseModeScene = ChooseModeScene()
     val localLobbyScene = LobbyScene(rootService)
     val hostLobbyScene = LobbyScene(rootService, true, "", true)
     val guestLobbyScene = LobbyScene(rootService, true, "", false)
@@ -29,9 +29,6 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
     val gameScene = GameScene(rootService)
 
     val lobbyScenes = listOf(localLobbyScene, hostLobbyScene, guestLobbyScene)
-
-    private var refreshAfterEndGameTriggered = false
-
 
     init {
         rootService.addRefreshables(

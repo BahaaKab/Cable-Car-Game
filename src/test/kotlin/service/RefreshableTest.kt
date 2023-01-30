@@ -4,8 +4,7 @@ import kotlin.test.*
 import view.Refreshable
 
 /**
- * [Refreshable] implementation that refreses nothing, but remembers
- * if a refresh method has been called (since last [reset])
+ * [Refreshable] implementation that refreshes nothing, but remembers if a refresh method has been called.
  */
 class RefreshableTest : Refreshable {
     private var refreshAfterEndGameCalled = false
@@ -23,25 +22,6 @@ class RefreshableTest : Refreshable {
     private var refreshAfterDrawTileCalled = false
     private var refreshAfterGetTurnCalled = false
     private var refreshAfterNextTurnCalled = false
-
-    /**
-     * Resets all Called properties
-     */
-    private fun reset() {
-        refreshAfterEndGameCalled = false
-        refreshAfterStartGameCalled = false
-        refreshAfterHostGameCalled = false
-        refreshAfterJoinGameCalled = false
-        refreshAfterCalculatePointsCalled = false
-        refreshAfterRotateTileLeftCalled = false
-        refreshAfterRotateTileRightCalled = false
-        refreshAfterUndoCalled = false
-        refreshAfterRedoCalled = false
-        refreshAfterPlaceTileCalled = false
-        refreshAfterDrawTileCalled = false
-        refreshAfterGetTurnCalled = false
-        refreshAfterNextTurnCalled = false
-    }
 
     override fun refreshAfterEndGame() {
         refreshAfterEndGameCalled = true
@@ -136,7 +116,7 @@ class RefreshableTest : Refreshable {
         refreshAfterEndGame()
         refreshAfterStartGame()
         refreshAfterHostGame()
-        refreshAfterJoinGame(listOf<String>())
+        refreshAfterJoinGame(listOf())
         refreshAfterCalculatePoints()
         refreshAfterRotateTileLeft()
         refreshAfterRotateTileRight()

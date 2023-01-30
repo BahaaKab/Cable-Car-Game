@@ -17,7 +17,6 @@ import tools.aqua.bgw.net.common.response.CreateGameResponse
 import tools.aqua.bgw.net.common.response.CreateGameResponseStatus
 import tools.aqua.bgw.net.common.response.JoinGameResponse
 import tools.aqua.bgw.net.common.response.JoinGameResponseStatus
-import tools.aqua.bgw.net.common.response.GameActionResponse
 
 
 /**
@@ -93,18 +92,12 @@ class CableCarNetworkClient(
     }
 
     /**
-     *
-     */
-    override fun onGameActionResponse(response: GameActionResponse) {
-        // TODO: Update local game? Or just show success message? What exactly should happen here?
-    }
-
-    /**
      * Handle a [GameInitMessage]
      *
      * @param message A [GameInitMessage]
      * @param sender The name of the sender
      */
+    @Suppress("UNUSED", "UNUSED_PARAMETER")
     @GameActionReceiver
     fun onGameInitMessageReceived(message: GameInitMessage, sender: String) {
         // If the local player is the host, throw an exception, as the sender cannot be the host
@@ -123,7 +116,7 @@ class CableCarNetworkClient(
             playerInfos = playerInfos,
             tilesRotatable = message.rotationAllowed,
             tileIDs = message.tileSupply.map { it.id },
-            AISpeed = 1
+            aiSpeed = 1
         )
     }
 
@@ -133,6 +126,7 @@ class CableCarNetworkClient(
      * @param message A [TurnMessage]
      * @param sender The name of the sender
      */
+    @Suppress("UNUSED")
     @GameActionReceiver
     fun onTurnMessageReceived(message: TurnMessage, sender: String) = with(networkService.rootService) {
         BoardGameApplication.runOnGUIThread {
@@ -146,7 +140,7 @@ class CableCarNetworkClient(
             }
             // Rotate tile
             if (cableCar.allowTileRotation) {
-                val rotations = arrayOf(0, 90, 180, 270)
+                val rotations = intArrayOf(0, 90, 180, 270)
                 require(message.rotation in rotations)
                 repeat(rotations.indexOf(message.rotation)) {
                     playerActionService.rotateTileRight()

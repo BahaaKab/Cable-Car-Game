@@ -30,13 +30,13 @@ import java.awt.image.BufferedImage
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
 val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
@@ -68,8 +68,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     private val otherPlayersPane = OtherPlayersPane(rootService = rootService, posX = 100, posY = 648)
 
-    private var placeablePositions: Set<Pair<Int, Int>> = setOf()
-
     private val emptyTilesCardViews = List(8) { column ->
         List(8) { row ->
             CardView(
@@ -100,7 +98,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             for (j in 1..8) {
 
                 // We don't want to place empty tiles where the power stations are
-                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+                if (i in 4..5 && j in 4..5) continue
 
                 set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i - 1][j - 1])
             }
@@ -165,7 +163,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             it.stationTiles.forEach { station ->
                 stationTileMap.add(
                     station,
-                    CardView(width = 100, height = 100, front = ImageVisual((TILEIMAGELOADER.stationTileFor(it.color))))
+                    CardView(width = 100, height = 100, front = ImageVisual((TILE_IMAGE_LOADER.stationTileFor(it.color))))
                 )
             }
         }
@@ -272,7 +270,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         } else connectionStatusLabel.isVisible = false
 
         otherPlayersPane.refreshAfterStartGame()
-        optionsPane.setAISpeed(rootService.cableCar.AISpeed)
+        optionsPane.setAISpeed(rootService.cableCar.aiSpeed)
         refreshAfterNextTurn()
     }
 
@@ -321,7 +319,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
 
     /**
-     * Refreshes the shown handcards after drawing a tile.
+     * @see view.Refreshable.refreshAfterDrawTile
      */
     override fun refreshAfterDrawTile() {
         if (rootService.cableCar.currentState.activePlayer.currentTile == null) {
@@ -380,18 +378,16 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             rotationAllowed
         )
 
+        // Remove the old preview
+        hidePlaceablePositions()
+        // Show only placeable tiles
         newPlaceablePositions.forEach { (x, y) ->
             board[x, y]?.showBack()
         }
-        (placeablePositions - newPlaceablePositions).forEach { (x, y) ->
-            board[x, y]?.showFront()
-        }
-        placeablePositions = newPlaceablePositions
-
     }
 
     /** Hides Alle placeable Positions.*/
-    private fun hidePlaceablePositions() = placeablePositions.forEach { (x,y) ->
+    private fun hidePlaceablePositions() = (1..8).flatMap { x ->  (1..8).map { y -> Pair(x, y)  } }.forEach { (x, y) ->
         board[x, y]?.showFront()
     }
 
@@ -408,10 +404,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             hidePlaceablePositions()
 
             playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 1000).apply {
+                DelayAnimation(rootService.cableCar.aiSpeed * 1000).apply {
                     onFinished = {
                         BoardGameApplication.runOnGUIThread {
-                            rootService.aIService.makeAIMove()
+                            rootService.aiService.makeAIMove()
                         }
                     }
                 }
