@@ -18,4 +18,4 @@ val DEFAULT_PURPLE_COLOR = ColorVisual(142, 13, 78)
 val DEFAULT_BLACK_COLOR = ColorVisual(2, 2, 2)
 val DEFAULT_BACKGROUND_COLOR = ColorVisual(247, 247, 247)
 const val DEFAULT_BORDER_RADIUS = "20px"
-val TILEIMAGELOADER = TileImageLoader()
+val TILE_IMAGE_LOADER = TileImageLoader()

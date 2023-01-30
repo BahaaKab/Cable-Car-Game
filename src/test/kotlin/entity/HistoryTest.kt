@@ -12,7 +12,7 @@ class HistoryTest {
     /**
      * @property history is used to test the History entity class.
      */
-    var history: History = History()
+    private var history: History = History()
 
     /**
      * The [History] does not have a constructor.

@@ -27,7 +27,7 @@ class NetworkService(val rootService: RootService) : AbstractRefreshingService()
     /**
      * The network client instance
      */
-    lateinit var networkClient: CableCarNetworkClient
+    private lateinit var networkClient: CableCarNetworkClient
 
     /**
      * Connect to the SoPra-server and create a game lobby.

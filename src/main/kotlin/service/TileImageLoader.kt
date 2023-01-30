@@ -1,7 +1,6 @@
 package service
 
 import entity.Color
-import entity.GameTile
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
@@ -27,11 +26,6 @@ class TileImageLoader {
      * Provides the tile image for the given [entity.GameTile.id]
      */
     fun frontImageFor(id: Int) = getImageByCoordinates(id % 10, id / 10)
-
-    /**
-     * Provides the tile image for the given [entity.GameTile]
-     */
-    fun frontImageFor(gameTile: GameTile) = frontImageFor(gameTile.id)
 
     /**
      * Provides the station tile image for the given [entity.Color]

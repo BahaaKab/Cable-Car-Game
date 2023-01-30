@@ -14,9 +14,9 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
      *
      * @param playerInfos The players' information
      * @param tilesRotatable Whether it is allowed to rotate [GameTile]s
-     * @param AISpeed The initial AI speed
+     * @param aiSpeed The initial AI speed
      * **/
-    fun startLocalGame(playerInfos: List<PlayerInfo>, tilesRotatable: Boolean, AISpeed: Int) {
+    fun startLocalGame(playerInfos: List<PlayerInfo>, tilesRotatable: Boolean, aiSpeed: Int) {
         val drawPile = rootService.ioService.getTilesFromCSV().shuffled().toMutableList()
         val board = createBoard()
         val players = createPlayers(playerInfos, board)
@@ -32,7 +32,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
 
         rootService.cableCar = CableCar(
             allowTileRotation = tilesRotatable,
-            AISpeed = AISpeed,
+            aiSpeed = aiSpeed,
             isHostPlayer = false,
             gameMode = GameMode.HOTSEAT,
             history = History().apply { undoStates.push(initialState.deepCopy()) },
@@ -49,14 +49,14 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
      * @param playerInfos The players' information
      * @param tilesRotatable Whether it is allowed to rotate [GameTile]s
      * @param tileIDs The order of tiles provided by the host, if the session is not hosted from this game instance
-     * @param AISpeed The initial AI speed
+     * @param aiSpeed The initial AI speed
      */
     fun startNetworkGame(
         isHostPlayer: Boolean,
         playerInfos: List<PlayerInfo>,
         tilesRotatable: Boolean,
         tileIDs: List<Int>?,
-        AISpeed: Int
+        aiSpeed: Int
     ) {
         val drawPile = if (isHostPlayer) {
             rootService.ioService.getTilesFromCSV().shuffled()
@@ -81,7 +81,7 @@ class SetupService(private val rootService: RootService) : AbstractRefreshingSer
 
         rootService.cableCar = CableCar(
             allowTileRotation = tilesRotatable,
-            AISpeed = AISpeed,
+            aiSpeed = aiSpeed,
             isHostPlayer = isHostPlayer,
             gameMode = GameMode.NETWORK,
             history = History().apply { undoStates.push(initialState.deepCopy()) },

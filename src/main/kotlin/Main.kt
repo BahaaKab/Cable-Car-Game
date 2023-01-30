@@ -2,10 +2,6 @@ import tools.aqua.bgw.core.BoardGameApplication
 import view.CableCarApplication
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.FileWriter
-import java.net.URI
-import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 

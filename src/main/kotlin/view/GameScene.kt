@@ -27,13 +27,13 @@ import java.awt.Color
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
 val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
@@ -97,7 +97,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             for (j in 1..8) {
 
                 // We don't want to place empty tiles where the power stations are
-                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+                if (i in 4..5 && j in 4..5) continue
 
                 set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i - 1][j - 1])
             }
@@ -122,7 +122,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             it.stationTiles.forEach { station ->
                 stationTileMap.add(
                     station,
-                    CardView(width = 100, height = 100, front = ImageVisual((TILEIMAGELOADER.stationTileFor(it.color))))
+                    CardView(width = 100, height = 100, front = ImageVisual((TILE_IMAGE_LOADER.stationTileFor(it.color))))
                 )
             }
         }
@@ -215,7 +215,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         } else connectionStatusLabel.isVisible = false
 
         otherPlayersPane.refreshAfterStartGame()
-        optionsPane.setAISpeed(rootService.cableCar.AISpeed)
+        optionsPane.setAISpeed(rootService.cableCar.aiSpeed)
         refreshAfterNextTurn()
     }
 
@@ -349,10 +349,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             hidePlaceablePositions()
 
             playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 1000).apply {
+                DelayAnimation(rootService.cableCar.aiSpeed * 1000).apply {
                     onFinished = {
                         BoardGameApplication.runOnGUIThread {
-                            rootService.aIService.makeAIMove()
+                            rootService.aiService.makeAIMove()
                         }
                     }
                 }
