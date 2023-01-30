@@ -10,6 +10,7 @@ import service.RootService
 import tools.aqua.bgw.animation.DelayAnimation
 import tools.aqua.bgw.animation.FadeAnimation
 import tools.aqua.bgw.components.gamecomponentviews.CardView
+import tools.aqua.bgw.components.gamecomponentviews.TokenView
 import tools.aqua.bgw.components.layoutviews.GridPane
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.BoardGameApplication
@@ -22,7 +23,10 @@ import view.components.ActivePlayerPane
 import view.components.CableCarLogo
 import view.components.OptionsPane
 import view.components.OtherPlayersPane
+import java.awt.BasicStroke
 import java.awt.Color
+import java.awt.Image
+import java.awt.image.BufferedImage
 
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {
@@ -102,6 +106,39 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    private val dummyTiles = List(8) { column ->
+        List(8) { row ->
+            TokenView(
+                posX = board.posX + 100 * (column + 1),
+                posY = board.posY + 100 * (row + 1),
+                width = 100,
+                height = 100,
+                visual = Visual.EMPTY
+            ).apply {
+                if(!((column == 3 || column == 4) && (row == 3 || row == 4))) {
+                    onMouseClicked = {
+                        rootService.playerActionService.placeTile(posX = column + 1, posY = row + 1) }
+                }
+            }
+        }
+    }
+
+    private val drawImage = BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB)
+
+    private val paintBrush = drawImage.createGraphics().apply {
+        background = Color(0,0,0,0)
+        color = Color.BLACK
+        stroke = BasicStroke(5.0f)
+    }
+
+    private val pathImage = TokenView(
+        posX = board.posX,
+        posY = board.posY,
+        width = board.width,
+        height = board.height,
+        visual = ImageVisual(drawImage)
+    )
+
 
     init {
         background = DEFAULT_BACKGROUND_COLOR
@@ -111,10 +148,17 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             activePlayerPane,
             otherPlayersPane,
             connectionStatusLabel,
-            board
+            board,
+            pathImage
         )
+        for (tileColumn in dummyTiles){
+            for(tile in tileColumn) {
+                addComponents(tile)
+            }
+        }
     }
 
+    /** Initializes the Station Tiles as graphics. */
     private fun initializeStationTileMap() = with(rootService.cableCar.currentState) {
         players.forEach {
             it.stationTiles.forEach { station ->
@@ -126,6 +170,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
+    /** Initializes a Station Tile as graphic. */
     private fun initializeStationTiles() {
         checkNotNull(rootService.cableCar)
 
@@ -156,8 +201,21 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                 }
             }
         }
+
+        val playerNumber = rootService.cableCar.currentState.players.size
+        if( playerNumber in 5..6 || playerNumber == 3){
+            paintBrush.color = Color(230, 230, 233)
+
+            paintBrush.drawLine(909, 874, 966, 874)
+            paintBrush.drawLine(967, 863, 967, 885)
+            paintBrush.drawLine(841, 909, 841, 966)
+            paintBrush.drawLine(830, 967, 852, 967)
+
+            pathImage.visual = ImageVisual(drawImage)
+        }
     }
 
+    /** Refreshes the board after Undo/Redo. */
     private fun refreshBoard(oldState: entity.State) {
         val tilesToChange = mutableListOf<TileInfo>()
         val currentStateCopy = rootService.cableCar.currentState.deepCopy()
@@ -190,7 +248,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterStartGame
+     * Configure the board after the start of the Game.
      */
     override fun refreshAfterStartGame() {
         initializeStationTileMap()
@@ -218,7 +276,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterRotateTileLeft
+     * Rotates a Tile leftwards.
      */
     override fun refreshAfterRotateTileLeft() {
         activePlayerPane.activePlayerTiles.last().rotate(-90)
@@ -226,7 +284,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterRotateTileRight
+     * Rotates a Tile rightwards.
      */
     override fun refreshAfterRotateTileRight() {
         activePlayerPane.activePlayerTiles.last().rotate(90)
@@ -234,7 +292,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterUndo
+     * Refreshes the boards and Panes after Undo.
      */
     override fun refreshAfterUndo(oldState: entity.State) {
         refreshBoard(oldState)
@@ -244,12 +302,12 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterRedo
+     * Refreshes the boards and Panes after Redo.
      */
     override fun refreshAfterRedo(oldState: entity.State) = refreshAfterUndo(oldState)
 
     /**
-     * @see view.Refreshable.refreshAfterPlaceTile
+     * Places a tile on the board.
      */
     override fun refreshAfterPlaceTile(posX: Int, posY: Int) {
         activePlayerPane.activePlayerTiles.remove(activePlayerPane.activePlayerTiles.last())
@@ -262,7 +320,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
 
     /**
-     * @see view.Refreshable.refreshAfterDrawTile
+     * Refreshes the shown tile after drawing a tile.
      */
     override fun refreshAfterDrawTile() {
         if (rootService.cableCar.currentState.activePlayer.currentTile == null) {
@@ -283,9 +341,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     }
 
     /**
-     * @see view.Refreshable.refreshAfterNextTurn
+     * Refreshes after a Turn.
      */
     override fun refreshAfterNextTurn() {
+        updateImage()
         if(!rootService.cableCar.currentState.activePlayer.isNetworkPlayer) showPlaceablePositions()
         else hidePlaceablePositions()
         if (rootService.cableCar.currentState.drawPile.isEmpty()) {
@@ -310,6 +369,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         startAIHandler()
     }
 
+    /** Shows all placeable position for the currentTile.*/
     private fun showPlaceablePositions() {
         val currentTile = with(rootService.cableCar.currentState.activePlayer) {
             checkNotNull(currentTile ?: handTile)
@@ -328,12 +388,12 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
-
+    /** Hides all placeable Positions.*/
     private fun hidePlaceablePositions() = (1..8).flatMap { x ->  (1..8).map { y -> Pair(x, y)  } }.forEach { (x, y) ->
         board[x, y]?.showFront()
     }
 
-
+    /** Starts the AI Handler if needed.*/
     private fun startAIHandler() {
         if (rootService.cableCar.currentState.activePlayer.playerType in listOf(
                 PlayerType.AI_EASY,
@@ -356,5 +416,126 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             )
 
         }
+    }
+
+    /** Resets the image in which the paths are drawn.*/
+    fun resetImage(){
+        paintBrush.clearRect(0,0, drawImage.width, drawImage.height)
+        pathImage.visual = ImageVisual(drawImage)
+    }
+
+    fun updateImage() {
+        pathImage.visual = ImageVisual(drawImage)
+    }
+
+    /** After a Tile is placed all paths related to this Tile are drawn. */
+    override fun refreshAfterPathElementUpdated(x: Int, y: Int, connectionA: Int,
+                                                connectionB: Int, color: entity.Color) {
+
+        // Set color of the connection:
+        setPaintBrush(color)
+
+        val cornerTileFactor = (0.166 * 100).toInt()
+        if(connectionA == 0 && connectionB == 1){
+           // paintBrush.drawLine(conAPos[0],conAPos[1],conAPos[0], conAPos[1] + ((0.166 * 100)).toInt())
+           paintBrush.drawLine(x * 101 + 33,y * 101, x * 101 + 33,y * 101 + cornerTileFactor)
+           paintBrush.drawLine(x * 101 + 66,y * 101, x * 101 + 66,y * 101 + cornerTileFactor)
+           paintBrush.drawLine(x * 101 + 33,y * 101 + cornerTileFactor, x * 101 + 66,y * 101 + cornerTileFactor)
+        } else if(connectionA == 2 && connectionB == 3){
+            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 33, (x+1) * 101 ,y * 101 + 33)
+            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 66, (x+1) * 101 ,y * 101 + 66)
+            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 33, (x+1) * 101 - cornerTileFactor,y * 101 + 66)
+        } else if(connectionA == 4 && connectionB == 5){
+            paintBrush.drawLine(x * 101 + 33,(y+1) * 101, x * 101 + 33,(y+1) * 101 - cornerTileFactor)
+            paintBrush.drawLine(x * 101 + 66,(y+1) * 101, x * 101 + 66,(y+1) * 101 - cornerTileFactor)
+            paintBrush.drawLine(x * 101 + 33,(y+1) * 101 - cornerTileFactor, x * 101 + 66,(y+1) * 101 - cornerTileFactor)
+        } else if(connectionA == 6 && connectionB == 7){
+            paintBrush.drawLine(x * 101,y * 101 + 33, x * 101 + cornerTileFactor,y * 101 + 33)
+            paintBrush.drawLine(x * 101,y * 101 + 66, x * 101 + cornerTileFactor,y * 101 + 66)
+            paintBrush.drawLine(x * 101 + cornerTileFactor,y * 101 + 33, x * 101 + cornerTileFactor,y * 101 + 66)
+        }else{
+            val conAPos = getPosition(connectionA)
+            val conBPos = getPosition(connectionB)
+
+            val failurePos = intArrayOf(-1,-1)
+            if(conAPos.contentEquals(failurePos) || conBPos.contentEquals(failurePos)){
+                println("ERROR: could not identify Connections")
+                return
+            }
+
+            conAPos[0] = conAPos[0] * 33
+            conAPos[1] = conAPos[1] * 33
+
+            conBPos[0] = conBPos[0] * 33
+            conBPos[1] = conBPos[1] * 33
+
+            paintBrush.drawLine(x * 101 + conAPos[0],y * 101 + conAPos[1],
+                                x * 101 + conBPos[0],y * 101 + conBPos[1])
+        }
+
+    }
+
+    /** If the last Tile of the path is a power-station or normal station-Tile
+     *  this method draws it.*/
+    override fun refreshPathAfterEndTile(x: Int, y: Int, connector: Int, color: entity.Color) {
+        setPaintBrush(color)
+
+        if( x == 0 ){
+            paintBrush.drawLine(42, y * 101 + 33, 101, y * 101 + 33)
+            paintBrush.drawLine(41, y * 101 + 22, 41 , y * 101 + 44)
+        }else if( y == 0 ){
+            paintBrush.drawLine(x * 101 + 66, 42, x * 101 + 66, 101)
+            paintBrush.drawLine(x * 101 + 55, 41, x * 101 + 77, 41)
+        }else if( x == 9 ){
+            paintBrush.drawLine(909, y * 101 + 66, 966,y * 101 + 66)
+            paintBrush.drawLine(967, y * 101 + 55, 967, y * 101 + 77)
+        }else if( y == 9 ){
+            paintBrush.drawLine(x * 101 + 33, 909, x * 101 + 33, 966 )
+            paintBrush.drawLine(x * 101 + 22, 967, x * 101 + 44, 967)
+        }else if( (x == 5 || x == 4) && (y == 4 || y == 5)){
+            val conPos = getPosition(connector)
+
+            // inverted Position because of the power Tile modeling
+            if(conPos[0] == 0){
+                paintBrush.drawLine((x+1) * 101 - 20, y * 101 + conPos[1] * 33,
+                    (x+1) * 101, y * 101 + conPos[1] * 33)
+            }else if (conPos[0] == 3){
+                paintBrush.drawLine(x * 101, y * 101 + conPos[1] * 33,
+                    x * 101 + 20, y * 101 + conPos[1] * 33)
+            }else if(conPos[1] == 0){
+                paintBrush.drawLine(x * 101 + conPos[0] * 33, (y+1) * 101 - 20,
+                    x * 101 + conPos[0] * 33, (y+1) * 101)
+            }else if(conPos[1] == 3){
+                paintBrush.drawLine(x * 101 + conPos[0] * 33, y * 101 ,
+                    x * 101 + conPos[0] * 33, y * 101 + 20)
+            }
+        }
+
+    }
+
+    /** Sets the color of the drawing paint brush.*/
+    private fun setPaintBrush(color: entity.Color){
+        paintBrush.color = when (color) {
+            entity.Color.YELLOW -> DEFAULT_YELLOW_COLOR
+            entity.Color.BLUE -> DEFAULT_BLUE_COLOR
+            entity.Color.ORANGE -> DEFAULT_RED_COLOR
+            entity.Color.GREEN -> DEFAULT_GREEN_COLOR
+            entity.Color.PURPLE -> DEFAULT_PURPLE_COLOR
+            entity.Color.BLACK -> DEFAULT_BLACK_COLOR
+        }.color
+    }
+
+    /** Returns the position of a given connector / ConnectionPoint.
+     * @return [-1,-1] if the connector is not valid.*/
+    private fun getPosition(i: Int)  = when (i) {
+        0 -> intArrayOf(1, 0)
+        1 -> intArrayOf(2, 0)
+        2 -> intArrayOf(3, 1)
+        3 -> intArrayOf(3, 2)
+        4 -> intArrayOf(2, 3)
+        5 -> intArrayOf(1, 3)
+        6 -> intArrayOf(0, 2)
+        7 -> intArrayOf(0, 1)
+        else -> intArrayOf(-1, -1)
     }
 }

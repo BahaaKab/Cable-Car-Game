@@ -18,7 +18,6 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
 
 
     private val rootService = RootService()
-    private val gameScene = GameScene(rootService)
     private val endScene = EndScene(rootService).apply {
         exitButton.onMouseClicked = { exit() }
     }
@@ -27,6 +26,7 @@ object CableCarApplication : BoardGameApplication("Cable Car"), Refreshable {
     val hostLobbyScene = LobbyScene(rootService, true, "", true)
     val guestLobbyScene = LobbyScene(rootService, true, "", false)
     val connectionScene = ConnectionScene(rootService)
+    val gameScene = GameScene(rootService)
 
     val lobbyScenes = listOf(localLobbyScene, hostLobbyScene, guestLobbyScene)
 
