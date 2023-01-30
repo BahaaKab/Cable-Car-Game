@@ -319,7 +319,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
 
     /**
-     * @see view.Refreshable.refreshAfterDrawTile
+     * Refreshes the shown tile after drawing a tile.
      */
     override fun refreshAfterDrawTile() {
         if (rootService.cableCar.currentState.activePlayer.currentTile == null) {
@@ -386,7 +386,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         }
     }
 
-    /** Hides Alle placeable Positions.*/
+    /** Hides all placeable Positions.*/
     private fun hidePlaceablePositions() = (1..8).flatMap { x ->  (1..8).map { y -> Pair(x, y)  } }.forEach { (x, y) ->
         board[x, y]?.showFront()
     }
