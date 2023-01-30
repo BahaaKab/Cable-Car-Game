@@ -41,7 +41,12 @@ dependencies {
 tasks.distZip {
     archiveFileName.set("distribution.zip")
     destinationDirectory.set(layout.projectDirectory.dir("public"))
+    into("") {
+        from(".")
+        include("Sopra-HowToPlay.pdf")
+    }
 }
+
 
 tasks.test {
     useJUnitPlatform()
