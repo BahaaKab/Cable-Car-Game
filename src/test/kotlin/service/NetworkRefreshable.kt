@@ -9,7 +9,7 @@ import view.Refreshable
 /**
  * A class to handle network [Response] and [Notification]
  */
-class NetworkRefreshable() : Refreshable {
+class NetworkRefreshable : Refreshable {
     /**
      * A response or null. May be either a [CreateGameResponse] or a [JoinGameResponse]
      */
