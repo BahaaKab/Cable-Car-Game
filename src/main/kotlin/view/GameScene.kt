@@ -65,8 +65,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     private val otherPlayersPane = OtherPlayersPane(rootService = rootService, posX = 100, posY = 648)
 
-    private var placeablePositions: Set<Pair<Int, Int>> = setOf()
-
     private val emptyTilesCardViews = List(8) { column ->
         List(8) { row ->
             CardView(
@@ -322,17 +320,16 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             rotationAllowed
         )
 
+        // Remove the old preview
+        hidePlaceablePositions()
+        // Show only placeable tiles
         newPlaceablePositions.forEach { (x, y) ->
             board[x, y]?.showBack()
         }
-        (placeablePositions - newPlaceablePositions).forEach { (x, y) ->
-            board[x, y]?.showFront()
-        }
-        placeablePositions = newPlaceablePositions
-
     }
 
-    private fun hidePlaceablePositions() = placeablePositions.forEach { (x,y) ->
+
+    private fun hidePlaceablePositions() = (1..8).flatMap { x ->  (1..8).map { y -> Pair(x, y)  } }.forEach { (x, y) ->
         board[x, y]?.showFront()
     }
 
