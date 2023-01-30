@@ -143,6 +143,11 @@ class ActivePlayerPane(private val rootService: RootService, posX: Number = 0, p
                 rotation = handTile!!.rotation.toDouble()
             })
         }
+        if (currentTile == null) {
+            enableDrawTileButton()
+        } else {
+            disableDrawTileButton()
+        }
         activePlayerNameLabel.text = name
         activePlayerScoreLabel.text = "Score: $score"
         activePlayerColorLabel.visual = when (color) {
