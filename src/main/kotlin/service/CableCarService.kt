@@ -155,7 +155,7 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
                 return
             }
             // the connector is firstly set on the beginning of the connection
-            connector = nextTile.OUTER_TILE_CONNECTIONS[connector]
+            connector = OUTER_TILE_CONNECTIONS[connector]
             // Updating the next connector which directs to another possible [Tile]
             connector = nextTile.connections[connector]
         }

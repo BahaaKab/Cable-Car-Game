@@ -56,7 +56,7 @@ class Path(var segments: MutableList<PathSegment>) {
             return path
         }
         // Otherwise add the path segment of the tile to the path
-        var nextSegment = PathSegment(x, y, tile.OUTER_TILE_CONNECTIONS[lastConnector], tile)
+        var nextSegment = PathSegment(x, y, OUTER_TILE_CONNECTIONS[lastConnector], tile)
         path.segments.add(nextSegment)
 
         // Enhance the path with segments based on the current board state
@@ -76,7 +76,7 @@ class Path(var segments: MutableList<PathSegment>) {
             if (currentTile == null) {
                 break
             }
-            val nextFirstConnector = currentTile.OUTER_TILE_CONNECTIONS[lastSegment.secondConnector]
+            val nextFirstConnector = OUTER_TILE_CONNECTIONS[lastSegment.secondConnector]
             val nextSecondConnector = if (currentTile.isEndTile) -1 else currentTile.connections[nextFirstConnector]
             nextSegment = PathSegment(nextX, nextY, nextFirstConnector, nextSecondConnector)
             path.segments.add(nextSegment)
