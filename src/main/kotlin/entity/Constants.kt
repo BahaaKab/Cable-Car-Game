@@ -16,3 +16,4 @@ const val LEFT_BOT = 6
 const val LEFT_TOP = 7
 
 val PLAYER_ORDER_COLORS = arrayOf(Color.YELLOW, Color.BLUE, Color.ORANGE, Color.GREEN, Color.PURPLE, Color.BLACK)
+val OUTER_TILE_CONNECTIONS = intArrayOf(5, 4, 7, 6, 1, 0, 3, 2)
