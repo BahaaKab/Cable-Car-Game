@@ -98,7 +98,7 @@ class CableCarNetworkClient(
      * @param message A [GameInitMessage]
      * @param sender The name of the sender
      */
-    @Suppress("UNUSED")
+    @Suppress("UNUSED", "UNUSED_PARAMETER")
     @GameActionReceiver
     fun onGameInitMessageReceived(message: GameInitMessage, sender: String) {
         // If the local player is the host, throw an exception, as the sender cannot be the host
