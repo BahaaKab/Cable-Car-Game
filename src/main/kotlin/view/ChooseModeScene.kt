@@ -16,10 +16,6 @@ import java.awt.Color
  */
 
 class ChooseModeScene : MenuScene(1920, 1080), Refreshable {
-
-    // Farbe London Underground/tfl: 36, 53, 136,1
-    // Farbe unsere GUI-Vorlage: 5, 24, 156, 1
-
     private val cableCarLogo = CableCarLogo(660, 40).apply { scale = 2.58 }
 
     private val chooseModeLabel: Label = Label(
@@ -61,13 +57,10 @@ class ChooseModeScene : MenuScene(1920, 1080), Refreshable {
     ).apply {
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
-            // CableCarApplication.lobbyScene = LobbyScene(rootService, true, "TestName1", true)
-            // CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
             CableCarApplication.showMenuScene(CableCarApplication.connectionScene)
         }
     }
 
-    // Beispiel für Hintergrundfarbe: "-fx-background-color: rgba(150,40,173,1);
     init {
         opacity = 1.0
         background = ColorVisual(247, 247, 247)

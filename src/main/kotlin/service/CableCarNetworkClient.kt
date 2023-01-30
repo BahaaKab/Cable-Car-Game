@@ -93,13 +93,6 @@ class CableCarNetworkClient(
     }
 
     /**
-     *
-     */
-    override fun onGameActionResponse(response: GameActionResponse) {
-        // TODO: Update local game? Or just show success message? What exactly should happen here?
-    }
-
-    /**
      * Handle a [GameInitMessage]
      *
      * @param message A [GameInitMessage]

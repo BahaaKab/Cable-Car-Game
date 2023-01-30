@@ -51,15 +51,6 @@ class CableCarService(private val rootService: RootService) : AbstractRefreshing
         history.redoStates.clear()
 
         onAllRefreshables { refreshAfterNextTurn() }
-
-        // Decide what to do next based on the kind of player
-        with(currentState.activePlayer) {
-            if (isNetworkPlayer) {
-                // TODO
-                return
-            }
-        }
-
     }
 
     /**
