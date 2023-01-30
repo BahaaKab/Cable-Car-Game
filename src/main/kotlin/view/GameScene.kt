@@ -319,7 +319,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
 
     /**
-     * Refreshes the shown handcards after drawing a tile.
+     * Refreshes the shown tile after drawing a tile.
      */
     override fun refreshAfterDrawTile() {
         if (rootService.cableCar.currentState.activePlayer.currentTile == null) {
@@ -404,10 +404,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             hidePlaceablePositions()
 
             playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 1000).apply {
+                DelayAnimation(rootService.cableCar.aiSpeed * 1000).apply {
                     onFinished = {
                         BoardGameApplication.runOnGUIThread {
-                            rootService.aIService.makeAIMove()
+                            rootService.aiService.makeAIMove()
                         }
                     }
                 }
