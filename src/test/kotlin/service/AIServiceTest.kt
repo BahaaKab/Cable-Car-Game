@@ -10,22 +10,22 @@ class AIServiceTest {
     @Test
     fun benchmarkHardAIWithoutRotation() {
         repeat(5) { i ->
-            benchmarkHardAI(1000, i + 1, false)
+            benchmarkHardAI(500, i + 1, false)
         }
     }
 
     @Test
     fun benchmarkHardAIWithRotation() {
         repeat(5) { i ->
-            benchmarkHardAI(1000, i + 1, true)
+            benchmarkHardAI(500, i + 1, true)
         }
     }
 
 
     @Test
     fun benchmarkHardAIPVP() {
-        benchmarkHardAI(1000, 1, false)
-        benchmarkHardAI(1000, 1, true)
+        benchmarkHardAI(2000, 1, false)
+        benchmarkHardAI(2000, 1, true)
     }
 
 
@@ -42,14 +42,14 @@ class AIServiceTest {
                 rootService.setupService.startLocalGame(players, false, 0)
 
                 while (rootService.cableCar.currentState.drawPile.isNotEmpty()) {
-                        rootService.aIService.makeAIMove()
+                        rootService.aiService.makeAIMove()
                 }
             }
         }
 
     }
 
-
+    @Suppress("MaxLineLength")
     private fun benchmarkHardAI(numberOfRuns: Int, numberOfEasyEnemies: Int, allowRotation: Boolean) {
         require(numberOfEasyEnemies in 1..5)
         val hardAI = PlayerInfo("Hard AI", PlayerType.AI_HARD, Color.YELLOW, false)
@@ -68,11 +68,11 @@ class AIServiceTest {
             while (rootService.cableCar.currentState.drawPile.isNotEmpty()) {
                 if (rootService.cableCar.currentState.activePlayer.name == hardAI.name) {
                     totalActions ++
-                    val elapsedTime = measureTimeMillis { rootService.aIService.makeAIMove() }
+                    val elapsedTime = measureTimeMillis { rootService.aiService.makeAIMove() }
                     totalTime += elapsedTime
                     maxTime = max(maxTime, elapsedTime)
                 } else {
-                    rootService.aIService.makeAIMove()
+                    rootService.aiService.makeAIMove()
                 }
             }
 

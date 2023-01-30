@@ -1,7 +1,6 @@
 package service
 
 import entity.GameTile
-import java.io.File
 import java.io.FileNotFoundException
 
 /**
@@ -12,12 +11,11 @@ const val TILES_CSV_PATH : String = "/tiles.csv"
 /**
  * A service class to handle IO actions.
  *
- * @property rootService The [RootService].
  * @property tilesCSVFile The tiles.csv file containing all information to generate the [GameTile]s.
  *
  * @constructor Creates an [IOService].
  */
-class IOService(private val rootService: RootService) {
+class IOService {
     private val tilesCSVFile = IOService::class.java.getResource(TILES_CSV_PATH) ?: throw FileNotFoundException()
 
     /**
@@ -43,7 +41,7 @@ class IOService(private val rootService: RootService) {
      * @return The connections as needed by a [GameTile].
      */
     private fun getConnectionsFromCSVLine(line: String): List<Int> {
-        val connections = Array<Int>(8) { -1 }
+        val connections = Array(8) { -1 }
         // Convert the String to a List of Integers, assuming that every connection point is defined through
         // a single digit.
         val parsedDigitsAsIntegers = line.filter { it.isDigit() }.map { it.digitToInt() }

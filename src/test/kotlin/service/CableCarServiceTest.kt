@@ -7,7 +7,7 @@ class CableCarServiceTest {
 
     /**
      * Test to check if the next active [Player] is set correctly if the last active [Player]
-     * wasn't the last player in the playerlist
+     * wasn't the last player in the player list
      */
     @Test
     fun testNextTurn1() {
@@ -36,7 +36,7 @@ class CableCarServiceTest {
 
     /**
      * Test to check if the next active [Player] is set correctly if the last active [Player]
-     * was the last player in the playerlist
+     * was the last player in the player list
      */
     @Test
     fun testNextTurn2() {

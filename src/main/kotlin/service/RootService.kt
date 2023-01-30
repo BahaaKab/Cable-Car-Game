@@ -11,8 +11,8 @@ class RootService {
     val playerActionService = PlayerActionService(this)
     val cableCarService = CableCarService(this)
     val setupService = SetupService(this)
-    val ioService = IOService(this)
-    val aIService = AIService(this)
+    val ioService = IOService()
+    val aiService = AIService(this)
     val networkService = NetworkService(this)
     var gameEnded = false
 
@@ -24,7 +24,7 @@ class RootService {
         playerActionService.addRefreshable(newRefreshable)
         cableCarService.addRefreshable(newRefreshable)
         setupService.addRefreshable(newRefreshable)
-        aIService.addRefreshable(newRefreshable) // Turnmessage based? then via regular player options
+        aiService.addRefreshable(newRefreshable)
         networkService.addRefreshable(newRefreshable)
     }
 

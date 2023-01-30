@@ -5,11 +5,12 @@ import tools.aqua.bgw.net.common.notification.PlayerJoinedNotification
 import tools.aqua.bgw.net.common.notification.PlayerLeftNotification
 import tools.aqua.bgw.net.common.response.*
 import view.Refreshable
+import java.util.concurrent.TimeoutException
 
 /**
  * A class to handle network [Response] and [Notification]
  */
-class NetworkRefreshable() : Refreshable {
+class NetworkRefreshable : Refreshable {
     /**
      * A response or null. May be either a [CreateGameResponse] or a [JoinGameResponse]
      */
@@ -23,12 +24,12 @@ class NetworkRefreshable() : Refreshable {
     /**
      *
      */
-    var hasStartedGameInstance = false
+    private var hasStartedGameInstance = false
 
     /**
      *
      */
-    var hasReceivedTurnMessage = false
+    private var hasReceivedTurnMessage = false
 
     /**
      * Set the [NetworkRefreshable.response] property
@@ -67,7 +68,7 @@ class NetworkRefreshable() : Refreshable {
         while (!hasStartedGameInstance) {
             Thread.sleep(5)
             if (counter <= 0) {
-                throw Exception()
+                throw TimeoutException()
             }
             counter -= 5
         }
@@ -82,7 +83,7 @@ class NetworkRefreshable() : Refreshable {
         while (!hasReceivedTurnMessage) {
             Thread.sleep(5)
             if (counter <= 0) {
-                throw Exception()
+                throw TimeoutException()
             }
             counter -= 5
         }
@@ -97,6 +98,7 @@ class NetworkRefreshable() : Refreshable {
      *
      * @return Whether the connection was successful
      */
+    @Suppress("MaxLineLength")
     fun responseSuccessWithin(timeoutInMillis: Int): Boolean {
         responseWithinOrNull(timeoutInMillis)
         return (response is JoinGameResponse && (response as JoinGameResponse).status == JoinGameResponseStatus.SUCCESS) ||

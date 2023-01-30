@@ -114,7 +114,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
             player.currentTile = null
         }
 
-        // TODO: Shouldn't this move inside cableCarService.nextTurn()?
         cableCarService.updatePaths(posX, posY)
         cableCarService.calculatePoints()
         // If this is a network game, create the turn message
@@ -283,6 +282,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Changes the AISpeed in the [CableCar] class.
      */
     fun setAISpeed(speed: Int) {
-        rootService.cableCar.AISpeed = speed
+        rootService.cableCar.aiSpeed = speed
     }
 }

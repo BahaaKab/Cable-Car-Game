@@ -419,7 +419,7 @@ class LobbyScene(
         tileRotation = tileRotation.not()
     }
 
-    /** This Method switches two InputPlanes specified by two params that indicates the postions.
+    /** This Method switches two InputPlanes specified by two params that indicates the positions.
      *
      * @param pos1Pane Indicates the position of the first InputPlane (1.Pane = 0)
      * @param pos2Pane Indicates the position of the second InputPlane (2.Pane = 1)

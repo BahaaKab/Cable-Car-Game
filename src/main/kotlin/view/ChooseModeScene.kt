@@ -1,7 +1,6 @@
 package view
 
 import tools.aqua.bgw.core.MenuScene
-import service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
@@ -11,15 +10,11 @@ import view.components.CableCarLogo
 import java.awt.Color
 
 
-/** This class manages the first Scene of the application. A player can select which GameMode he wants to play.
- *
- * @param rootService gives the administration class for all classes in all layers.*/
+/**
+ * This class manages the first Scene of the application. A player can select which GameMode he wants to play.
+ */
 
-class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 1080), Refreshable {
-
-    // Farbe London Underground/tfl: 36, 53, 136,1
-    // Farbe unsere GUI-Vorlage: 5, 24, 156, 1
-
+class ChooseModeScene : MenuScene(1920, 1080), Refreshable {
     private val cableCarLogo = CableCarLogo(660, 40).apply { scale = 2.58 }
 
     private val chooseModeLabel: Label = Label(
@@ -61,13 +56,10 @@ class ChooseModeScene(private val rootService: RootService) : MenuScene(1920, 10
     ).apply {
         componentStyle = "-fx-background-color: rgba(5,24,156,1);-fx-background-radius: 100"
         onMouseClicked = {
-            // CableCarApplication.lobbyScene = LobbyScene(rootService, true, "TestName1", true)
-            // CableCarApplication.showMenuScene(CableCarApplication.lobbyScene)
             CableCarApplication.showMenuScene(CableCarApplication.connectionScene)
         }
     }
 
-    // Beispiel für Hintergrundfarbe: "-fx-background-color: rgba(150,40,173,1);
     init {
         opacity = 1.0
         background = ColorVisual(247, 247, 247)

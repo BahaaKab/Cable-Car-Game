@@ -30,13 +30,13 @@ import java.awt.image.BufferedImage
 
 val tileMapBig = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 240, height = 240, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
 val tileMapSmall = BidirectionalMap<Int, CardView>().apply {
     for (i in 0..59) {
-        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILEIMAGELOADER.frontImageFor(i))))
+        add(i, CardView(width = 100, height = 100, front = ImageVisual(TILE_IMAGE_LOADER.frontImageFor(i))))
     }
 }
 
@@ -68,8 +68,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
 
     private val otherPlayersPane = OtherPlayersPane(rootService = rootService, posX = 100, posY = 648)
 
-    private var placeablePositions: Set<Pair<Int, Int>> = setOf()
-
     private val emptyTilesCardViews = List(8) { column ->
         List(8) { row ->
             CardView(
@@ -100,7 +98,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             for (j in 1..8) {
 
                 // We don't want to place empty tiles where the power stations are
-                if ((i == 4 || i == 5) && (j == 4 || j == 5)) continue
+                if (i in 4..5 && j in 4..5) continue
 
                 set(columnIndex = i, rowIndex = j, component = emptyTilesCardViews[i - 1][j - 1])
             }
@@ -165,7 +163,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             it.stationTiles.forEach { station ->
                 stationTileMap.add(
                     station,
-                    CardView(width = 100, height = 100, front = ImageVisual((TILEIMAGELOADER.stationTileFor(it.color))))
+                    CardView(width = 100, height = 100, front = ImageVisual((TILE_IMAGE_LOADER.stationTileFor(it.color))))
                 )
             }
         }
@@ -272,7 +270,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         } else connectionStatusLabel.isVisible = false
 
         otherPlayersPane.refreshAfterStartGame()
-        optionsPane.setAISpeed(rootService.cableCar.AISpeed)
+        optionsPane.setAISpeed(rootService.cableCar.aiSpeed)
         refreshAfterNextTurn()
     }
 
@@ -380,18 +378,16 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             rotationAllowed
         )
 
+        // Remove the old preview
+        hidePlaceablePositions()
+        // Show only placeable tiles
         newPlaceablePositions.forEach { (x, y) ->
             board[x, y]?.showBack()
         }
-        (placeablePositions - newPlaceablePositions).forEach { (x, y) ->
-            board[x, y]?.showFront()
-        }
-        placeablePositions = newPlaceablePositions
-
     }
 
-    /** Hides Alle placeable Positions.*/
-    private fun hidePlaceablePositions() = placeablePositions.forEach { (x,y) ->
+    /** Hides all placeable Positions.*/
+    private fun hidePlaceablePositions() = (1..8).flatMap { x ->  (1..8).map { y -> Pair(x, y)  } }.forEach { (x, y) ->
         board[x, y]?.showFront()
     }
 
@@ -418,124 +414,5 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             )
 
         }
-    }
-
-    /** Resets the image in which the paths are drawn.*/
-    fun resetImage(){
-        paintBrush.clearRect(0,0, drawImage.width, drawImage.height)
-        pathImage.visual = ImageVisual(drawImage)
-    }
-
-    /** After a Tile is placed all paths related to this Tile are drawn. */
-    override fun refreshAfterPathElementUpdated(x: Int, y: Int, connectionA: Int,
-                                                connectionB: Int, color: entity.Color) {
-
-        // Set color of the connection:
-        setPaintBrush(color)
-
-        val cornerTileFactor = (0.166 * 100).toInt()
-        if(connectionA == 0 && connectionB == 1){
-           // paintBrush.drawLine(conAPos[0],conAPos[1],conAPos[0], conAPos[1] + ((0.166 * 100)).toInt())
-           paintBrush.drawLine(x * 101 + 33,y * 101, x * 101 + 33,y * 101 + cornerTileFactor)
-           paintBrush.drawLine(x * 101 + 66,y * 101, x * 101 + 66,y * 101 + cornerTileFactor)
-           paintBrush.drawLine(x * 101 + 33,y * 101 + cornerTileFactor, x * 101 + 66,y * 101 + cornerTileFactor)
-        } else if(connectionA == 2 && connectionB == 3){
-            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 33, (x+1) * 101 ,y * 101 + 33)
-            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 66, (x+1) * 101 ,y * 101 + 66)
-            paintBrush.drawLine((x+1) * 101 - cornerTileFactor,y * 101 + 33, (x+1) * 101 - cornerTileFactor,y * 101 + 66)
-        } else if(connectionA == 4 && connectionB == 5){
-            paintBrush.drawLine(x * 101 + 33,(y+1) * 101, x * 101 + 33,(y+1) * 101 - cornerTileFactor)
-            paintBrush.drawLine(x * 101 + 66,(y+1) * 101, x * 101 + 66,(y+1) * 101 - cornerTileFactor)
-            paintBrush.drawLine(x * 101 + 33,(y+1) * 101 - cornerTileFactor, x * 101 + 66,(y+1) * 101 - cornerTileFactor)
-        } else if(connectionA == 6 && connectionB == 7){
-            paintBrush.drawLine(x * 101,y * 101 + 33, x * 101 + cornerTileFactor,y * 101 + 33)
-            paintBrush.drawLine(x * 101,y * 101 + 66, x * 101 + cornerTileFactor,y * 101 + 66)
-            paintBrush.drawLine(x * 101 + cornerTileFactor,y * 101 + 33, x * 101 + cornerTileFactor,y * 101 + 66)
-        }else{
-            val conAPos = getPosition(connectionA)
-            val conBPos = getPosition(connectionB)
-
-            val failurePos = intArrayOf(-1,-1)
-            if(conAPos.contentEquals(failurePos) || conBPos.contentEquals(failurePos)){
-                println("ERROR: could not identify Connections")
-                return
-            }
-
-            conAPos[0] = conAPos[0] * 33
-            conAPos[1] = conAPos[1] * 33
-
-            conBPos[0] = conBPos[0] * 33
-            conBPos[1] = conBPos[1] * 33
-
-            paintBrush.drawLine(x * 101 + conAPos[0],y * 101 + conAPos[1],
-                                x * 101 + conBPos[0],y * 101 + conBPos[1])
-        }
-
-        pathImage.visual = ImageVisual(drawImage)
-    }
-
-    /** If the last Tile of the path is a power-station or normal station-Tile
-     *  this method draws it.*/
-    override fun refreshPathAfterEndTile(x: Int, y: Int, connector: Int, color: entity.Color) {
-        setPaintBrush(color)
-
-        if( x == 0 ){
-            paintBrush.drawLine(42, y * 101 + 33, 101, y * 101 + 33)
-            paintBrush.drawLine(41, y * 101 + 22, 41 , y * 101 + 44)
-        }else if( y == 0 ){
-            paintBrush.drawLine(x * 101 + 66, 42, x * 101 + 66, 101)
-            paintBrush.drawLine(x * 101 + 55, 41, x * 101 + 77, 41)
-        }else if( x == 9 ){
-            paintBrush.drawLine(909, y * 101 + 66, 966,y * 101 + 66)
-            paintBrush.drawLine(967, y * 101 + 55, 967, y * 101 + 77)
-        }else if( y == 9 ){
-            paintBrush.drawLine(x * 101 + 33, 909, x * 101 + 33, 966 )
-            paintBrush.drawLine(x * 101 + 22, 967, x * 101 + 44, 967)
-        }else if( (x == 5 || x == 4) && (y == 4 || y == 5)){
-            val conPos = getPosition(connector)
-
-            // inverted Position because of the power Tile modeling
-            if(conPos[0] == 0){
-                paintBrush.drawLine((x+1) * 101 - 20, y * 101 + conPos[1] * 33,
-                    (x+1) * 101, y * 101 + conPos[1] * 33)
-            }else if (conPos[0] == 3){
-                paintBrush.drawLine(x * 101, y * 101 + conPos[1] * 33,
-                    x * 101 + 20, y * 101 + conPos[1] * 33)
-            }else if(conPos[1] == 0){
-                paintBrush.drawLine(x * 101 + conPos[0] * 33, (y+1) * 101 - 20,
-                    x * 101 + conPos[0] * 33, (y+1) * 101)
-            }else if(conPos[1] == 3){
-                paintBrush.drawLine(x * 101 + conPos[0] * 33, y * 101 ,
-                    x * 101 + conPos[0] * 33, y * 101 + 20)
-            }
-        }
-
-        pathImage.visual = ImageVisual(drawImage)
-    }
-
-    /** Sets the color of the drawing paint brush.*/
-    private fun setPaintBrush(color: entity.Color){
-        paintBrush.color = when (color) {
-            entity.Color.YELLOW -> DEFAULT_YELLOW_COLOR
-            entity.Color.BLUE -> DEFAULT_BLUE_COLOR
-            entity.Color.ORANGE -> DEFAULT_RED_COLOR
-            entity.Color.GREEN -> DEFAULT_GREEN_COLOR
-            entity.Color.PURPLE -> DEFAULT_PURPLE_COLOR
-            entity.Color.BLACK -> DEFAULT_BLACK_COLOR
-        }.color
-    }
-
-    /** Returns the position of a given connector / ConnectionPoint.
-     * @return [-1,-1] if the connector is not valid.*/
-    private fun getPosition(i: Int)  = when (i) {
-        0 -> intArrayOf(1, 0)
-        1 -> intArrayOf(2, 0)
-        2 -> intArrayOf(3, 1)
-        3 -> intArrayOf(3, 2)
-        4 -> intArrayOf(2, 3)
-        5 -> intArrayOf(1, 3)
-        6 -> intArrayOf(0, 2)
-        7 -> intArrayOf(0, 1)
-        else -> intArrayOf(-1, -1)
     }
 }

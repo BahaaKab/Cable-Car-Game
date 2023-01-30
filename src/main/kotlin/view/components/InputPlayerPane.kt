@@ -121,7 +121,7 @@ class InputPlayerPane(
             playerName.text = name
     }
 
-    /** A Method to get the String that players are typing in the Textfield in Hot-Seat-Mode. */
+    /** A Method to get the String that players are typing in the text field in Hot-Seat-Mode. */
     private fun getTextFieldInput(): String {
         if (nameField.text.trim() == "") {
             nameField.text = "Player$orderNumber"

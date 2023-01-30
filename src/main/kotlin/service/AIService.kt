@@ -32,11 +32,11 @@ class Path(var segments: MutableList<PathSegment>) {
         require(segments.isNotEmpty() && segments.first().firstConnector == -1)
     }
 
-    fun isClosed() = segments.last().secondConnector == -1
+    private fun isClosed() = segments.last().secondConnector == -1
 
-    fun isOpen() = !isClosed()
+    private fun isOpen() = !isClosed()
 
-    fun copy() = Path(segments.map { it.copy() }.toMutableList())
+    private fun copy() = Path(segments.map { it.copy() }.toMutableList())
 
     fun enhancedWith(tile: GameTile, x: Int, y: Int, board: Array<Array<Tile?>>): Path {
         val path = copy()
@@ -56,7 +56,7 @@ class Path(var segments: MutableList<PathSegment>) {
             return path
         }
         // Otherwise add the path segment of the tile to the path
-        var nextSegment = PathSegment(x, y, tile.OUTER_TILE_CONNECTIONS[lastConnector], tile)
+        var nextSegment = PathSegment(x, y, OUTER_TILE_CONNECTIONS[lastConnector], tile)
         path.segments.add(nextSegment)
 
         // Enhance the path with segments based on the current board state
@@ -76,7 +76,7 @@ class Path(var segments: MutableList<PathSegment>) {
             if (currentTile == null) {
                 break
             }
-            val nextFirstConnector = currentTile.OUTER_TILE_CONNECTIONS[lastSegment.secondConnector]
+            val nextFirstConnector = OUTER_TILE_CONNECTIONS[lastSegment.secondConnector]
             val nextSecondConnector = if (currentTile.isEndTile) -1 else currentTile.connections[nextFirstConnector]
             nextSegment = PathSegment(nextX, nextY, nextFirstConnector, nextSecondConnector)
             path.segments.add(nextSegment)
@@ -92,7 +92,7 @@ class Path(var segments: MutableList<PathSegment>) {
  * @param [rootService] Connected root service
  */
 class AIService(private val rootService: RootService) : AbstractRefreshingService() {
-    var hardAIRules = listOf(::enhancesAIPaths, ::closesEnemyPath, ::closesOwnPath)
+    private var hardAIRules = listOf(::enhancesAIPaths, ::closesEnemyPath, ::closesOwnPath)
 
     /**
      * to get the best calculate for AI when set Difficulty to HARD
@@ -122,7 +122,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }
 
         if (rootService.cableCar.allowTileRotation) {
-            for (i in 0..3) {
+            repeat(4) {
                 tileToPlace.rotate(true)
                 val placeableTiles = validPositions.minus(
                     getOnePointPositions(tileToPlace)
@@ -159,7 +159,7 @@ class AIService(private val rootService: RootService) : AbstractRefreshingServic
         }
         // If rotation is allowed, find the best position for the first rotation, that has placeable tiles.
         if (cableCar.allowTileRotation) {
-            for (i in 0..3) {
+            repeat(4) {
                 tileToPlace.rotate(true)
                 val placeablePositions = validPositions - playerActionService.getOnePointPositions(tileToPlace)
                 if (placeablePositions.isNotEmpty()) {
