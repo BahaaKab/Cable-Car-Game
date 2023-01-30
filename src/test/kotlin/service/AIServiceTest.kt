@@ -42,7 +42,7 @@ class AIServiceTest {
                 rootService.setupService.startLocalGame(players, false, 0)
 
                 while (rootService.cableCar.currentState.drawPile.isNotEmpty()) {
-                        rootService.aIService.makeAIMove()
+                        rootService.aiService.makeAIMove()
                 }
             }
         }
@@ -68,11 +68,11 @@ class AIServiceTest {
             while (rootService.cableCar.currentState.drawPile.isNotEmpty()) {
                 if (rootService.cableCar.currentState.activePlayer.name == hardAI.name) {
                     totalActions ++
-                    val elapsedTime = measureTimeMillis { rootService.aIService.makeAIMove() }
+                    val elapsedTime = measureTimeMillis { rootService.aiService.makeAIMove() }
                     totalTime += elapsedTime
                     maxTime = max(maxTime, elapsedTime)
                 } else {
-                    rootService.aIService.makeAIMove()
+                    rootService.aiService.makeAIMove()
                 }
             }
 

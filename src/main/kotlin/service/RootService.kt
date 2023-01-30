@@ -12,7 +12,7 @@ class RootService {
     val cableCarService = CableCarService(this)
     val setupService = SetupService(this)
     val ioService = IOService()
-    val aIService = AIService(this)
+    val aiService = AIService(this)
     val networkService = NetworkService(this)
     var gameEnded = false
 
@@ -24,7 +24,7 @@ class RootService {
         playerActionService.addRefreshable(newRefreshable)
         cableCarService.addRefreshable(newRefreshable)
         setupService.addRefreshable(newRefreshable)
-        aIService.addRefreshable(newRefreshable)
+        aiService.addRefreshable(newRefreshable)
         networkService.addRefreshable(newRefreshable)
     }
 

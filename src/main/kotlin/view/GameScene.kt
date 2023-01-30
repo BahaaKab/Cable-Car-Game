@@ -215,7 +215,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         } else connectionStatusLabel.isVisible = false
 
         otherPlayersPane.refreshAfterStartGame()
-        optionsPane.setAISpeed(rootService.cableCar.AISpeed)
+        optionsPane.setAISpeed(rootService.cableCar.aiSpeed)
         refreshAfterNextTurn()
     }
 
@@ -349,10 +349,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             hidePlaceablePositions()
 
             playAnimation(
-                DelayAnimation(rootService.cableCar.AISpeed * 1000).apply {
+                DelayAnimation(rootService.cableCar.aiSpeed * 1000).apply {
                     onFinished = {
                         BoardGameApplication.runOnGUIThread {
-                            rootService.aIService.makeAIMove()
+                            rootService.aiService.makeAIMove()
                         }
                     }
                 }

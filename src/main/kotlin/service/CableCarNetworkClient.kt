@@ -116,7 +116,7 @@ class CableCarNetworkClient(
             playerInfos = playerInfos,
             tilesRotatable = message.rotationAllowed,
             tileIDs = message.tileSupply.map { it.id },
-            AISpeed = 1
+            aiSpeed = 1
         )
     }
 

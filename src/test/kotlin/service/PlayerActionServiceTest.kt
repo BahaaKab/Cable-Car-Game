@@ -244,9 +244,9 @@ class PlayerActionServiceTest {
     @Test
     fun testSetAISpeed() {
         setup.startLocalGame(players, false, 0)
-        assertEquals(0, rootService.cableCar.AISpeed)
+        assertEquals(0, rootService.cableCar.aiSpeed)
         rootService.playerActionService.setAISpeed(4)
-        assertEquals(4, rootService.cableCar.AISpeed)
+        assertEquals(4, rootService.cableCar.aiSpeed)
     }
 
 }
