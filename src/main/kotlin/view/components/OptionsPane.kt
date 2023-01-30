@@ -42,6 +42,7 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         onMouseClicked = {
             CableCarApplication.gameScene.resetImage()
             rootService.playerActionService.undo()
+            CableCarApplication.gameScene.updateImage()
         }
     }
 
@@ -50,8 +51,10 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         width = 35, height = 20,
         visual = undoVisual
     ).apply {
-        onMouseClicked = { CableCarApplication.gameScene.resetImage()
-                            rootService.playerActionService.undo()
+        onMouseClicked = {
+            CableCarApplication.gameScene.resetImage()
+            rootService.playerActionService.undo()
+            CableCarApplication.gameScene.updateImage()
         }
     }
 

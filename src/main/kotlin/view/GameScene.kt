@@ -25,6 +25,7 @@ import view.components.OptionsPane
 import view.components.OtherPlayersPane
 import java.awt.BasicStroke
 import java.awt.Color
+import java.awt.Image
 import java.awt.image.BufferedImage
 
 
@@ -343,6 +344,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
      * Refreshes after a Turn.
      */
     override fun refreshAfterNextTurn() {
+        updateImage()
         if(!rootService.cableCar.currentState.activePlayer.isNetworkPlayer) showPlaceablePositions()
         else hidePlaceablePositions()
         if (rootService.cableCar.currentState.drawPile.isEmpty()) {
@@ -422,6 +424,10 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
         pathImage.visual = ImageVisual(drawImage)
     }
 
+    fun updateImage() {
+        pathImage.visual = ImageVisual(drawImage)
+    }
+
     /** After a Tile is placed all paths related to this Tile are drawn. */
     override fun refreshAfterPathElementUpdated(x: Int, y: Int, connectionA: Int,
                                                 connectionB: Int, color: entity.Color) {
@@ -467,7 +473,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
                                 x * 101 + conBPos[0],y * 101 + conBPos[1])
         }
 
-        pathImage.visual = ImageVisual(drawImage)
     }
 
     /** If the last Tile of the path is a power-station or normal station-Tile
@@ -506,7 +511,6 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
             }
         }
 
-        pathImage.visual = ImageVisual(drawImage)
     }
 
     /** Sets the color of the drawing paint brush.*/
