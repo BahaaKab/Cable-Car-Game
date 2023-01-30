@@ -5,6 +5,7 @@ import tools.aqua.bgw.net.common.notification.PlayerJoinedNotification
 import tools.aqua.bgw.net.common.notification.PlayerLeftNotification
 import tools.aqua.bgw.net.common.response.*
 import view.Refreshable
+import java.util.concurrent.TimeoutException
 
 /**
  * A class to handle network [Response] and [Notification]
@@ -67,7 +68,7 @@ class NetworkRefreshable : Refreshable {
         while (!hasStartedGameInstance) {
             Thread.sleep(5)
             if (counter <= 0) {
-                throw Exception()
+                throw TimeoutException()
             }
             counter -= 5
         }
@@ -82,7 +83,7 @@ class NetworkRefreshable : Refreshable {
         while (!hasReceivedTurnMessage) {
             Thread.sleep(5)
             if (counter <= 0) {
-                throw Exception()
+                throw TimeoutException()
             }
             counter -= 5
         }
