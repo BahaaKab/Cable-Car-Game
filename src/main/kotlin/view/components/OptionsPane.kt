@@ -10,12 +10,10 @@ import tools.aqua.bgw.components.uicomponents.RadioButton
 import tools.aqua.bgw.components.uicomponents.ToggleGroup
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.Visual
 import view.*
 import java.awt.Color
-import javax.imageio.ImageIO
 
 /**
  * The Pane which contains buttons like undo, redo, and settings.
@@ -51,7 +49,11 @@ class OptionsPane(rootService: RootService, posX: Number = 0, posY: Number = 0) 
         posX = 12, posY = 11,
         width = 35, height = 20,
         visual = undoVisual
-    ).apply { onMouseClicked = { rootService.playerActionService.undo() } }
+    ).apply {
+        onMouseClicked = { CableCarApplication.gameScene.resetImage()
+                            rootService.playerActionService.undo()
+        }
+    }
 
     private val redoButton = Button(
         posX = 135, posY = 0,

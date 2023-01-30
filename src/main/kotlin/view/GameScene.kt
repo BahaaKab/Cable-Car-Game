@@ -423,6 +423,7 @@ class GameScene(private val rootService: RootService) : BoardGameScene(1920, 108
     /** Resets the image in which the paths are drawn.*/
     fun resetImage(){
         paintBrush.clearRect(0,0, drawImage.width, drawImage.height)
+        pathImage.visual = ImageVisual(drawImage)
     }
 
     /** After a Tile is placed all paths related to this Tile are drawn. */
